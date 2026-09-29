@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const posts = (await getCollection('devlog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+---
+<BaseLayout title="Devlog — SonnySmile" description="SonnySmile의 개발 기록">
+  <section class="page-title wrap"><p class="eyebrow">DEVLOG</p><h1>생각과 결정의 기록</h1><p>짧은 공개 기록과, 필요할 때 이어지는 Notion 상세 개발노트.</p></section>
+  <section class="wrap post-list">
+    {posts.map((post) => <article>
+      <p class="date">{post.data.publishedAt.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+      <h2><a href={`/devlog/${post.id}/`}>{post.data.title}</a></h2>
+      <p>{post.data.description}</p>
+      <div class="tags">{post.data.tags.map((tag) => <span>#{tag}</span>)}</div>
+    </article>)}
+  </section>
+</BaseLayout>

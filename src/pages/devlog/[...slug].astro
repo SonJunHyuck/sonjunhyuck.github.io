@@ -1,0 +1,24 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('devlog', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+<BaseLayout title={`${post.data.title} — SonnySmile`} description={post.data.description}>
+  <article class="article wrap">
+    <a class="back" href="/devlog/">← Devlog</a>
+    <p class="eyebrow">{post.data.tags.map((tag: string) => `#${tag}`).join('  ')}</p>
+    <h1>{post.data.title}</h1>
+    <p class="date">{post.data.publishedAt.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+    <div class="prose"><Content /></div>
+    {post.data.notionUrl && <a class="notion-link" href={post.data.notionUrl} target="_blank" rel="noreferrer">
+      <span>↗</span><span><strong>{post.data.notionLabel}</strong><small>긴 기록, 실험 자료, 참고 링크를 Notion에서 이어서 봅니다.</small></span>
+    </a>}
+  </article>
+</BaseLayout>

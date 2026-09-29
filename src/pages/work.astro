@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const projects = [
+  ['Daily Momentum', '작은 행동을 오래 지속하게 하는 습관 트래커', 'Product design · Frontend', 'project-sun'],
+  ['Local Letter', '내가 사는 곳의 좋은 이야기를 전하는 뉴스레터', 'Brand · Web design', 'project-blue'],
+  ['Open Shelf', '좋아하는 책과 문장을 천천히 발견하는 공간', 'Frontend · Experiment', 'project-green'],
+];
+---
+
+<BaseLayout title="Projects — Sonny Smile" description="Sonny Smile의 프로젝트 모음">
+  <section class="page-intro container"><p class="eyebrow">SELECTED WORK</p><h1>만들고, 다듬고,<br /><em>계속 관찰합니다.</em></h1><p>문제를 이해하고, 가장 단순한 형태로 풀어내는 일을 좋아합니다.</p></section>
+  <section class="container project-list">
+    {projects.map(([title, description, role, className], index) => <article class={`project-feature ${className}`}><div class="project-number">0{index + 1}</div><div><p class="project-role">{role}</p><h2>{title}</h2><p>{description}</p></div><span class="project-arrow">↗</span></article>)}
+  </section>
+</BaseLayout>

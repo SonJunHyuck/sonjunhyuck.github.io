@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { project: CollectionEntry<'projects'>; }
+const { project } = Astro.props;
+const { data } = project;
+const statusLabel = { released: '출시', 'in-progress': '개발 중', prototype: '프로토타입' }[data.status];
+---
+<article class="card">
+  {data.thumbnail ? <img src={data.thumbnail} alt={`${data.title} 대표 이미지`} loading="lazy" /> : <div class="placeholder">GAME PROJECT</div>}
+  <div class="content">
+    <div class="meta"><span>{statusLabel}</span><span>{data.publishedAt.getFullYear()}</span></div>
+    <h2><a href={`/projects/${project.id}`}>{data.title}</a></h2>
+    <p>{data.summary}</p>
+    <ul aria-label="사용 기술">{data.technologies.slice(0, 4).map(({ name }) => <li>{name}</li>)}</ul>
+  </div>
+</article>
+
+<style>
+  .card { overflow: hidden; border: 1px solid #293252; border-radius: 16px; background: #151b31; }
+  img, .placeholder { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: grid; place-items: center; background: linear-gradient(135deg, #303b77, #151b31); color: #b7c2ff; font-size: .75rem; letter-spacing: .18em; }
+  .content { padding: 1.25rem; } .meta { display: flex; justify-content: space-between; color: #9cadd7; font-size: .8rem; }
+  h2 { margin: .4rem 0; font-size: 1.3rem; } h2 a { text-decoration: none; } p { color: #bfcae8; margin: 0 0 1rem; }
+  ul { list-style: none; padding: 0; margin: 0; display: flex; gap: .4rem; flex-wrap: wrap; } li { border-radius: 99px; padding: .2rem .55rem; background: #252e50; color: #bbc8ff; font-size: .78rem; }
+</style>
