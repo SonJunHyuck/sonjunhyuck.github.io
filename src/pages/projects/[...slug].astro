@@ -2,26 +2,32 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-export async function getStaticPaths() { return (await getCollection('projects')).map((project) => ({ params: { slug: project.id }, props: { project } })); }
+export async function getStaticPaths() { return (await getCollection('projects', ({ data }) => !data.draft)).map((project) => ({ params: { slug: project.id }, props: { project } })); }
 const { project } = Astro.props;
 const { Content } = await render(project);
 const { data } = project;
 ---
 <BaseLayout title={data.title} description={data.summary}>
-  <article class="project">
-    <a class="back" href="/projects">← Projects</a>
-    <header><p class="eyebrow">{data.status.replace('-', ' ')}</p><h1>{data.title}</h1><p class="lead">{data.description}</p></header>
-    <dl class="facts"><div><dt>역할</dt><dd>{data.role}</dd></div><div><dt>팀</dt><dd>{data.team}</dd></div><div><dt>플랫폼</dt><dd>{data.platform.join(' · ')}</dd></div><div><dt>장르</dt><dd>{data.genres.join(' · ')}</dd></div></dl>
+  <article class="project-detail container">
+    <a class="back-link" href="/projects/">← Projects</a>
+    <header><p class="eyebrow">{data.category === 'game' ? 'GAME' : 'GRAPHICS'} PROJECT {data.isExample && '· EXAMPLE'}</p><h1>{data.title}</h1><p class="lead">{data.description}</p></header>
+    {data.thumbnail && <img class="project-cover" src={data.thumbnail} alt={`${data.title} 대표 이미지`} />}
+    <dl class="facts">
+      {data.period && <div><dt>기간</dt><dd>{data.period}</dd></div>}
+      {data.role && <div><dt>역할</dt><dd>{data.role}</dd></div>}
+      {(data.teamSize || data.team) && <div><dt>팀 규모</dt><dd>{data.teamSize ?? data.team}</dd></div>}
+      {data.platform.length > 0 && <div><dt>플랫폼</dt><dd>{data.platform.join(' · ')}</dd></div>}
+    </dl>
     {data.trailerUrl && <section><h2>Trailer</h2><div class="video"><iframe src={data.trailerUrl} title={`${data.title} 트레일러`} allowfullscreen /></div></section>}
     {data.gallery.length > 0 && <section><h2>Gallery</h2><div class="gallery">{data.gallery.map((image) => <figure><img src={image.src} alt={image.alt} loading="lazy" />{image.caption && <figcaption>{image.caption}</figcaption>}</figure>)}</div></section>}
-    <section><h2>사용 기술</h2><ul class="tech">{data.technologies.map((tech) => <li><strong>{tech.name}</strong><span>{tech.purpose}</span></li>)}</ul></section>
-    <section><h2>핵심 기능</h2><div class="feature-grid">{data.features.map((feature) => <div><h3>{feature.title}</h3><p>{feature.description}</p></div>)}</div></section>
+    <section><p class="eyebrow">TECH STACK</p><h2>사용 기술</h2><ul class="tech">{data.technologies.map((tech) => <li><strong>{tech.name}</strong><span>{tech.purpose}</span></li>)}</ul></section>
+    <section><p class="eyebrow">CONTRIBUTION</p><h2>본인 기여 · 핵심 구현</h2><div class="feature-grid">{data.features.map((feature) => <div><h3>{feature.title}</h3><p>{feature.description}</p></div>)}</div></section>
     {data.challenges.length > 0 && <section><h2>문제 해결</h2><div class="challenges">{data.challenges.map((item) => <article><h3>{item.problem}</h3><p><strong>해결:</strong> {item.solution}</p>{item.result && <p><strong>결과:</strong> {item.result}</p>}</article>)}</div></section>}
     <section class="story"><Content /></section>
-    <div class="links">{data.notionUrl && <a class="button" href={data.notionUrl} target="_blank" rel="noreferrer">Notion 개발노트 ↗</a>}{data.repositoryUrl && <a class="button secondary" href={data.repositoryUrl} target="_blank" rel="noreferrer">Repository ↗</a>}</div>
+    <div class="links">{data.repositoryUrl && <a class="button button-primary" href={data.repositoryUrl} target="_blank" rel="noreferrer">GitHub ↗</a>}{data.playableUrl && <a class="button button-outline" href={data.playableUrl} target="_blank" rel="noreferrer">실행·다운로드 ↗</a>}{data.notionUrl && <a class="button button-outline" href={data.notionUrl} target="_blank" rel="noreferrer">Notion 기록 ↗</a>}</div>
   </article>
 </BaseLayout>
 
 <style>
-  .project { padding: 3rem 0; max-width: 800px; }.back { color: #aebce2; }.project header { padding: 4rem 0 2rem; }h1 { font-size: clamp(2.7rem, 8vw, 5rem); line-height: 1; margin: .5rem 0 1.25rem; }.lead { font-size: 1.2rem; color: #c2cdea; }.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; padding: 1.25rem; background: #151b31; border-radius: 12px; }.facts div { margin: 0; }.facts dt { color: #8e9bc3; font-size: .8rem; }.facts dd { margin: .25rem 0 0; }section { margin-top: 4rem; }h2 { font-size: 1.7rem; }.video iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; }.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; }.gallery figure { margin: 0; }.gallery img { width: 100%; border-radius: 10px; }.gallery figcaption { color: #9aa8ca; font-size: .875rem; }.tech, .feature-grid, .challenges { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; padding: 0; }.tech { list-style: none; }.tech li, .feature-grid > div, .challenges article { padding: 1rem; background: #151b31; border: 1px solid #293252; border-radius: 10px; }.tech strong, .tech span { display: block; }.tech span, .feature-grid p, .challenges p { color: #b8c5e4; }.feature-grid h3, .challenges h3 { margin-top: 0; }.story :global(p) { color: #c8d2ed; }.links { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 3rem; }
+  .project-detail { max-width: 920px; padding-top: 64px; padding-bottom: 120px; }.project-detail header { padding: 72px 0 44px; }.project-detail h1 { max-width: 100%; }.lead { max-width: 720px; color: var(--muted); font-size: 1.2rem; line-height: 1.75; }.project-cover { width: 100%; max-height: 560px; object-fit: cover; border-radius: 4px; }.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; margin: 0 0 70px; background: var(--line); border: 1px solid var(--line); }.facts div { padding: 20px; background: var(--paper); }.facts dt { color: var(--muted); font: 11px var(--mono); text-transform: uppercase; }.facts dd { margin: 7px 0 0; line-height: 1.5; }.project-detail section { margin-top: 72px; }.project-detail h2 { margin: 10px 0 24px; font-size: clamp(1.8rem, 4vw, 2.7rem); letter-spacing: -.05em; }.video iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; }.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }.gallery figure { margin: 0; }.gallery img { width: 100%; border-radius: 4px; }.gallery figcaption { color: var(--muted); font-size: .875rem; }.tech, .feature-grid, .challenges { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; padding: 0; }.tech { list-style: none; }.tech li, .feature-grid > div, .challenges article { padding: 22px; border: 1px solid var(--line); }.tech strong, .tech span { display: block; }.tech span, .feature-grid p, .challenges p { color: var(--muted); line-height: 1.65; }.feature-grid h3, .challenges h3 { margin-top: 0; }.story { max-width: 720px; }.story :global(p), .story :global(li) { color: #4e4f49; line-height: 1.85; }.links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 56px; }
 </style>

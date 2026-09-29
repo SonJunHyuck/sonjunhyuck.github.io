@@ -9,9 +9,11 @@ const devlog = defineCollection({
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
+    category: z.string().default('개발 기록'),
+    relatedProject: z.string().optional(),
     draft: z.boolean().default(false),
     notionUrl: z.string().url().optional(),
-    notionLabel: z.string().default('Notion에서 상세 개발노트 읽기'),
+    isExample: z.boolean().default(false),
   }),
 });
 
@@ -22,11 +24,15 @@ const projects = defineCollection({
     summary: z.string(),
     description: z.string(),
     publishedAt: z.coerce.date(),
+    category: z.enum(['game', 'graphics']),
+    workTypes: z.array(z.enum(['learning', 'experiment', 'personal', 'team'])).default([]),
     status: z.enum(['released', 'in-progress', 'prototype']),
-    role: z.string(),
-    team: z.string(),
-    platform: z.array(z.string()),
-    genres: z.array(z.string()),
+    period: z.string().optional(),
+    role: z.string().optional(),
+    team: z.string().optional(),
+    teamSize: z.string().optional(),
+    platform: z.array(z.string()).default([]),
+    genres: z.array(z.string()).default([]),
     thumbnail: z.string().optional(),
     trailerUrl: z.string().url().optional(),
     gallery: z.array(z.object({
@@ -49,6 +55,9 @@ const projects = defineCollection({
     })).default([]),
     notionUrl: z.string().url().optional(),
     repositoryUrl: z.string().url().optional(),
+    playableUrl: z.string().url().optional(),
+    isExample: z.boolean().default(false),
+    draft: z.boolean().default(false),
   }),
 });
 

@@ -1,17 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import DevlogCard from '../../components/DevlogCard.astro';
 const posts = (await getCollection('devlog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 ---
-<BaseLayout title="Devlog — SonnySmile" description="SonnySmile의 개발 기록">
-  <section class="page-title wrap"><p class="eyebrow">DEVLOG</p><h1>생각과 결정의 기록</h1><p>짧은 공개 기록과, 필요할 때 이어지는 Notion 상세 개발노트.</p></section>
-  <section class="wrap post-list">
-    {posts.map((post) => <article>
-      <p class="date">{post.data.publishedAt.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-      <h2><a href={`/devlog/${post.id}/`}>{post.data.title}</a></h2>
-      <p>{post.data.description}</p>
-      <div class="tags">{post.data.tags.map((tag) => <span>#{tag}</span>)}</div>
-    </article>)}
+<BaseLayout title="DevLog — Son Junhyuck" description="프로젝트와 기술적 판단을 정리한 개발 기록">
+  <section class="page-intro container"><p class="eyebrow">DEVLOG</p><h1>과정과 판단을<br /><em>Notion에 기록합니다.</em></h1><p>핵심 맥락을 빠르게 훑어보고, 자세한 구현 과정과 자료는 각 Notion 원문에서 확인할 수 있습니다.</p></section>
+  <section class="container devlog-feed">
+    {posts.length ? posts.map((post) => <DevlogCard {post} />) : <div class="empty-state"><h2>개발 기록을 준비하고 있습니다.</h2><p>콘텐츠 파일에 Notion 공개 URL을 추가하면 이 피드에 자동으로 표시됩니다.</p></div>}
   </section>
 </BaseLayout>

@@ -6,9 +6,10 @@ import Footer from '../components/Footer.astro';
 interface Props {
   title: string;
   description?: string;
+  redirectTo?: string;
 }
 
-const { title, description = 'Sonny Smile — portfolio and development notes.' } = Astro.props;
+const { title, description = 'Son Junhyuck의 게임 개발 포트폴리오', redirectTo } = Astro.props;
 ---
 
 <!doctype html>
@@ -18,6 +19,8 @@ const { title, description = 'Sonny Smile — portfolio and development notes.' 
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#fbfaf6" />
+    <link rel="canonical" href={new URL(redirectTo ?? Astro.url.pathname, Astro.site)} />
+    {redirectTo && <meta http-equiv="refresh" content={`0;url=${redirectTo}`} />}
     <title>{title}</title>
   </head>
   <body>

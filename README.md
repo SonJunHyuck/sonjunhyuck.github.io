@@ -1,12 +1,12 @@
-# SonnySmile Portfolio & Development Blog
+# Son Junhyuck — Game Development Portfolio
 
 Astro 기반 GitHub Pages 사이트입니다.
 
 ## Local development
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 ## GitHub Pages deployment
@@ -14,4 +14,12 @@ npm run dev
 The workflow at `.github/workflows/deploy.yml` builds and deploys every push to `main`.
 In GitHub, open **Settings → Pages** and set **Build and deployment → Source** to **GitHub Actions**.
 
-The configured URL is `https://sonjunhyuck.github.io/SonnySmile.github.io/` because this is a project Pages repository. If the repository is renamed to `SonJunHyuck.github.io` or a custom domain is attached, update `site` and `base` in `astro.config.mjs` before deploying.
+This is the root Pages repository and is configured for `https://sonjunhyuck.github.io/`.
+
+## Content
+
+- About content: `src/pages/index.astro`
+- Projects: add a Markdown file to `src/content/projects/`
+- DevLog cards: add a Markdown file to `src/content/devlog/` with its public Notion URL
+
+See `docs/CONTENT_GUIDE.md` for the fields and publishing flow. Items currently marked `isExample: true` are clearly labelled example content and should be replaced when verified material is available.

@@ -3,14 +3,30 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 
-const projects = (await getCollection('projects')).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 ---
-<BaseLayout title="Projects" description="SonnySmile의 게임 개발 프로젝트">
-  <section class="heading"><p class="eyebrow">Selected work</p><h1>Projects</h1><p>게임의 의도부터 구현 과정, 배운 점까지 기록합니다.</p></section>
-  {projects.length ? <div class="grid">{projects.map((project) => <ProjectCard {project} />)}</div> : <p class="empty">첫 프로젝트를 준비하고 있습니다.</p>}
+<BaseLayout title="Projects — Son Junhyuck" description="게임과 그래픽스 프로젝트, 역할과 기술적 기여">
+  <section class="page-intro container"><p class="eyebrow">PROJECTS</p><h1>결과와 기여를<br /><em>구체적으로</em> 보여줍니다.</h1><p>게임과 그래픽스 프로젝트에서 맡은 역할, 핵심 구현, 문제 해결 과정을 정리합니다.</p></section>
+  <section class="container projects-section">
+    <div class="filters" aria-label="프로젝트 분류 필터">
+      <button type="button" class="active" data-filter="all" aria-pressed="true">전체</button>
+      <button type="button" data-filter="game" aria-pressed="false">게임</button>
+      <button type="button" data-filter="graphics" aria-pressed="false">그래픽스</button>
+    </div>
+    {projects.length ? <div class="projects-grid" data-project-grid>{projects.map((project) => <ProjectCard {project} />)}</div> : <div class="empty-state"><h2>프로젝트를 준비하고 있습니다.</h2><p>콘텐츠 파일을 추가하면 이 목록에 자동으로 표시됩니다.</p></div>}
+    <p class="filter-empty" data-filter-empty hidden>이 분류에 등록된 프로젝트가 없습니다.</p>
+  </section>
 </BaseLayout>
 
-<style>
-  .heading { padding: 5rem 0 2.5rem; } h1 { margin: .25rem 0; font-size: clamp(2.5rem, 6vw, 4.5rem); } .heading p:last-child, .empty { color: #b8c5e4; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
-</style>
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-category]');
+  const empty = document.querySelector<HTMLElement>('[data-filter-empty]');
+  buttons.forEach((button) => button.addEventListener('click', () => {
+    const filter = button.dataset.filter;
+    let visible = 0;
+    buttons.forEach((item) => { const active = item === button; item.classList.toggle('active', active); item.setAttribute('aria-pressed', String(active)); });
+    cards.forEach((card) => { const show = filter === 'all' || card.dataset.category === filter; card.hidden = !show; if (show) visible += 1; });
+    if (empty) empty.hidden = visible > 0;
+  }));
+</script>

@@ -3,9 +3,12 @@ title: "포트폴리오와 개발 기록을 시작하며"
 description: "작업의 결과뿐 아니라, 문제를 어떻게 풀었는지도 남기기 위한 첫 번째 기록입니다."
 publishedAt: 2026-09-29
 tags: ["meta", "portfolio"]
+category: "사이트 운영"
 notionUrl: "https://www.notion.so/"
-notionLabel: "Notion 상세 개발노트 템플릿 열기"
+isExample: true
 ---
+
+> 이 문서는 카드와 링크 동작을 확인하기 위한 예시 콘텐츠이며 실제 사용자 기록이 아닙니다.
 
 이곳에는 짧고 읽기 쉬운 개발 기록을 남깁니다. 배경, 결정, 배운 점을 간결하게 정리하고, 긴 조사 과정이나 회의 메모는 Notion 상세 개발노트로 연결합니다.
 
