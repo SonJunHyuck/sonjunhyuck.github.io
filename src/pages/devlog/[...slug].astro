@@ -11,8 +11,8 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 <BaseLayout title={`${post.data.title} — Son Junhyuck`} description={post.data.description}>
-  <article class="article wrap">
-    <a class="back" href="/devlog/">← Devlog</a>
+  <article class="article container">
+    <a class="back-link" href="/devlog/">← DevLog</a>
     <p class="eyebrow">{post.data.tags.map((tag: string) => `#${tag}`).join('  ')}</p>
     <h1>{post.data.title}</h1>
     <p class="date">{post.data.publishedAt.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>

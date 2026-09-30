@@ -1,42 +1,33 @@
-# Phase 2: portfolio + development blog foundation
+# Phase 2: 포트폴리오와 개발 기록 기반
 
-## Role of the site
+## 사이트 역할
 
-The portfolio earns trust quickly: what was made, why it mattered, and the tangible result. The blog makes that trust durable by showing the decisions, experiments, and implementation lessons behind the work.
+이 사이트는 확인된 이력과 프로젝트 기여를 빠르게 전달하고, 공개 가능한 개발 기록을 통해 문제 해결 과정과 기술적 판단을 보여 줍니다. 실제 사용자 자료가 확인되기 전에는 입력 대기 또는 예시임을 명시하며 사실을 추정해 채우지 않습니다.
 
-## Information architecture
+## 정보 구조
 
-| Area | Visitor question | Primary content |
+| 영역 | 방문자가 확인하는 내용 | 주요 콘텐츠 |
 | --- | --- | --- |
-| Home | Who are you and what should I see first? | Short positioning, featured projects, recent notes |
-| Work | What can you make or improve? | Outcome-led project case studies |
-| Notes | How do you think and build? | Technical articles and build logs |
-| About | How can I work with you? | Background, strengths, contact path |
+| About (`/`) | 어떤 경험과 역량을 갖고 있는가? | 소개, 이력·경력기술, 학력, 기술 역량, 활동, 연락처 |
+| Projects (`/projects/`) | 어떤 프로젝트에서 무엇을 구현했는가? | 게임·그래픽스 목록, 역할, 기여, 핵심 구현, 문제 해결, 외부 링크 |
+| DevLog (`/devlog/`) | 개발 과정과 판단을 어디에서 더 읽을 수 있는가? | 최신순 요약 카드, 분류·프로젝트 태그, 공개 Notion 원문 링크 |
 
-Navigation stays intentionally small: `Work`, `Notes`, and `About`. Each project and post should link to the other where a meaningful relationship exists.
+메뉴는 `About`, `Projects`, `DevLog`로 유지합니다. 별도 Home과 대표 프로젝트 영역은 두지 않습니다. 이전 `/about/`, `/work/`, `/posts/` 경로는 새 위치로 안내합니다.
 
-## Design direction
+## 분류와 콘텐츠 모델
 
-**Quietly technical editorial.** Warm off-white paper, charcoal text, a cobalt signal color, and one restrained mono accent create a site that feels personal without looking casual. The large type and generous spacing foreground ideas; thin rules and compact metadata make it easy to scan. It should feel like a well-kept engineering notebook paired with a considered case-study archive.
+프로젝트의 주 분류는 `game` 또는 `graphics`입니다. OpenGL 학습과 렌더링 실험은 `graphics`에 포함하고, 학습·실험·개인·팀 여부는 `workTypes` 태그로 구분합니다.
 
-Accessibility baseline: visible focus states, semantic landmarks, high-contrast text, no information carried by color alone, and motion only as a small enhancement.
+프로젝트 상세는 개요, 미디어, 기간, 역할, 팀 규모, 기술, 본인 기여, 핵심 구현, 문제 해결과 확인된 외부 링크를 지원합니다. 각 프로젝트는 `src/content/projects/`의 Markdown 파일로 관리합니다.
 
-## Content model
+DevLog 카드는 제목, 날짜, 분류·관련 프로젝트 태그, 2~3줄 요약과 공개 Notion 원문 링크를 표시합니다. 카드 데이터는 `src/content/devlog/`에서 관리하며 Notion 자동 수집은 별도 확장 범위입니다.
 
-### Project
+## 디자인과 접근성
 
-Each project is a Markdown entry with: title, summary, date, role, client/context, tags, link, featured flag, and cover alt text. The narrative should use **Context → Constraint → Decisions → Result → Reflection**. A project earns a place in Work when it can demonstrate a meaningful contribution or learning.
+정보 배치, 타이포그래피와 여백은 차분한 편집물 형태를 유지합니다. 공통 레이아웃, 메뉴, 카드, 태그와 상세 템플릿을 재사용하고 데스크톱·모바일에서 같은 정보 구조를 제공합니다.
 
-### Note
+기본 접근성 기준은 의미 있는 랜드마크와 제목 계층, 키보드 조작, 명확한 포커스 표시, 충분한 대비, 이미지 대체 텍스트, 색상 이외의 상태 표현입니다.
 
-Each post has: title, description, date, tags, draft flag, and optional related project slug. Use three repeatable formats:
+## 운영 원칙
 
-1. **Build log** — what changed, why, and what is next.
-2. **Technical note** — one decision, pattern, or debugging lesson.
-3. **Retrospective** — outcome, trade-offs, and what would change next time.
-
-Write the first paragraph as the takeaway, then use short sections, code or diagrams only when they clarify, and end with one reusable lesson.
-
-## Operating cadence
-
-After each substantive project milestone, capture a short note within 48 hours. Promote a project to featured only when its outcome, role, and story are all clear. This keeps the home page selective while Notes can remain an honest working archive.
+실제 자료를 추가할 때는 `docs/CONTENT_GUIDE.md`와 `docs/CHECKLIST.md`를 따릅니다. 새 콘텐츠는 공개 가능 여부와 사실 관계를 확인한 뒤 추가하고, 프로젝트 목록과 DevLog는 콘텐츠 데이터와 UI 코드를 분리해 유지합니다.

@@ -1,20 +1,21 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { posts } from '../../data/posts';
 
 export function getStaticPaths() {
-  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+  const legacyPostSlugs = [
+    'building-a-portfolio-that-feels-human',
+    'astro-github-pages-start',
+    'small-interactions-big-feeling',
+  ];
+  return legacyPostSlugs.map((slug) => ({ params: { slug } }));
 }
 
-const { post } = Astro.props;
 ---
 
-<BaseLayout title={`${post.title} — Sonny Smile`} description={post.excerpt}>
-  <article class="article container">
-    <a class="back-link" href="/posts/">← Devlog</a>
-    <p class="eyebrow">{post.tag} · {post.date}</p>
-    <h1>{post.title}</h1>
-    <p class="article-lede">{post.excerpt}</p>
-    <div class="article-body"><p>이 글은 개발 블로그의 기본 글 템플릿입니다. 다음 단계에서 실제 글의 내용과 마크다운 기반 콘텐츠 컬렉션을 연결할 수 있습니다.</p><p>좋은 작업은 결과뿐 아니라 과정에서 얻은 질문과 선택을 함께 남깁니다. 이 공간에는 그런 기록을 차곡차곡 모아갈 예정입니다.</p></div>
-  </article>
+<BaseLayout title="DevLog — Son Junhyuck" description="DevLog 경로가 변경되었습니다." redirectTo="/devlog/">
+  <section class="redirect-page container">
+    <p class="eyebrow">DEVLOG</p>
+    <h1>이전 개발 기록 경로가 변경되었습니다.</h1>
+    <p><a class="detail-link" href="/devlog/">DevLog로 이동 →</a></p>
+  </section>
 </BaseLayout>
