@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TagList from '../components/TagList.astro';
-import PlaceholderProjectCard from '../components/PlaceholderProjectCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
 
 const experience = [
   {
@@ -52,6 +53,9 @@ const experience = [
 ];
 
 const skills = ['Unity', 'C#', 'Jenkins', 'AWS S3', 'C++', 'OpenGL', 'Compute Shader'];
+const featuredProjectIds = ['project-r', 'inspix-world', 'the-hidden-cheer-squad', 'crowd-formation-control'];
+const projectEntries = await getCollection('projects', ({ data }) => !data.draft);
+const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((project) => project.id === id)).filter((project): project is NonNullable<typeof project> => Boolean(project));
 ---
 
 <BaseLayout title="About — Son Junhyuck" description="Son Junhyuck의 이력, 역량, 활동을 정리한 게임 개발 포트폴리오">
@@ -170,9 +174,9 @@ const skills = ['Unity', 'C#', 'Jenkins', 'AWS S3', 'C++', 'OpenGL', 'Compute Sh
       <section class="resume-section about-projects-section">
         <p class="eyebrow">PROJECTS</p>
         <h2>프로젝트</h2>
-        <p class="section-intro">선정한 프로젝트의 역할과 기여, 핵심 구현을 이곳에 정리할 예정입니다.</p>
+        <p class="section-intro">실무와 개인·연구 프로젝트에서 맡은 역할, 핵심 구현과 문제 해결 과정을 정리했습니다.</p>
         <div class="about-projects-grid">
-          {[1, 2, 3, 4].map((slotNumber) => <PlaceholderProjectCard {slotNumber} />)}
+          {featuredProjects.map((project) => <ProjectCard {project} />)}
         </div>
       </section>
     </div>

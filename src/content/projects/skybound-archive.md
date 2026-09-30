@@ -23,6 +23,7 @@ features:
   - title: "문맥형 상호작용"
     description: "가까운 오브젝트와 현재 상태에 따라 필요한 행동만 명확히 제시합니다."
 isExample: true
+draft: true
 challenges:
   - problem: "퍼즐의 힌트가 부족하면 진행이 막히고, 과하면 발견의 즐거움이 사라졌습니다."
     solution: "환경 오브젝트의 배치와 조명으로 1차 힌트를 주고, 실패 후에만 보조 힌트를 노출했습니다."

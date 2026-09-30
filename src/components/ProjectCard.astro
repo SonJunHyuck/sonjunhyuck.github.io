@@ -6,7 +6,7 @@ interface Props { project: CollectionEntry<'projects'>; }
 const { project } = Astro.props;
 const { data } = project;
 const categoryLabel = data.category === 'game' ? '게임' : '그래픽스';
-const workTypeLabel = { learning: '학습', experiment: '실험', personal: '개인', team: '팀 프로젝트' };
+const workTypeLabel = { learning: '학습', experiment: '실험', personal: '개인', team: '팀 프로젝트', professional: '실무', 'live-service': '라이브 서비스', research: '연구' };
 const tags = [categoryLabel, ...data.workTypes.map((type) => workTypeLabel[type]), ...data.technologies.slice(0, 4).map(({ name }) => name)];
 ---
 

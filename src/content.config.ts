@@ -25,7 +25,7 @@ const projects = defineCollection({
     description: z.string(),
     publishedAt: z.coerce.date(),
     category: z.enum(['game', 'graphics']),
-    workTypes: z.array(z.enum(['learning', 'experiment', 'personal', 'team'])).default([]),
+    workTypes: z.array(z.enum(['learning', 'experiment', 'personal', 'team', 'professional', 'live-service', 'research'])).default([]),
     status: z.enum(['released', 'in-progress', 'prototype']),
     period: z.string().optional(),
     role: z.string().optional(),
@@ -35,6 +35,12 @@ const projects = defineCollection({
     genres: z.array(z.string()).default([]),
     thumbnail: z.string().optional(),
     trailerUrl: z.string().url().optional(),
+    videos: z.array(z.object({
+      title: z.string(),
+      youtubeId: z.string(),
+      url: z.string().url(),
+      description: z.string().optional(),
+    })).default([]),
     gallery: z.array(z.object({
       src: z.string(),
       alt: z.string(),
@@ -56,6 +62,10 @@ const projects = defineCollection({
     notionUrl: z.string().url().optional(),
     repositoryUrl: z.string().url().optional(),
     playableUrl: z.string().url().optional(),
+    externalLinks: z.array(z.object({
+      label: z.string(),
+      url: z.string().url(),
+    })).default([]),
     isExample: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),
