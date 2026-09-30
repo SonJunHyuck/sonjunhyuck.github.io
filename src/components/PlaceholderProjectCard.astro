@@ -1,0 +1,16 @@
+---
+import TagList from './TagList.astro';
+
+interface Props { slotNumber: number; }
+const { slotNumber } = Astro.props;
+---
+
+<article class="project-card placeholder-project-card" aria-label={`준비 중인 프로젝트 ${slotNumber}`}>
+  <div class="project-visual" aria-hidden="true"><span>PROJECT {String(slotNumber).padStart(2, '0')}</span></div>
+  <div class="project-card-body">
+    <div class="card-meta"><span>선정 중</span></div>
+    <h3>프로젝트 준비 중</h3>
+    <p>프로젝트가 선정되면 역할, 기여, 핵심 구현과 상세 기록을 연결합니다.</p>
+    <TagList tags={['내용 준비 중']} label="프로젝트 준비 상태" />
+  </div>
+</article>

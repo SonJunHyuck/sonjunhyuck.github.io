@@ -1,12 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TagList from '../components/TagList.astro';
+import PlaceholderProjectCard from '../components/PlaceholderProjectCard.astro';
 
 const experience = [
   {
     company: '보이저',
     role: '클라이언트 개발',
     period: '2025.04–2026.03',
+    duration: '1년 (12개월)',
     tech: ['Unity', 'C#', 'Jenkins', 'AWS S3'],
     projects: [
       {
@@ -14,17 +16,17 @@ const experience = [
         description: 'Unity 기반 신규 3D MMORPG',
         contributions: [
           'Jenkins를 활용한 클라이언트 빌드·배포 자동화',
-          '네트워크 동기화를 포함한 감정표현 기능과 관련 UI 구현',
-          '무한 스크롤과 반응형 데이터 갱신을 적용한 상점 UI 구현',
+          '네트워크 동기화를 포함한 감정표현 기능 구현',
+          'Popup UI / HUD 기능 구현',
         ],
       },
       {
-        name: 'Inspix World · BattleRoyal',
-        description: '라이브 서비스 어트랙션',
+        name: 'InspixWorld',
+        description: 'Unity 기반 3D 게임 라이브서비스 유지보수',
         contributions: [
-          '라이브 이슈 원인 분석·수정 및 업데이트 대응',
-          '파트너사와 서버·클라이언트 담당자 사이의 이슈 및 운영 절차 조율',
-          '클라이언트 빌드, 에셋번들 패치, 서버 오픈 절차를 온보딩 가이드로 문서화',
+          '라이브 서비스 이슈 분석·수정 및 업데이트 대응',
+          '팀원과 수정 공수를 검토하고, 이슈 중요도와 함께 종합해 파트너사와 버전별 수정·업데이트 범위를 조율',
+          '운영 중 축적한 경험과 신규 투입 인원을 위한 가이드 작성',
         ],
       },
     ],
@@ -33,6 +35,7 @@ const experience = [
     company: '갈라랩',
     role: '클라이언트 개발',
     period: '2015.12–2017.02',
+    duration: '1년 3개월 (15개월)',
     tech: ['Unity', 'C#'],
     projects: [
       {
@@ -56,57 +59,70 @@ const skills = ['Unity', 'C#', 'Jenkins', 'AWS S3', 'C++', 'OpenGL', 'Compute Sh
     <div class="container hero-layout">
       <div class="hero-content">
         <p class="eyebrow hero-role"><span aria-hidden="true">✦</span> GAME CLIENT DEVELOPER</p>
-        <h1>안녕하세요,<br /><em>손준혁</em>입니다.</h1>
-        <ul class="hero-intro">
-          <li>Unity·C#으로 콘텐츠 UI와 게임의 상호작용을 구현합니다.</li>
-          <li>문제의 원인을 분석하고 개발·운영 과정을 개선합니다.</li>
-          <li>유연한 협업을 바탕으로 안정적인 라이브 서비스를 만들어갑니다.</li>
-        </ul>
-        <TagList tags={skills} label="주요 기술" />
-        <div class="hero-links">
-          <a href="mailto:s.junhyuck@gmail.com" aria-label="손준혁에게 이메일 보내기">Email <span>↗</span></a>
-          <a href="https://github.com/SonJunHyuck" target="_blank" rel="noreferrer" aria-label="손준혁 GitHub 방문">GitHub <span>↗</span></a>
+        <h1>안녕하세요,<br />유연한 협업을<span class="mobile-break"><br /></span> 지향하는<br />개발자<span class="mobile-break"><br /></span><span class="desktop-space"> </span><em>손준혁</em> 입니다.</h1>
+        <div class="hero-contact-group">
+          <p class="hero-group-label">CONNECT</p>
+          <div class="hero-links">
+            <a href="https://github.com/SonJunHyuck" target="_blank" rel="noopener noreferrer" aria-label="손준혁 GitHub 프로필 새 탭에서 열기"><img src="/icons/github.svg" alt="" /></a>
+            <a href="https://app.notion.com/p/sonnysmile/Sonny-s-Dev-Box-17eed1cbaf6c80168c6ed20f4c327141?source=copy_link" target="_blank" rel="noopener noreferrer" aria-label="손준혁 Notion 페이지 새 탭에서 열기"><img src="/icons/notion.svg" alt="" /></a>
+            <a href="https://www.canva.com/design/DAHICLybg4Y/dWylZ6Ir57iAQCFhZH8y9Q/view?utlId=ha95d026d35" target="_blank" rel="noopener noreferrer" aria-label="손준혁 Canva 포트폴리오 새 탭에서 열기"><img src="/icons/canva.svg" alt="" /></a>
+          </div>
         </div>
       </div>
       <div class="hero-visual" aria-hidden="true">
         <span class="hero-orbit"></span>
-        <span class="hero-monogram">SJ</span>
+        <img class="hero-avatar" src="/favicon.png" alt="" />
         <span class="hero-spark hero-spark-one">✦</span>
         <span class="hero-spark hero-spark-two">✦</span>
       </div>
     </div>
   </section>
 
+  <section class="profile-section container" aria-labelledby="profile-title">
+    <p class="eyebrow">PROFILE</p>
+    <h2 id="profile-title">프로필</h2>
+    <div class="profile-card">
+      <img class="profile-photo" src="/profile.webp" alt="꽃밭에서 촬영한 손준혁 프로필 사진" />
+      <dl class="profile-details">
+        <div><dt>이름</dt><dd>손준혁 <span>(SON JUNHYUCK)</span></dd></div>
+        <div><dt>직무</dt><dd>게임 클라이언트 개발</dd></div>
+      </dl>
+      <div class="profile-stack">
+        <p>기술 스택</p>
+        <TagList tags={skills} label="주요 기술" />
+      </div>
+    </div>
+  </section>
+
   <div class="resume container">
-    <aside class="resume-index" aria-label="소개 페이지 목차">
-      <a href="#experience">Experience</a><a href="#education">Education</a><a href="#activities">Activities</a><a href="#contact">Contact</a>
-    </aside>
     <div class="resume-content">
       <section id="experience" class="resume-section">
         <p class="eyebrow">EXPERIENCE</p>
-        <h2>이력 · 경력기술</h2>
+        <h2>업무 경험</h2>
         <div class="experience-list">
           {experience.map((item) => (
-            <article class="experience-item">
-              <span class="timeline-dot" aria-hidden="true"></span>
-              <header class="resume-item-header">
-                <div><h3>{item.company}</h3><p class="experience-role">{item.role}</p></div>
-                <p class="resume-period">{item.period}</p>
-              </header>
-              <div class="project-contributions">
-                {item.projects.map((project) => (
-                  <section class="contribution-group">
-                    <h4>{project.name}</h4>
-                    <p>{project.description}</p>
-                    <ul>{project.contributions.map((contribution) => <li>{contribution}</li>)}</ul>
-                  </section>
-                ))}
-              </div>
-              <div class="experience-tech">
-                <p>Tech Stack</p>
-                <TagList tags={item.tech} label={`${item.company} 기술 스택`} />
-              </div>
-            </article>
+            <div class="experience-timeline">
+              <article class="experience-item">
+                <span class="timeline-dot" aria-hidden="true"></span>
+                <header class="resume-item-header">
+                  <div><h3>{item.company}</h3><p class="experience-role">{item.role}</p></div>
+                  <p class="resume-period"><span>{item.period}</span><span>{item.duration}</span></p>
+                </header>
+                <div class="project-contributions">
+                  {item.projects.map((project) => (
+                    <section class="contribution-group">
+                      <h4>{project.name}</h4>
+                      <p>{project.description}</p>
+                      <ul>{project.contributions.map((contribution) => <li>{contribution}</li>)}</ul>
+                    </section>
+                  ))}
+                </div>
+                <div class="experience-tech">
+                  <p>Tech Stack</p>
+                  <TagList tags={item.tech} label={`${item.company} 기술 스택`} />
+                </div>
+              </article>
+            </div>
           ))}
         </div>
       </section>
@@ -116,7 +132,15 @@ const skills = ['Unity', 'C#', 'Jenkins', 'AWS S3', 'C++', 'OpenGL', 'Compute Sh
         <h2>학력</h2>
         <div class="resume-list">
           <article class="resume-list-item">
-            <div><h3>계명대학교 대학원</h3><p>컴퓨터공학과 석사 · 컴퓨터 그래픽스 연구실 군중 시뮬레이션 연구</p></div>
+            <div>
+              <h3>계명대학교 대학원</h3>
+              <p>컴퓨터공학과 석사 · 컴퓨터 그래픽스 연구실 군중 시뮬레이션 연구</p>
+              <a class="research-paper" href="https://doi.org/10.3390/app14083386" target="_blank" rel="noopener noreferrer" aria-label="연구 논문 Position-Based Formation Control Scheme for Crowds Using Short Range Distance 새 탭에서 열기">
+                <span>연구 논문 · Applied Sciences, 2024</span>
+                <strong>Position-Based Formation Control Scheme for Crowds Using Short Range Distance</strong>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
             <p class="resume-period">2021.08–2023.08 · 졸업</p>
           </article>
           <article class="resume-list-item">
@@ -128,23 +152,27 @@ const skills = ['Unity', 'C#', 'Jenkins', 'AWS S3', 'C++', 'OpenGL', 'Compute Sh
 
       <section id="activities" class="resume-section">
         <p class="eyebrow">ACTIVITIES</p>
-        <h2>활동 · 자격</h2>
+        <h2>활동</h2>
         <div class="resume-list">
           <article class="resume-list-item">
-            <div><h3>VR 우주 시뮬레이션 · 팀 프로젝트 최우수상</h3><p>모션 인식 기기와 HMD를 Unity에 접목한 체험형 프로젝트</p></div>
-            <p class="resume-period">2014</p>
+            <div>
+              <h3>2014 한국과학기술창작대전 최우수상</h3>
+              <p>JH Feeltware팀 (계명대)</p>
+              <p>Unity 3D 기반 모션 인식 기기와 HMD를 접목한 VR 체험형 우주 시뮬레이션 개발로 수상했습니다.</p>
+              <a class="button button-outline activity-link" href="https://www.korea.kr/briefing/pressReleaseView.do?newsId=156054488#pressRelease" target="_blank" rel="noopener noreferrer" aria-label="2014 한국과학기술창작대전 수상 관련 기사 새 탭에서 열기">관련 기사 보기 <span aria-hidden="true">↗</span></a>
+            </div>
+            <p class="resume-period">2014.12</p>
           </article>
           <article class="resume-list-item"><div><h3>정보처리산업기사</h3><p>국가기술자격</p></div><p class="resume-period">2016.05</p></article>
         </div>
       </section>
 
-      <section id="contact" class="resume-section contact-section">
-        <p class="eyebrow">CONTACT</p>
-        <h2>연락처</h2>
-        <p>업무 문의는 이메일로 연락해 주세요. GitHub에서 공개 작업과 코드를 확인할 수 있습니다.</p>
-        <div class="contact-links">
-          <a class="button button-primary" href="mailto:s.junhyuck@gmail.com">이메일 보내기 <span>↗</span></a>
-          <a class="button button-outline" href="https://github.com/SonJunHyuck" target="_blank" rel="noreferrer">GitHub 방문 <span>↗</span></a>
+      <section class="resume-section about-projects-section">
+        <p class="eyebrow">PROJECTS</p>
+        <h2>프로젝트</h2>
+        <p class="section-intro">선정한 프로젝트의 역할과 기여, 핵심 구현을 이곳에 정리할 예정입니다.</p>
+        <div class="about-projects-grid">
+          {[1, 2, 3, 4].map((slotNumber) => <PlaceholderProjectCard {slotNumber} />)}
         </div>
       </section>
     </div>
