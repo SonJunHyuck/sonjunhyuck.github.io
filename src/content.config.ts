@@ -1,22 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
-const devlog = defineCollection({
-  loader: glob({ base: './src/content/devlog', pattern: '**/*.{md,mdx}' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    publishedAt: z.coerce.date(),
-    updatedAt: z.coerce.date().optional(),
-    tags: z.array(z.string()).default([]),
-    category: z.string().default('개발 기록'),
-    relatedProject: z.string().optional(),
-    draft: z.boolean().default(false),
-    notionUrl: z.string().url().optional(),
-    isExample: z.boolean().default(false),
-  }),
-});
-
 const projects = defineCollection({
   loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
   schema: z.object({
@@ -71,4 +55,4 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { devlog, projects };
+export const collections = { projects };

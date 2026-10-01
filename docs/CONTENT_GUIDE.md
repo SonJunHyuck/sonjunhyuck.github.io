@@ -1,6 +1,6 @@
 # 콘텐츠 추가 안내
 
-이 사이트는 화면 코드와 콘텐츠를 분리합니다. 실제 자료가 확정되면 아래 파일만 추가하거나 수정하면 카드와 상세 페이지가 자동으로 갱신됩니다.
+이 사이트는 프로젝트 화면 코드와 콘텐츠를 분리합니다. 실제 자료가 확정되면 아래 파일만 추가하거나 수정하면 카드와 상세 페이지가 자동으로 갱신됩니다.
 
 ## About
 
@@ -14,4 +14,4 @@ OpenGL 튜토리얼이나 렌더링 학습은 `category: graphics`, `workTypes: 
 
 ## DevLog
 
-`src/content/devlog/`에 Markdown 파일을 추가합니다. 제목, 2~3줄 요약에 해당하는 `description`, 날짜, 분류, 태그, 공개 Notion URL을 입력합니다. 관련 프로젝트가 있으면 `relatedProject`에 프로젝트 식별자를 적습니다. 목록은 날짜 최신순으로 정렬되며 본문은 Notion에서 읽습니다.
+DevLog는 사이트 안에 글이나 목록을 복제하지 않고 상단 메뉴에서 공개 Notion DevLog로 바로 연결합니다. 기존 `/devlog/`, `/devlog/welcome/`, `/posts/`와 과거 글 경로는 같은 Notion DevLog로 안내합니다. 링크 대상이 바뀌면 `src/config/links.ts`의 주소를 수정합니다.

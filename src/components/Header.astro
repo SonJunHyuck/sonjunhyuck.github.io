@@ -1,9 +1,11 @@
 ---
+import { NOTION_DEVLOG_URL } from '../config/links';
+
 const { currentPath = '/' } = Astro.props;
 const links = [
   { href: '/', label: 'About' },
   { href: '/projects/', label: 'Projects' },
-  { href: '/devlog/', label: 'DevLog' },
+  { href: NOTION_DEVLOG_URL, label: 'DevLog ↗', external: true },
 ];
 
 const isCurrent = (href: string) => href === '/'
@@ -21,7 +23,13 @@ const isCurrent = (href: string) => href === '/'
       <ul>
         {links.map((link) => (
           <li>
-            <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>
+            <a
+              href={link.href}
+              target={link.external ? '_blank' : undefined}
+              rel={link.external ? 'noopener noreferrer' : undefined}
+              aria-label={link.external ? 'DevLog를 Notion에서 새 탭으로 열기' : undefined}
+              aria-current={!link.external && isCurrent(link.href) ? 'page' : undefined}
+            >
               {link.label}
             </a>
           </li>

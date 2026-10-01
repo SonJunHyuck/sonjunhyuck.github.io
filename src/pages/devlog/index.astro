@@ -1,13 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import DevlogCard from '../../components/DevlogCard.astro';
-const posts = (await getCollection('devlog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+import { NOTION_DEVLOG_URL } from '../../config/links';
 ---
-<BaseLayout title="DevLog — Son Junhyuck" description="프로젝트와 기술적 판단을 정리한 개발 기록">
-  <section class="page-intro container"><p class="eyebrow">DEVLOG</p><h1>과정과 판단을<br /><em>Notion에 기록합니다.</em></h1><p>핵심 맥락을 빠르게 훑어보고, 자세한 구현 과정과 자료는 각 Notion 원문에서 확인할 수 있습니다.</p></section>
-  <section class="container devlog-feed">
-    {posts.length ? posts.map((post) => <DevlogCard {post} />) : <div class="empty-state"><h2>개발 기록을 준비하고 있습니다.</h2><p>콘텐츠 파일에 Notion 공개 URL을 추가하면 이 피드에 자동으로 표시됩니다.</p></div>}
+<BaseLayout title="DevLog — Son Junhyuck" description="개발 기록은 Notion에서 확인할 수 있습니다." redirectTo={NOTION_DEVLOG_URL}>
+  <section class="redirect-page container">
+    <p class="eyebrow">DEVLOG</p>
+    <h1>개발 기록은<br /><em>Notion에 있습니다.</em></h1>
+    <p><a class="detail-link" href={NOTION_DEVLOG_URL}>Notion DevLog로 이동 ↗</a></p>
   </section>
 </BaseLayout>

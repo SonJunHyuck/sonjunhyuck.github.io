@@ -1,22 +1,15 @@
 ---
-import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { NOTION_DEVLOG_URL } from '../../config/links';
 
-export async function getStaticPaths() {
-  const posts = await getCollection('devlog', ({ data }) => !data.draft);
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+export function getStaticPaths() {
+  return [{ params: { slug: 'welcome' } }];
 }
-
-const { post } = Astro.props;
-const { Content } = await render(post);
 ---
-<BaseLayout title={`${post.data.title} — Son Junhyuck`} description={post.data.description}>
-  <article class="article container">
-    <a class="back-link" href="/devlog/">← DevLog</a>
-    <p class="eyebrow">{post.data.tags.map((tag: string) => `#${tag}`).join('  ')}</p>
-    <h1>{post.data.title}</h1>
-    <p class="date">{post.data.publishedAt.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-    <div class="prose"><Content /></div>
-    {post.data.notionUrl && <a class="notion-link" href={post.data.notionUrl} target="_blank" rel="noreferrer">Notion에서 자세히 보기 ↗</a>}
-  </article>
+<BaseLayout title="DevLog — Son Junhyuck" description="개발 기록은 Notion으로 이전되었습니다." redirectTo={NOTION_DEVLOG_URL}>
+  <section class="redirect-page container">
+    <p class="eyebrow">DEVLOG</p>
+    <h1>이 개발 기록은<br /><em>Notion으로 이전되었습니다.</em></h1>
+    <p><a class="detail-link" href={NOTION_DEVLOG_URL}>Notion DevLog로 이동 ↗</a></p>
+  </section>
 </BaseLayout>

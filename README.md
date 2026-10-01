@@ -20,6 +20,6 @@ This is the root Pages repository and is configured for `https://sonjunhyuck.git
 
 - About content: `src/pages/index.astro`
 - Projects: add a Markdown file to `src/content/projects/`
-- DevLog cards: add a Markdown file to `src/content/devlog/` with its public Notion URL
+- DevLog: the navigation opens the public Notion DevLog directly
 
-See `docs/CONTENT_GUIDE.md` for the fields and publishing flow. Items currently marked `isExample: true` are clearly labelled example content and should be replaced when verified material is available.
+See `docs/CONTENT_GUIDE.md` for the project fields and publishing flow. Items marked `isExample: true` are clearly labelled example content and should be replaced when verified material is available.

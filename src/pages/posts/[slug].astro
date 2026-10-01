@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { NOTION_DEVLOG_URL } from '../../config/links';
 
 export function getStaticPaths() {
   const legacyPostSlugs = [
@@ -12,10 +13,10 @@ export function getStaticPaths() {
 
 ---
 
-<BaseLayout title="DevLog — Son Junhyuck" description="DevLog 경로가 변경되었습니다." redirectTo="/devlog/">
+<BaseLayout title="DevLog — Son Junhyuck" description="개발 기록은 Notion으로 이전되었습니다." redirectTo={NOTION_DEVLOG_URL}>
   <section class="redirect-page container">
     <p class="eyebrow">DEVLOG</p>
-    <h1>이전 개발 기록 경로가 변경되었습니다.</h1>
-    <p><a class="detail-link" href="/devlog/">DevLog로 이동 →</a></p>
+    <h1>이 개발 기록은<br /><em>Notion으로 이전되었습니다.</em></h1>
+    <p><a class="detail-link" href={NOTION_DEVLOG_URL}>Notion DevLog로 이동 ↗</a></p>
   </section>
 </BaseLayout>
