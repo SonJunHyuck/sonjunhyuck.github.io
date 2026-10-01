@@ -47,14 +47,46 @@ challenges:
 
 공통 기능과 유닛별 차별 기능을 구분해 신규 유닛을 추가하기 쉬운 구조를 설계했습니다. 추상화와 컴포넌트 재사용을 기반으로 유닛과 스테이지 확장에 유연하게 대응할 수 있도록 구성했습니다.
 
+<div class="story-media-grid">
+  <figure class="story-media">
+    <img src="/images/projects/the-hidden-cheer-squad/unit-components.png" alt="공통 기능 컴포넌트와 유닛별 공격 인터페이스를 분리한 구조" loading="lazy" />
+    <figcaption>공통 기능 컴포넌트와 차별 기능의 분리</figcaption>
+  </figure>
+  <figure class="story-media">
+    <img src="/images/projects/the-hidden-cheer-squad/attack-structure.png" alt="공격 인터페이스에서 공격 유형별 추상 클래스와 유닛별 구현 클래스로 이어지는 구조" loading="lazy" />
+    <figcaption>공격 인터페이스와 공격 유형별 구현 구조</figcaption>
+  </figure>
+</div>
+
 ## 데이터 기반 스테이지 운영
 
 Google Spreadsheet에서 스테이지별 몬스터 구성, 스폰 수량·간격과 캐릭터 능력치 등의 운영 데이터를 관리했습니다. CSV 데이터를 Unity ScriptableObject로 자동 변환하는 에디터 도구를 개발해 반복 작업과 수작업 오류를 줄였습니다.
 
+<div class="story-media-grid">
+  <figure class="story-media">
+    <img src="/images/projects/the-hidden-cheer-squad/stage-sheet.png" alt="스테이지별 몬스터 구성과 스폰 규칙을 관리하는 Google Spreadsheet" loading="lazy" />
+    <figcaption>Google Spreadsheet에서 관리한 스테이지 운영 데이터</figcaption>
+  </figure>
+  <figure class="story-media">
+    <img src="/images/projects/the-hidden-cheer-squad/stage-csv.png" alt="Google Spreadsheet에서 내려받은 스테이지별 스폰 규칙 CSV" loading="lazy" />
+    <figcaption>ScriptableObject 변환에 사용하는 CSV 데이터</figcaption>
+  </figure>
+</div>
+
 DataManager에서 Addressables Label을 통해 데이터를 일괄 로드하고, 유형별로 분류해 읽기 전용으로 제공했습니다. 하나의 게임 Scene에 서로 다른 데이터를 적용해 코드와 Scene을 추가하지 않고도 스테이지 구성과 난이도를 확장할 수 있는 운영 구조를 구축했습니다.
+
+<figure class="story-media story-media-narrow">
+  <img src="/images/projects/the-hidden-cheer-squad/stage-rule.png" alt="CSV에서 변환된 스테이지별 몬스터 스폰 규칙 ScriptableObject" loading="lazy" />
+  <figcaption>CSV에서 자동 변환된 스테이지 스폰 규칙 ScriptableObject</figcaption>
+</figure>
 
 ## UI 구조 설계
 
 버튼 수를 최소화하고 주요 기능을 직관적으로 배치해 2D 게임에 적합한 UX를 구성했습니다. MVC 패턴을 적용해 게임 로직과 UI View의 역할과 책임을 분리했습니다.
 
 Observer 패턴을 결합해 Button → Observer → Controller → Model → View로 이어지는 UI 이벤트 흐름을 설계했습니다. 이벤트 구독과 해제는 Observer에서 중앙 관리해 UI 요소 간 결합도와 관리 비용을 줄였습니다.
+
+<figure class="story-media">
+  <img src="/images/projects/the-hidden-cheer-squad/gameplay-ui-scenes.png" alt="동일한 인게임 UI에 서로 다른 스테이지 배경과 데이터를 적용한 장면" loading="lazy" />
+  <figcaption>동일한 게임 Scene에 스테이지별 데이터와 배경을 적용한 인게임 화면</figcaption>
+</figure>
