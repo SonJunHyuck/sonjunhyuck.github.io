@@ -150,6 +150,9 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 .project-group-card-wide ul { margin-top: 0; }
 .project-group-card-wide li a { padding: 18px 0; font-size: 16px; }
 .project-group-grid-personal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.company-project-group { padding-top: 6px; }
+.company-project-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.company-project-heading h2 { margin: 0; font-size: clamp(32px, 4vw, 48px); letter-spacing: -.055em; }
 .projects-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .project-card { min-height: 0; padding: 0; display: block; border: 1px solid var(--line); border-radius: 3px; background: transparent; }
 .project-card[hidden] { display: none; }

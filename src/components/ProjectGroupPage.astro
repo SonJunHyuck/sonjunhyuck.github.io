@@ -12,6 +12,7 @@ interface Props {
 
 const { groupId, projects } = Astro.props;
 const group = getProjectGroup(groupId);
+const isWorkGroup = groupId === 'work';
 ---
 
 <BaseLayout title={`${group.title} — Son Junhyuck`} description={group.description}>
@@ -24,7 +25,15 @@ const group = getProjectGroup(groupId);
   <section class="container projects-section" aria-labelledby="project-list-heading">
     <h2 id="project-list-heading" class="visually-hidden">{group.title} 목록</h2>
     {projects.length
-      ? <div class="projects-grid">{projects.map((project) => <ProjectCard {project} />)}</div>
+      ? isWorkGroup
+        ? <section class="company-project-group" aria-labelledby="voyager-projects-heading">
+            <header class="company-project-heading">
+              <p class="eyebrow">COMPANY</p>
+              <h2 id="voyager-projects-heading">Voyager</h2>
+            </header>
+            <div class="projects-grid">{projects.map((project) => <ProjectCard {project} />)}</div>
+          </section>
+        : <div class="projects-grid">{projects.map((project) => <ProjectCard {project} />)}</div>
       : <div class="empty-state"><h2>프로젝트를 준비하고 있습니다.</h2><p>이 분류의 콘텐츠를 추가하면 목록에 자동으로 표시됩니다.</p></div>}
   </section>
 </BaseLayout>

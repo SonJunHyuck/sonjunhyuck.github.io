@@ -13,8 +13,7 @@ const projectsIn = (groupId: typeof projectGroups[number]['id']) => projects.fil
   <section class="page-intro container project-hub-intro">
     <ProjectGroupNav />
     <p class="eyebrow">PROJECTS</p>
-    <h1>경험의 성격에 따라<br /><em>프로젝트를 탐색합니다.</em></h1>
-    <p>업무에서 만든 결과와 개인적으로 이어 온 게임·연구를 구분해, 관심 있는 경험부터 살펴볼 수 있습니다.</p>
+    <h1>업무에 기여한 프로젝트와<br /><em>개인 게임·연구를 소개합니다.</em></h1>
   </section>
   <section class="container projects-section" aria-labelledby="project-groups-heading">
     <h2 id="project-groups-heading" class="visually-hidden">프로젝트 분류</h2>
@@ -24,6 +23,8 @@ const projectsIn = (groupId: typeof projectGroups[number]['id']) => projects.fil
         <h2 id="work-projects-heading">업무 프로젝트</h2>
       </div>
       <article class="project-group-card project-group-card-wide">
+        <p class="eyebrow">COMPANY</p>
+        <h3>Voyager</h3>
         <ul>
           {projectsIn('work').map((project) => <li><a href={`/projects/${project.id}/`}>{project.data.title}<span aria-hidden="true">상세 →</span></a></li>)}
         </ul>
