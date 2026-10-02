@@ -8,7 +8,7 @@
 
 ## Project
 
-`src/content/projects/`에 기존 예시 파일을 복사해 새 Markdown 파일을 만듭니다. 파일명이 URL 식별자가 됩니다. 필수 정보는 제목, 요약, 설명, 날짜, `game` 또는 `graphics` 분류, 작업 성격 태그, 상태, 기술, 핵심 기여입니다. 기간, 역할, 팀 규모, 대표 이미지, 갤러리, 영상, GitHub, 실행 파일, Notion 링크는 확인된 항목만 선택적으로 추가합니다.
+`src/content/projects/`에 기존 예시 파일을 복사해 새 Markdown 파일을 만듭니다. 파일명이 URL 식별자가 됩니다. 필수 정보는 제목, 요약, 설명, 날짜, `game` 또는 `graphics` 기술 분류, `work`·`games`·`research` 중 하나인 `projectGroup`, 작업 성격 태그, 상태, 기술, 핵심 기여입니다. 기간, 역할, 팀 규모, 대표 이미지, 갤러리, 영상, GitHub, 실행 파일, Notion 링크는 확인된 항목만 선택적으로 추가합니다.
 
 OpenGL 튜토리얼이나 렌더링 학습은 `category: graphics`, `workTypes: [learning]`으로 분류합니다. 예시가 아닌 실제 자료에는 `isExample`을 생략하거나 `false`로 설정합니다.
 

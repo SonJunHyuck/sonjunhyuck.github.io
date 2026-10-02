@@ -4,6 +4,7 @@ summary: "부유 섬을 탐험하며 사라진 문명을 복원하는 3D 어드�
 description: "탐험의 호기심과 짧고 밀도 있는 퍼즐 경험을 중심으로 만든 3D 어드벤처 프로젝트입니다."
 publishedAt: 2026-09-01
 category: "game"
+projectGroup: "games"
 workTypes: ["personal"]
 status: "in-progress"
 role: "Unity Client Developer"

@@ -1,35 +1,54 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
+import ProjectGroupNav from '../../components/ProjectGroupNav.astro';
+import { projectGroups } from '../../config/projectGroups';
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+const workGroup = projectGroups.find((group) => group.id === 'work')!;
+const personalGroups = projectGroups.filter((group) => group.id !== 'work');
+const projectsIn = (groupId: typeof projectGroups[number]['id']) => projects.filter((project) => project.data.projectGroup === groupId);
 ---
-<BaseLayout title="Projects — Son Junhyuck" description="게임과 그래픽스 프로젝트, 역할과 기술적 기여">
-  <section class="page-intro container"><p class="eyebrow">PROJECTS</p><h1>결과와 기여를<br /><em>구체적으로</em> 보여줍니다.</h1><p>게임과 그래픽스 프로젝트에서 맡은 역할, 핵심 구현, 문제 해결 과정을 정리합니다.</p></section>
-  <section class="container projects-section">
-    <div class="filters" role="group" aria-label="프로젝트 분류 필터">
-      <button type="button" class="active" data-filter="all" aria-pressed="true">전체</button>
-      <button type="button" data-filter="game" aria-pressed="false">게임</button>
-      <button type="button" data-filter="graphics" aria-pressed="false">그래픽스</button>
-    </div>
-    {projects.length ? <div class="projects-grid" data-project-grid>{projects.map((project) => <ProjectCard {project} />)}</div> : <div class="empty-state"><h2>프로젝트를 준비하고 있습니다.</h2><p>콘텐츠 파일을 추가하면 이 목록에 자동으로 표시됩니다.</p></div>}
-    <p class="filter-status visually-hidden" data-filter-status aria-live="polite"></p>
-    <p class="filter-empty" data-filter-empty hidden>이 분류에 등록된 프로젝트가 없습니다.</p>
+<BaseLayout title="Projects — Son Junhyuck" description="업무, 개인 게임, 개인 연구로 나누어 보는 프로젝트">
+  <section class="page-intro container project-hub-intro">
+    <ProjectGroupNav />
+    <p class="eyebrow">PROJECTS</p>
+    <h1>경험의 성격에 따라<br /><em>프로젝트를 탐색합니다.</em></h1>
+    <p>업무에서 만든 결과와 개인적으로 이어 온 게임·연구를 구분해, 관심 있는 경험부터 살펴볼 수 있습니다.</p>
+  </section>
+  <section class="container projects-section" aria-labelledby="project-groups-heading">
+    <h2 id="project-groups-heading" class="visually-hidden">프로젝트 분류</h2>
+    <section class="project-hub-section" aria-labelledby="work-projects-heading">
+      <div class="project-hub-heading">
+        <p class="eyebrow">PROFESSIONAL</p>
+        <h2 id="work-projects-heading">업무 프로젝트</h2>
+      </div>
+      <article class="project-group-card project-group-card-wide">
+        <ul>
+          {projectsIn('work').map((project) => <li><a href={`/projects/${project.id}/`}>{project.data.title}<span aria-hidden="true">상세 →</span></a></li>)}
+        </ul>
+        <a class="detail-link" href={workGroup.href}>업무 프로젝트 전체 보기 <span aria-hidden="true">→</span></a>
+      </article>
+    </section>
+
+    <section class="project-hub-section personal-projects-section" aria-labelledby="personal-projects-heading">
+      <div class="project-hub-heading">
+        <p class="eyebrow">PERSONAL</p>
+        <h2 id="personal-projects-heading">개인 프로젝트</h2>
+      </div>
+      <div class="project-group-grid project-group-grid-personal">
+        {personalGroups.map((group) => (
+          <article class="project-group-card">
+            <p class="eyebrow">{group.eyebrow}</p>
+            <h3><a href={group.href}>{group.title}</a></h3>
+            <p>{group.description}</p>
+            <ul>
+              {projectsIn(group.id).map((project) => <li><a href={`/projects/${project.id}/`}>{project.data.title}<span aria-hidden="true">→</span></a></li>)}
+            </ul>
+            <a class="detail-link" href={group.href}>{group.label} 프로젝트 전체 보기 <span aria-hidden="true">→</span></a>
+          </article>
+        ))}
+      </div>
+    </section>
   </section>
 </BaseLayout>
-
-<script>
-  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
-  const cards = document.querySelectorAll<HTMLElement>('[data-category]');
-  const empty = document.querySelector<HTMLElement>('[data-filter-empty]');
-  const status = document.querySelector<HTMLElement>('[data-filter-status]');
-  buttons.forEach((button) => button.addEventListener('click', () => {
-    const filter = button.dataset.filter;
-    let visible = 0;
-    buttons.forEach((item) => { const active = item === button; item.classList.toggle('active', active); item.setAttribute('aria-pressed', String(active)); });
-    cards.forEach((card) => { const show = filter === 'all' || card.dataset.category === filter; card.hidden = !show; if (show) visible += 1; });
-    if (empty) empty.hidden = visible > 0;
-    if (status) status.textContent = `${button.textContent?.trim()} 프로젝트 ${visible}개 표시 중`;
-  }));
-</script>

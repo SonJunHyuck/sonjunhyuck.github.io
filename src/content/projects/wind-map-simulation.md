@@ -4,6 +4,7 @@ summary: "기상 데이터를 바탕으로 바람의 흐름을 GPU 파티클로 
 description: "기존 WebGL 프로젝트를 C++/OpenGL로 재구현하고, GRIB 기상 데이터와 Compute Shader 기반 파티클로 바람의 흐름을 표현한 학습·연구 프로젝트입니다."
 publishedAt: 2020-04-01
 category: "graphics"
+projectGroup: "research"
 workTypes: ["learning", "research", "personal"]
 status: "prototype"
 period: "2019.12–2020.04"

@@ -4,6 +4,7 @@ summary: "PBD의 위치 제약을 확장해 군중의 대형과 개별 위치를
 description: "Position Based Dynamics의 제약 개념을 군중 대형 유지에 적용하고, Short Range Distance로 개별 위치를 제어한 그래픽스 연구입니다."
 publishedAt: 2023-06-01
 category: "graphics"
+projectGroup: "research"
 workTypes: ["research", "personal"]
 status: "prototype"
 period: "2022.03–2023.06"

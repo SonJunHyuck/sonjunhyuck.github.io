@@ -4,6 +4,7 @@ summary: "Unity 기반 MMORPG에서 빌드·배포 자동화와 이모트·상�
 description: "빌드 파이프라인, 네트워크 동기화, 데이터 반응형 UI 개발 등 클라이언트 개발 범위를 확장한 실무 프로젝트입니다."
 publishedAt: 2026-03-01
 category: "game"
+projectGroup: "work"
 workTypes: ["professional", "team"]
 status: "prototype"
 period: "2025.06–2026.03"

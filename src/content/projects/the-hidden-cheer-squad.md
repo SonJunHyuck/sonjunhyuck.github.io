@@ -4,6 +4,7 @@ summary: "밀려오는 적들을 막아내며, 적군을 물리치는 2D 전진�
 description: "밀려오는 적들을 막아내며, 적군을 물리치는 2D 전진형 디펜스 게임"
 publishedAt: 2025-02-01
 category: "game"
+projectGroup: "games"
 workTypes: ["personal"]
 status: "prototype"
 period: "2024.10–2025.02"

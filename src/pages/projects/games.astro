@@ -1,0 +1,9 @@
+---
+import { getCollection } from 'astro:content';
+import ProjectGroupPage from '../../components/ProjectGroupPage.astro';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft && data.projectGroup === 'games'))
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+---
+
+<ProjectGroupPage groupId="games" {projects} />

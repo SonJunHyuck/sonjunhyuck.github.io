@@ -9,6 +9,7 @@ const projects = defineCollection({
     description: z.string(),
     publishedAt: z.coerce.date(),
     category: z.enum(['game', 'graphics']),
+    projectGroup: z.enum(['work', 'games', 'research']),
     workTypes: z.array(z.enum(['learning', 'experiment', 'personal', 'team', 'professional', 'live-service', 'research'])).default([]),
     status: z.enum(['released', 'in-progress', 'prototype']),
     period: z.string().optional(),

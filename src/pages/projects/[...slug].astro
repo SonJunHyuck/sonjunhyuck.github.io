@@ -1,11 +1,13 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getProjectGroup } from '../../config/projectGroups';
 
 export async function getStaticPaths() { return (await getCollection('projects', ({ data }) => !data.draft)).map((project) => ({ params: { slug: project.id }, props: { project } })); }
 const { project } = Astro.props;
 const { Content } = await render(project);
 const { data } = project;
+const projectGroup = getProjectGroup(data.projectGroup);
 const isProjectR = project.id === 'project-r';
 const isInspixWorld = project.id === 'inspix-world';
 const isHiddenCheerSquad = project.id === 'the-hidden-cheer-squad';
@@ -15,7 +17,7 @@ const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || i
 ---
 <BaseLayout title={data.title} description={data.summary}>
   <article class:list={["project-detail", "container", { "case-study-detail": usesCaseStudyLayout, "inspix-world-detail": isInspixWorld }]}>
-    <a class="back-link" href="/projects/">← Projects</a>
+    <a class="back-link" href={projectGroup.href}>← {projectGroup.title}</a>
     <header><p class="eyebrow">{data.category === 'game' ? 'GAME' : 'GRAPHICS'} PROJECT {data.isExample && '· EXAMPLE'}</p><h1>{data.title}</h1><p class="lead">{data.description}</p></header>
     {data.thumbnail && <img class="project-cover" src={data.thumbnail} alt={`${data.title} 대표 이미지`} />}
     <dl class="facts">
