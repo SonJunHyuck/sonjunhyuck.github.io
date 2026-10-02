@@ -135,40 +135,56 @@ const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((pro
       <section id="education" class="resume-section">
         <p class="eyebrow">EDUCATION</p>
         <h2>학력</h2>
-        <div class="resume-list">
-          <article class="resume-list-item">
-            <div>
-              <h3>계명대학교 대학원</h3>
-              <p>컴퓨터공학과 석사 · 컴퓨터 그래픽스 연구실 군중 시뮬레이션 연구</p>
-              <a class="research-paper" href="https://doi.org/10.3390/app14083386" target="_blank" rel="noopener noreferrer" aria-label="연구 논문 Position-Based Formation Control Scheme for Crowds Using Short Range Distance 새 탭에서 열기">
-                <span>연구 논문 · Applied Sciences, 2024</span>
-                <strong>Position-Based Formation Control Scheme for Crowds Using Short Range Distance</strong>
-                <span aria-hidden="true">↗</span>
-              </a>
-            </div>
-            <p class="resume-period">2021.08–2023.08 · 졸업</p>
-          </article>
-          <article class="resume-list-item">
-            <div><h3>계명대학교</h3><p>게임모바일콘텐츠학과 학사</p></div>
-            <p class="resume-period">2012.03–2020.08 · 졸업</p>
-          </article>
+        <div class="grouped-info-card education-card">
+          <section class="info-group" aria-labelledby="degree-title">
+            <h3 id="degree-title">학위</h3>
+            <ul class="info-list">
+              <li>
+                <div><strong>계명대학교 대학원</strong><span>컴퓨터공학과 석사 · 컴퓨터 그래픽스 연구실 군중 시뮬레이션 연구</span></div>
+                <time>2021.08–2023.08 · 졸업</time>
+              </li>
+              <li>
+                <div><strong>계명대학교</strong><span>게임모바일콘텐츠학과 학사</span></div>
+                <time>2012.03–2020.08 · 졸업</time>
+              </li>
+            </ul>
+          </section>
+          <section class="info-group" aria-labelledby="research-title">
+            <h3 id="research-title">연구</h3>
+            <a class="research-row" href="https://doi.org/10.3390/app14083386" target="_blank" rel="noopener noreferrer" aria-label="연구 논문 Position-Based Formation Control Scheme for Crowds Using Short Range Distance 새 탭에서 열기">
+              <div><strong>Position-Based Formation Control Scheme for Crowds Using Short Range Distance</strong><span>Applied Sciences, 2024</span></div>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </section>
         </div>
       </section>
 
       <section id="activities" class="resume-section">
         <p class="eyebrow">ACTIVITIES</p>
         <h2>활동</h2>
-        <div class="resume-list">
-          <article class="resume-list-item">
-            <div>
-              <h3>2014 한국과학기술창작대전 최우수상</h3>
-              <p>JH Feeltware팀 (계명대)</p>
-              <p>Unity 3D 기반 모션 인식 기기와 HMD를 접목한 VR 체험형 우주 시뮬레이션 개발로 수상했습니다.</p>
-              <a class="button button-outline activity-link" href="https://www.korea.kr/briefing/pressReleaseView.do?newsId=156054488#pressRelease" target="_blank" rel="noopener noreferrer" aria-label="2014 한국과학기술창작대전 수상 관련 기사 새 탭에서 열기">관련 기사 보기 <span aria-hidden="true">↗</span></a>
+        <div class="grouped-info-card activity-card">
+          <section class="info-group" aria-labelledby="award-title">
+            <h3 id="award-title">수상</h3>
+            <div class="credential-row">
+              <div class="credential-main">
+                <div class="credential-heading"><strong>2014 한국과학기술창작대전 최우수상</strong><span class="status-badge">AWARD</span></div>
+                <p>JH Feeltware팀 (계명대)</p>
+                <p>Unity 3D 기반 모션 인식 기기와 HMD를 접목한 VR 체험형 우주 시뮬레이션 개발로 수상했습니다.</p>
+                <a class="button button-outline activity-link" href="https://www.korea.kr/briefing/pressReleaseView.do?newsId=156054488#pressRelease" target="_blank" rel="noopener noreferrer" aria-label="2014 한국과학기술창작대전 수상 관련 기사 새 탭에서 열기">관련 기사 보기 <span aria-hidden="true">↗</span></a>
+              </div>
+              <time>2014.12</time>
             </div>
-            <p class="resume-period">2014.12</p>
-          </article>
-          <article class="resume-list-item"><div><h3>정보처리산업기사</h3><p>국가기술자격</p></div><p class="resume-period">2016.05</p></article>
+          </section>
+          <section class="info-group" aria-labelledby="certification-title">
+            <h3 id="certification-title">국가기술</h3>
+            <div class="credential-row compact">
+              <div class="credential-main">
+                <div class="credential-heading"><strong>정보처리산업기사</strong><span class="status-badge">CERTIFIED</span></div>
+                <p>국가기술자격</p>
+              </div>
+              <time>2016.05</time>
+            </div>
+          </section>
         </div>
       </section>
 
