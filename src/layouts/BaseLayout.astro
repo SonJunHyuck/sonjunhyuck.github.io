@@ -18,7 +18,24 @@ const { title, description = 'Son Junhyuck의 게임 개발 포트폴리오', re
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#fbfaf6" />
+    <meta name="theme-color" content="#f5f5f7" />
+    <script is:inline>
+      (() => {
+        const storageKey = 'portfolio-theme';
+        const themes = ['light', 'dark'];
+        let theme = 'light';
+
+        try {
+          const savedTheme = localStorage.getItem(storageKey);
+          if (savedTheme && themes.includes(savedTheme)) theme = savedTheme;
+        } catch {
+          // Storage can be unavailable in privacy-restricted environments.
+        }
+
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
+      })();
+    </script>
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="canonical" href={new URL(redirectTo ?? Astro.url.pathname, Astro.site)} />
     {redirectTo && <meta http-equiv="refresh" content={`0;url=${redirectTo}`} />}

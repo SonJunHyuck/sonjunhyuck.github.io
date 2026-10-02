@@ -59,7 +59,7 @@ const projectEntries = await getCollection('projects', ({ data }) => !data.draft
 const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((project) => project.id === id)).filter((project): project is NonNullable<typeof project> => Boolean(project));
 ---
 
-<BaseLayout title="About — Son Junhyuck" description="Son Junhyuck의 이력, 역량, 활동을 정리한 게임 개발 포트폴리오">
+<BaseLayout title="프로필 — Son Junhyuck" description="Son Junhyuck의 이력, 역량, 활동을 정리한 게임 개발 포트폴리오">
   <section class="about-hero">
     <div class="container hero-layout">
       <div class="hero-content">
@@ -69,7 +69,7 @@ const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((pro
           <p class="hero-group-label">CONNECT</p>
           <div class="hero-links">
             <a href="https://github.com/SonJunHyuck" target="_blank" rel="noopener noreferrer" aria-label="손준혁 GitHub 프로필 새 탭에서 열기"><img src="/icons/github.svg" alt="" /></a>
-            <a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="손준혁 Notion DevLog를 새 탭에서 열기"><img src="/icons/notion.svg" alt="" /></a>
+            <a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="손준혁 Notion 개발일지를 새 탭에서 열기"><img src="/icons/notion.svg" alt="" /></a>
             <a href="https://www.canva.com/design/DAHICLybg4Y/dWylZ6Ir57iAQCFhZH8y9Q/view?utlId=ha95d026d35" target="_blank" rel="noopener noreferrer" aria-label="손준혁 Canva 포트폴리오 새 탭에서 열기"><img src="/icons/canva.svg" alt="" /></a>
           </div>
         </div>

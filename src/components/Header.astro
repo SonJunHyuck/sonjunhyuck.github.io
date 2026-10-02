@@ -1,40 +1,91 @@
 ---
+import { getCollection } from 'astro:content';
 import { NOTION_DEVLOG_URL } from '../config/links';
 
 const { currentPath = '/' } = Astro.props;
+const detailSlug = currentPath.match(/^\/projects\/([^/]+)\/?$/)?.[1];
+const detailProject = detailSlug
+  ? (await getCollection('projects', ({ data }) => !data.draft)).find((project) => project.id === detailSlug)
+  : undefined;
+const activeProjectGroup = detailProject?.data.projectGroup;
 const links = [
-  { href: '/', label: 'About' },
-  { href: '/projects/', label: 'Projects' },
-  { href: NOTION_DEVLOG_URL, label: 'DevLog ↗', external: true },
+  { href: '/', label: '프로필', section: 'profile' },
+  { href: '/projects/work/', label: '업무', section: 'work' },
+  { href: '/projects/games/', label: '게임', section: 'games' },
+  { href: '/projects/research/', label: '연구', section: 'research' },
+  { href: NOTION_DEVLOG_URL, label: '개발일지 ↗', external: true },
 ];
 
-const isCurrent = (href: string) => href === '/'
-  ? currentPath === '/'
-  : currentPath.startsWith(href);
+const isCurrent = (section?: string) => {
+  if (section === 'profile') return currentPath === '/';
+  if (section === 'work' || section === 'games' || section === 'research') {
+    return currentPath.startsWith(`/projects/${section}/`) || activeProjectGroup === section;
+  }
+  return false;
+};
 ---
 
 <header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href="/" aria-label="Son Junhyuck 소개 페이지">
+    <a class="brand" href="/" aria-label="손준혁 프로필 페이지">
       <span class="brand-mark" aria-hidden="true"><img src="/favicon.png" alt="" /></span>
       <span>Son Junhyuck</span>
     </a>
-    <nav aria-label="Primary navigation">
-      <ul>
-        {links.map((link) => (
-          <li>
-            <a
-              href={link.href}
-              target={link.external ? '_blank' : undefined}
-              rel={link.external ? 'noopener noreferrer' : undefined}
-              aria-label={link.external ? 'DevLog를 Notion에서 새 탭으로 열기' : undefined}
-              aria-current={!link.external && isCurrent(link.href) ? 'page' : undefined}
-            >
-              {link.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <div class="header-actions">
+      <nav aria-label="주요 탐색">
+        <ul>
+          {links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noopener noreferrer' : undefined}
+                aria-label={link.external ? '개발일지를 Notion에서 새 탭으로 열기' : undefined}
+                aria-current={!link.external && isCurrent(link.section) ? 'page' : undefined}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div class="theme-switcher" role="group" aria-label="색상 테마 선택">
+        <button type="button" data-theme-value="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-value="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
   </div>
 </header>
+
+<script is:inline>
+  (() => {
+    const storageKey = 'portfolio-theme';
+    const themes = ['light', 'dark'];
+    const buttons = document.querySelectorAll('[data-theme-value]');
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    const themeColors = { light: '#f5f5f7', dark: '#121212' };
+
+    const applyTheme = (theme, persist = false) => {
+      const nextTheme = themes.includes(theme) ? theme : 'light';
+      document.documentElement.dataset.theme = nextTheme;
+      document.documentElement.style.colorScheme = nextTheme === 'dark' ? 'dark' : 'light';
+      themeColor?.setAttribute('content', themeColors[nextTheme]);
+      buttons.forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.themeValue === nextTheme));
+      });
+
+      if (persist) {
+        try {
+          localStorage.setItem(storageKey, nextTheme);
+        } catch {
+          // The selected theme still applies for this page when storage is blocked.
+        }
+      }
+    };
+
+    applyTheme(document.documentElement.dataset.theme || 'light');
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => applyTheme(button.dataset.themeValue, true));
+    });
+  })();
+</script>
