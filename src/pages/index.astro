@@ -126,6 +126,12 @@ const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((pro
                   <p>Tech Stack</p>
                   <TagList tags={item.tech} label={`${item.company} 기술 스택`} />
                 </div>
+                {item.company === '보이저' && (
+                  <aside class="experience-reflection" aria-label="보이저 근무 회고">
+                    <p>라이브 서비스 유지보수와 빌드 파이프라인 작업을 경험하며, 개별 구현을 넘어 프로젝트 전체의 흐름을 보는 시야를 넓혔습니다. 신규 입사자 멘토링과 온보딩 가이드 작성을 통해 동료가 적응하고 함께 일할 수 있도록 돕는 방법도 배웠습니다.</p>
+                    <a class="detail-link" href="/reflections/voyager/">Voyager 근무 회고 읽기 →</a>
+                  </aside>
+                )}
               </article>
             </div>
           ))}
