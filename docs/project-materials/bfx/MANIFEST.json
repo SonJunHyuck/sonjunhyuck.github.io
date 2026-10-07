@@ -1,0 +1,195 @@
+{
+  "created": "2026-10-07",
+  "note": "Manifest excludes itself. SHA-256 covers all other package files.",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 58,
+      "sha256": "57b58a8325e95031317f8933f69bd299b17e8b173a470c372fea9e51137e4784"
+    },
+    {
+      "path": "DECISIONS.md",
+      "bytes": 4096,
+      "sha256": "eef3ec3334d830db6dfc474f36beead10e8938dd6bac72f7a5889f84a99d193f"
+    },
+    {
+      "path": "evidence/01-story-structure.png",
+      "bytes": 187037,
+      "sha256": "af125d3a0d692bba4f5331ef9e8fab679e82dd13ad4d01f67a959233b9c43231",
+      "width": 1400,
+      "height": 1488,
+      "frames": 1
+    },
+    {
+      "path": "evidence/02-content-workbook.png",
+      "bytes": 108386,
+      "sha256": "2b71011f691556cd3af3cebc94f71c6a7a3a1015b22d32044be3347e4fd44bb0",
+      "width": 1400,
+      "height": 1024,
+      "frames": 1
+    },
+    {
+      "path": "evidence/03-quest-ownership.png",
+      "bytes": 68089,
+      "sha256": "6ff275396f5fa968f44bb9c75b5c75cfea8207498ed07fce6ae1c1647753b9d9",
+      "width": 1400,
+      "height": 686,
+      "frames": 1
+    },
+    {
+      "path": "evidence/04-initialization.png",
+      "bytes": 123206,
+      "sha256": "d6d1bca5c90eee50a5fdce63cf739d5914b91321f0ee500aff6eb8111f5ded83",
+      "width": 1400,
+      "height": 1082,
+      "frames": 1
+    },
+    {
+      "path": "evidence/05-wrapper-reconsideration.png",
+      "bytes": 92774,
+      "sha256": "b2d60bff54ab89d47bebabe1457fe1ca52ecb826fc931feef6909f5654249cdd",
+      "width": 1400,
+      "height": 802,
+      "frames": 1
+    },
+    {
+      "path": "evidence/06-dialogue-lifecycle.png",
+      "bytes": 96660,
+      "sha256": "eb082d2fbebf48f319d1e5afa3407b496ed7b7cbae70173b74cd5ecfdd5426a5",
+      "width": 1400,
+      "height": 908,
+      "frames": 1
+    },
+    {
+      "path": "evidence/07-notification-api.png",
+      "bytes": 54885,
+      "sha256": "5f12586fe14f0b2070c30f442ccae38d6074aff6bf2010b9696ccd4566abc2c1",
+      "width": 1400,
+      "height": 734,
+      "frames": 1
+    },
+    {
+      "path": "evidence/08-runtime-testing.png",
+      "bytes": 98130,
+      "sha256": "a83b01ded8469b7329dd8185b19cad30d0a3ad3920ae4d07e1fbd10ce11b10ce",
+      "width": 1400,
+      "height": 966,
+      "frames": 1
+    },
+    {
+      "path": "evidence/09-queue-failure.png",
+      "bytes": 61139,
+      "sha256": "d85be7c157a4cb551c1732027bde5ef38e889de591d00526de589a59be907343",
+      "width": 1400,
+      "height": 792,
+      "frames": 1
+    },
+    {
+      "path": "evidence/10-dialogue-authoring.png",
+      "bytes": 68982,
+      "sha256": "d9b359cee280c3d5df9d1fe269b9665472f7f32b9950d9859f337fa659d28574",
+      "width": 1400,
+      "height": 686,
+      "frames": 1
+    },
+    {
+      "path": "evidence/11-modal-usage.png",
+      "bytes": 122825,
+      "sha256": "22903602a12d17ef6967acd3261452b4d321c5514f7fcde9e9dae507dbc5ae7a",
+      "width": 1400,
+      "height": 1082,
+      "frames": 1
+    },
+    {
+      "path": "evidence/index.html",
+      "bytes": 2295,
+      "sha256": "2443a4387daa419a186cf21f6cc0d502d33c747168a420a1db455750cf6b7873"
+    },
+    {
+      "path": "evidence/README.md",
+      "bytes": 10077,
+      "sha256": "d5184ab9c50fd2e6b7b94487036701251c0008c4fea8b226bdcd820d55d3dddb"
+    },
+    {
+      "path": "evidence/sources.json",
+      "bytes": 12349,
+      "sha256": "934cd57c539b77810855328694e9842d68c6cca6080955a89339b5b669b3e2df"
+    },
+    {
+      "path": "HANDOFF.md",
+      "bytes": 4204,
+      "sha256": "e9e1d1950aa3ae50ade52f8791fd583cfc0d6aa4ad47b9472cff03c034d52eb9"
+    },
+    {
+      "path": "media/banner.gif",
+      "bytes": 10325573,
+      "sha256": "be2241fbeedb1667c45e8867721f2ffaba9084309b1234daf271d1e7fe6d342f",
+      "width": 1920,
+      "height": 1080,
+      "frames": 30,
+      "duration_ms": 4800
+    },
+    {
+      "path": "media/battle-hud.png",
+      "bytes": 648079,
+      "sha256": "7a433bc0e4d9da911b7545f530a72575c0278217365b8311c1e1ed010ccf56b1",
+      "width": 1920,
+      "height": 1080,
+      "frames": 1
+    },
+    {
+      "path": "media/dialogue-demo.gif",
+      "bytes": 23805143,
+      "sha256": "f46bb07399e38d2313eb707ee39490ec39709735038263d51e3e42cb6ebc401b",
+      "width": 1280,
+      "height": 720,
+      "frames": 168,
+      "duration_ms": 11200
+    },
+    {
+      "path": "media/dialogue-demo.mp4",
+      "bytes": 7840142,
+      "sha256": "3a47954134066a977d1c65353caa1d3c675fc3bf7076c24f61efadce756dc1a2"
+    },
+    {
+      "path": "media/dialogue-preview.png",
+      "bytes": 428940,
+      "sha256": "239a98a72bc067d031755ff9cfe7844086725080a6df04844cde6cd9e0b432f9",
+      "width": 1280,
+      "height": 720,
+      "frames": 1
+    },
+    {
+      "path": "media/modal.png",
+      "bytes": 409856,
+      "sha256": "2d971b41345a7ef2c99abf263e3f77db16bfa8e716aabae0a8374abcbf75d31d",
+      "width": 1920,
+      "height": 1080,
+      "frames": 1
+    },
+    {
+      "path": "media/radio.gif",
+      "bytes": 17345008,
+      "sha256": "0e9bc3e1fe121c69845c0d0c01531a8ee99d1cdc1fe903fc079761fc12c79c14",
+      "width": 1920,
+      "height": 1080,
+      "frames": 49,
+      "duration_ms": 8820
+    },
+    {
+      "path": "MEDIA.md",
+      "bytes": 3068,
+      "sha256": "d3a73007182cf89e2b672dd1adf1b24e339725ea1a9c018f4b02332a8bb21fa9"
+    },
+    {
+      "path": "PORTFOLIO_DRAFT.md",
+      "bytes": 6314,
+      "sha256": "614f3f0f4800b009ea58ab7dda635381fb3feabd088720f6c111bbe31ea5fc7f"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2151,
+      "sha256": "0215d5cef19ad6c26ead8aee65b7cf78ab83949a79764df645175af5238c2316"
+    }
+  ]
+}
