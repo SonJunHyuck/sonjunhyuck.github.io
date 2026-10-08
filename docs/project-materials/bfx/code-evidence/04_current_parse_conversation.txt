@@ -1,0 +1,24 @@
+ 232                      }
+ 233                  }
+ 234  
+ 235                  tables[reader.Name] = table;
+ 236              } while (reader.NextResult());
+ 237  
+ 238              return tables;
+ 239          }
+ 240  
+ 241          private static void ParseConversation(string assetPath, SourceImportData sourceData, DialogueImportReport report)
+ 242          {
+ 243              string conversationId = Path.GetFileNameWithoutExtension(assetPath)?.Trim();
+ 244              if (!IsValidConversationId(conversationId))
+ 245              {
+ 246                  report.AddError($"워크북 파일명은 '{ConversationIdPrefix}'로 시작하고 영문, 숫자, 밑줄만 사용해야 합니다: {assetPath}");
+ 247                  return;
+ 248              }
+ 249  
+ 250              sourceData.conversations.Add(new ConversationRow
+ 251              {
+ 252                  conversationId = conversationId,
+ 253                  title = conversationId
+ 254              });
+ 255          }

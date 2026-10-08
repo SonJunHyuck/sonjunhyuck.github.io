@@ -1,0 +1,36 @@
+diff --git a/Assets/01_PROJECT BFX/Scripts/Game/For_Develop/StandaloneInitializer.cs b/Assets/01_PROJECT BFX/Scripts/Game/For_Develop/StandaloneInitializer.cs
+index 6ad3f4af4..bf121825e 100644
+--- a/Assets/01_PROJECT BFX/Scripts/Game/For_Develop/StandaloneInitializer.cs	
++++ b/Assets/01_PROJECT BFX/Scripts/Game/For_Develop/StandaloneInitializer.cs	
+@@ -91,8 +91,8 @@ public void Initialize()
+             ApplyStartPartyData();
+             ApplyStartInventoryData();
+             SpawnPlayerParty(BuildInitialInventoryLoadouts());
+-            InitializeNpcWorldUI();
+             _initialized = true;
++            GameInitialization.MarkCompleted();
+         }
+ 
+         public static bool ExistsInActiveScene()
+@@ -219,21 +219,6 @@ private void SpawnPlayerParty(IReadOnlyList<CharacterInventoryInitialLoadout> in
+             playerController.SetPartyLeader(UserDataModel.Instance.GetActiveLeaderSlot());
+         }
+ 
+-        /// <summary>
+-        /// 데이터 초기화 이후 Scene에 배치된 NPC 월드 UI를 초기화한다.
+-        /// </summary>
+-        private static void InitializeNpcWorldUI()
+-        {
+-            NpcWorldUIPresenter[] presenters = FindObjectsByType<NpcWorldUIPresenter>(
+-                FindObjectsInactive.Include,
+-                FindObjectsSortMode.None);
+-
+-            for (int i = 0; i < presenters.Length; i++)
+-            {
+-                presenters[i].Initialize();
+-            }
+-        }
+-
+         private List<CharacterInventoryInitialLoadout> BuildInitialInventoryLoadouts()
+         {
+             List<CharacterInventoryInitialLoadout> loadouts = new(PartyData.PartySlotCount);

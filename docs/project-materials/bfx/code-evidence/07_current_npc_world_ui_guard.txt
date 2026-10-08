@@ -1,0 +1,49 @@
+  20          private void OnEnable()
+  21          {
+  22              if (_initialized)
+  23              {
+  24                  SubscribeQuestEvents();
+  25                  Refresh();
+  26                  return;
+  27              }
+  28  
+  29              GameInitialization.Completed += HandleGameInitializationCompleted;
+  30  
+  31              if (_started)
+  32              {
+  33                  TryInitialize();
+  34              }
+  35          }
+  36  
+  37          /// <summary>
+  38          /// 씬의 모든 Awake 이후 월드 UI 초기화를 시도한다.
+  39          /// </summary>
+  40          private void Start()
+  41          {
+  42              _started = true;
+  43              TryInitialize();
+  44          }
+  45  
+  46          /// <summary>
+  47          /// 게임 데이터와 퀘스트 데이터가 적용된 이후 월드 UI를 초기화한다.
+  48          /// </summary>
+  49          private void TryInitialize()
+  50          {
+  51              if (_initialized || !GameInitialization.IsCompleted)
+  52              {
+  53                  return;
+  54              }
+  55  
+  56              // 데이터 초기화 이후 참조와 이벤트 연결.
+  57              ResolveReferences();
+  58              _initialized = true;
+  59              GameInitialization.Completed -= HandleGameInitializationCompleted;
+  60  
+  61              if (!isActiveAndEnabled)
+  62              {
+  63                  return;
+  64              }
+  65  
+  66              SubscribeQuestEvents();
+  67              Refresh();
+  68          }

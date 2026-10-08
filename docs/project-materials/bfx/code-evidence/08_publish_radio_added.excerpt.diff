@@ -1,0 +1,17 @@
+diff --git a/Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationService.cs b/Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationService.cs
+index 958e47aa9..8ae70b3e5 100644
+--- a/Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationService.cs	
++++ b/Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationService.cs	
+@@ -8,6 +10,12 @@ public static bool Publish(string message, MessageFeedIconType iconType = Messag
+         public static bool PublishBanner(string message)
+             => Publish(new BannerRequest(message));
+ 
++        public static bool PublishRadio(
++            string speakerName,
++            string message,
++            AudioClip voiceClip = null)
++            => Publish(new RadioMessageRequest(speakerName, message, voiceClip));
++
+         public static void CancelAll()
+         {
+             if (!UIManager.HasInstance)

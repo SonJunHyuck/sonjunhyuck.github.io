@@ -1,0 +1,131 @@
+{
+  "verified_head": "1a7d803330923ee6f9f40f5e4bda9e84fb7fab7b",
+  "artifacts": [
+    {
+      "image": "01_sequence_deleted_files.png",
+      "title": "Sequence 구조 삭제",
+      "commit": "a0f812e364b4315a25f2f5a1b255c4ffa54cff42",
+      "repository_relative_paths": [
+        "Assets/01_PROJECT BFX/Scripts/Game/Sequence/SequenceManager.cs",
+        "Assets/01_PROJECT BFX/Scripts/Game/Sequence/Integration/SequenceDialogueBridge.cs"
+      ],
+      "line_range": null,
+      "source_excerpt": "01_sequence_deleted_files.excerpt.diff",
+      "full_source": "01_sequence_deleted_files.full.diff",
+      "display_source": "commit a0f812e364",
+      "rendering": "Git/source text rendered locally; not an IDE screenshot"
+    },
+    {
+      "image": "02_save_data_sequence_removal.png",
+      "title": "저장 책임에서 Sequence 제거",
+      "commit": "a0f812e364b4315a25f2f5a1b255c4ffa54cff42",
+      "repository_relative_paths": [
+        "Assets/01_PROJECT BFX/Scripts/Game/Data System/SaveDataManager.cs"
+      ],
+      "line_range": null,
+      "source_excerpt": "02_save_data_sequence_removal.excerpt.diff",
+      "full_source": "02_save_data_sequence_removal.full.diff",
+      "display_source": "commit a0f812e364 · SaveDataManager.cs",
+      "rendering": "Git/source text rendered locally; not an IDE screenshot"
+    },
+    {
+      "image": "03_dialogue_importer_workbook_transition.png",
+      "title": "대화 데이터: 워크북 단위로 전환",
+      "commit": "11aadafdd806b51b798b8c9e5cfb7dac48b0b859",
+      "repository_relative_paths": [
+        "Assets/01_PROJECT BFX/Scripts/Editor/Dialogue/DialogueImporter.cs"
+      ],
+      "line_range": null,
+      "source_excerpt": "03_dialogue_importer_workbook_transition.excerpt.diff",
+      "full_source": "03_dialogue_importer_workbook_transition.full.diff",
+      "display_source": "commit 11aadafdd8 · DialogueImporter.cs",
+      "rendering": "Git/source text rendered locally; not an IDE screenshot"
+    },
+    {
+      "image": "04_current_parse_conversation.png",
+      "title": "현재 DialogueImporter 구현",
+      "commit": "1a7d803330923ee6f9f40f5e4bda9e84fb7fab7b",
+      "repository_relative_paths": [
+        "Assets/01_PROJECT BFX/Scripts/Editor/Dialogue/DialogueImporter.cs"
+      ],
+      "line_range": {
+        "start": 232,
+        "end": 255
+      },
+      "source_excerpt": "04_current_parse_conversation.txt",
+      "full_source": null,
+      "display_source": "HEAD 1a7d803330 · lines 232–255",
+      "rendering": "Git/source text rendered locally; not an IDE screenshot"
+    },
+    {
+      "image": "05_npc_world_ui_initialization_added.png",
+      "title": "NPC 월드 UI 초기화 책임 추가",
+      "commit": "f1ac58fe39438570e90c036ddee3572ab8959785",
+      "repository_relative_paths": [
+        "Assets/01_PROJECT BFX/Scripts/Game/For_Develop/StandaloneInitializer.cs"
+      ],
+      "line_range": null,
+      "source_excerpt": "05_npc_world_ui_initialization_added.excerpt.diff",
+      "full_source": "05_npc_world_ui_initialization_added.full.diff",
+      "display_source": "commit f1ac58fe39 · StandaloneInitializer.cs",
+      "rendering": "Git/source text rendered locally; not an IDE screenshot"
+    },
+    {
+      "image": "06_initialization_broadcast_transition.png",
+      "title": "초기화 책임의 발전",
+      "commit": "c4b293add0f31cbfbb7043dbf427324791353a5c",
+      "repository_relative_paths": [
+        "Assets/01_PROJECT BFX/Scripts/Game/For_Develop/StandaloneInitializer.cs"
+      ],
+      "line_range": null,
+      "source_excerpt": "06_initialization_broadcast_transition.excerpt.diff",
+      "full_source": "06_initialization_broadcast_transition.full.diff",
+      "display_source": "commit c4b293add0 · StandaloneInitializer.cs",
+      "rendering": "Git/source text rendered locally; not an IDE screenshot"
+    },
+    {
+      "image": "07_current_npc_world_ui_guard.png",
+      "title": "현재 NpcWorldUIPresenter",
+      "commit": "1a7d803330923ee6f9f40f5e4bda9e84fb7fab7b",
+      "repository_relative_paths": [
+        "Assets/01_PROJECT BFX/Scripts/Game/Dialogue/NpcWorldUIPresenter.cs"
+      ],
+      "line_range": {
+        "start": 20,
+        "end": 68
+      },
+      "source_excerpt": "07_current_npc_world_ui_guard.txt",
+      "full_source": null,
+      "display_source": "HEAD 1a7d803330 · lines 20–68",
+      "rendering": "Git/source text rendered locally; not an IDE screenshot"
+    },
+    {
+      "image": "08_publish_radio_added.png",
+      "title": "NotificationService에 무전 API 추가",
+      "commit": "bbad0e459e1c767fd44e06183aa466ea85c70f08",
+      "repository_relative_paths": [
+        "Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationService.cs"
+      ],
+      "line_range": null,
+      "source_excerpt": "08_publish_radio_added.excerpt.diff",
+      "full_source": "08_publish_radio_added.full.diff",
+      "display_source": "commit bbad0e459e · NotificationService.cs",
+      "rendering": "Git/source text rendered locally; not an IDE screenshot"
+    },
+    {
+      "image": "09_debug_panel_consolidation.png",
+      "title": "런타임 디버그 도구 통합",
+      "commit": "7858d52ae9d60f2f21d13a4d3f985bb8fbe157d4",
+      "repository_relative_paths": [
+        "Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationRuntimeDebugPanel.cs",
+        "Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/MessageFeed/MessageFeedInputTest.cs",
+        "Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Radio/RadioRuntimeTestTool.cs"
+      ],
+      "line_range": null,
+      "source_excerpt": "09_debug_panel_consolidation.excerpt.diff",
+      "full_source": "09_debug_panel_consolidation.full.diff",
+      "display_source": "commit 7858d52ae9",
+      "rendering": "Git/source text rendered locally; not an IDE screenshot"
+    }
+  ]
+}

@@ -2,3 +2,5 @@
 *.png binary
 *.gif binary
 *.mp4 binary
+*.diff -whitespace
+code-evidence/*.txt -whitespace

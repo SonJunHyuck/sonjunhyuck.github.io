@@ -1,0 +1,62 @@
+diff --git a/Assets/01_PROJECT BFX/Scripts/Game/Sequence/SequenceManager.cs b/Assets/01_PROJECT BFX/Scripts/Game/Sequence/SequenceManager.cs
+deleted file mode 100644
+index 6a07a2fa7..000000000
+--- a/Assets/01_PROJECT BFX/Scripts/Game/Sequence/SequenceManager.cs	
++++ /dev/null
+@@ -1,225 +0,0 @@
+-using System;
+-using System.Collections.Generic;
+-using PixelCrushers.DialogueSystem;
+-using UnityEngine;
+-
+-namespace BFX
+-{
+-    /// <summary>
+-    /// 시퀀스 진행 상태와 대화 기반 시퀀스 시작을 관리한다.
+-    /// </summary>
+-    public sealed class SequenceManager : SingletonBase<SequenceManager>
+-    {
+-        private DialogueSystemController activeDialogueController;
+-        private string activeDialogueSequenceId;
+-
+-        /// <summary>
+-        /// 지정한 시퀀스가 완료됐는지 반환한다.
+-        /// </summary>
+-        public bool IsCompleted(string sequenceId)
+-        {
+-            return TryGetSequence(sequenceId, out SequenceInstanceData sequence) &&
+-                   sequence.state == SequenceState.Completed;
+-        }
+-
+… [SequenceManager.cs 삭제 내용 중간 생략]
+
+diff --git a/Assets/01_PROJECT BFX/Scripts/Game/Sequence/Integration/SequenceDialogueBridge.cs b/Assets/01_PROJECT BFX/Scripts/Game/Sequence/Integration/SequenceDialogueBridge.cs
+deleted file mode 100644
+index d7db754b7..000000000
+--- a/Assets/01_PROJECT BFX/Scripts/Game/Sequence/Integration/SequenceDialogueBridge.cs	
++++ /dev/null
+@@ -1,110 +0,0 @@
+-using System;
+-using System.Reflection;
+-using PixelCrushers.DialogueSystem;
+-using UnityEngine;
+-
+-namespace BFX
+-{
+-    /// <summary>
+-    /// Dialogue System Lua 함수와 시퀀스 공개 API를 연결한다.
+-    /// </summary>
+-    [DisallowMultipleComponent]
+-    public sealed class SequenceDialogueBridge : MonoBehaviour
+-    {
+-        private const string IsCompletedFunctionName = "BfxSequenceIsCompleted";
+-        private const string StartFunctionName = "BfxStartSequence";
+-        private const string CompleteFunctionName = "BfxCompleteSequence";
+-        private const string SetCurrentBeatFunctionName = "BfxSetSequenceBeat";
+-
+-        private static readonly string[] LuaFunctionNames =
+-        {
+-            IsCompletedFunctionName,
+-            StartFunctionName,
+-            CompleteFunctionName,
+… [삭제 파일 발췌 — 전체 원문은 01_sequence_deleted_files.full.diff]

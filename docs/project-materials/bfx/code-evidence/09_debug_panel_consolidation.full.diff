@@ -1,0 +1,250 @@
+diff --git a/Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationRuntimeDebugPanel.cs b/Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationRuntimeDebugPanel.cs
+new file mode 100644
+index 000000000..89812fc2a
+--- /dev/null
++++ b/Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationRuntimeDebugPanel.cs	
+@@ -0,0 +1,225 @@
++#if UNITY_EDITOR || DEVELOPMENT_BUILD
++using UnityEngine;
++using UnityEngine.InputSystem;
++
++namespace BFX
++{
++    [DisallowMultipleComponent]
++    public sealed class NotificationRuntimeDebugPanel : MonoBehaviour
++    {
++        private const float WindowWidth = 560f;
++        private const float MaxWindowHeight = 780f;
++
++        private readonly string[] _iconLabels = { "None", "Item", "Notification" };
++
++        private Rect _windowRect = new(20f, 20f, WindowWidth, MaxWindowHeight);
++        private Vector2 _scrollPosition;
++
++        private string _messageFeedMessage = "테스트 메시지";
++        private MessageFeedIconType _messageFeedIconType = MessageFeedIconType.Notification;
++        private string _bannerMessage = "테스트 배너 메시지";
++        private string _radioSpeakerName = "TEST";
++        private string _radioMessage = "테스트 무전 메시지";
++        private string _modalTitle = "테스트 Modal";
++        private string _modalDescription = "Modal 설명을 입력하세요.";
++        private string _status = "F5으로 패널을 열고 닫을 수 있습니다.";
++
++        private bool _visible;
++        private GUIStyle _headerStyle;
++        private GUIStyle _messageStyle;
++        private GUIStyle _statusStyle;
++
++        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
++        private static void Initialize()
++        {
++            if (FindFirstObjectByType<NotificationRuntimeDebugPanel>() != null)
++            {
++                return;
++            }
++
++            GameObject gameObject = new("[Runtime] Notification Debug Panel");
++            DontDestroyOnLoad(gameObject);
++            gameObject.hideFlags = HideFlags.DontSave;
++            gameObject.AddComponent<NotificationRuntimeDebugPanel>();
++        }
++
++        private void Update()
++        {
++            Keyboard keyboard = Keyboard.current;
++            if (keyboard != null && keyboard.f5Key.wasPressedThisFrame)
++            {
++                _visible = !_visible;
++            }
++        }
++
++        private void OnGUI()
++        {
++            if (!_visible)
++            {
++                return;
++            }
++
++            EnsureStyles();
++            _windowRect.height = Mathf.Min(MaxWindowHeight, Mathf.Max(320f, Screen.height - 40f));
++            ClampWindowToScreen();
++            _windowRect = GUI.Window(
++                GetInstanceID(),
++                _windowRect,
++                DrawWindow,
++                "UI RUNTIME DEBUG PANEL (F5)");
++        }
++
++        private void DrawWindow(int windowId)
++        {
++            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
++
++            DrawMessageFeedSection();
++            GUILayout.Space(8f);
++            DrawBannerSection();
++            GUILayout.Space(8f);
++            DrawRadioSection();
++            GUILayout.Space(8f);
++            DrawModalSection();
++            GUILayout.Space(8f);
++            DrawControlSection();
++
++            GUILayout.EndScrollView();
++            GUI.DragWindow(new Rect(0f, 0f, WindowWidth, 24f));
++        }
++
++        private void DrawMessageFeedSection()
++        {
++            GUILayout.BeginVertical(GUI.skin.box);
++            GUILayout.Label("MessageFeed", _headerStyle);
++            _messageFeedMessage = GUILayout.TextArea(_messageFeedMessage ?? string.Empty, _messageStyle, GUILayout.Height(54f));
++            _messageFeedIconType = (MessageFeedIconType)GUILayout.Toolbar((int)_messageFeedIconType, _iconLabels);
++
++            if (GUILayout.Button("MessageFeed 전송", GUILayout.Height(30f)))
++            {
++                bool accepted = NotificationService.Publish(_messageFeedMessage?.Trim(), _messageFeedIconType);
++                SetPublishStatus("MessageFeed", accepted);
++            }
++            GUILayout.EndVertical();
++        }
++
++        private void DrawBannerSection()
++        {
++            GUILayout.BeginVertical(GUI.skin.box);
++            GUILayout.Label("Banner", _headerStyle);
++            _bannerMessage = GUILayout.TextArea(_bannerMessage ?? string.Empty, _messageStyle, GUILayout.Height(54f));
++
++            if (GUILayout.Button("Banner 전송", GUILayout.Height(30f)))
++            {
++                bool accepted = NotificationService.PublishBanner(_bannerMessage?.Trim());
++                SetPublishStatus("Banner", accepted);
++            }
++            GUILayout.EndVertical();
++        }
++
++        private void DrawRadioSection()
++        {
++            GUILayout.BeginVertical(GUI.skin.box);
++            GUILayout.Label("Radio", _headerStyle);
++            GUILayout.Label("Speaker");
++            _radioSpeakerName = GUILayout.TextField(_radioSpeakerName ?? string.Empty);
++            GUILayout.Label("Message");
++            _radioMessage = GUILayout.TextArea(_radioMessage ?? string.Empty, _messageStyle, GUILayout.Height(54f));
++
++            if (GUILayout.Button("Radio 전송", GUILayout.Height(30f)))
++            {
++                bool accepted = NotificationService.PublishRadio(_radioSpeakerName?.Trim(), _radioMessage?.Trim());
++                SetPublishStatus("Radio", accepted);
++            }
++            GUILayout.EndVertical();
++        }
++
++        private void DrawModalSection()
++        {
++            GUILayout.BeginVertical(GUI.skin.box);
++            GUILayout.Label("Modal", _headerStyle);
++            GUILayout.Label("Title");
++            _modalTitle = GUILayout.TextField(_modalTitle ?? string.Empty);
++            GUILayout.Label("Description");
++            _modalDescription = GUILayout.TextArea(_modalDescription ?? string.Empty, _messageStyle, GUILayout.Height(64f));
++
++            GUILayout.BeginHorizontal();
++            if (GUILayout.Button("확인 전용", GUILayout.Height(32f)))
++            {
++                bool accepted = ModalService.Show(_modalTitle?.Trim(), _modalDescription?.Trim());
++                SetPublishStatus("Modal Notice", accepted);
++            }
++
++            if (GUILayout.Button("확인 / 취소", GUILayout.Height(32f)))
++            {
++                bool accepted = ModalService.Show(
++                    _modalTitle?.Trim(),
++                    _modalDescription?.Trim(),
++                    () => _status = "Modal OK callback이 호출됐습니다.",
++                    () => _status = "Modal Cancel callback이 호출됐습니다.");
++                SetPublishStatus("Modal Confirm", accepted);
++            }
++            GUILayout.EndHorizontal();
++            GUILayout.EndVertical();
++        }
++
++        private void DrawControlSection()
++        {
++            GUILayout.BeginVertical(GUI.skin.box);
++            GUILayout.Label("Control", _headerStyle);
++            GUILayout.BeginHorizontal();
++
++            if (GUILayout.Button("Notification 전체 취소"))
++            {
++                NotificationService.CancelAll();
++                _status = "Notification 요청을 모두 취소했습니다.";
++            }
++
++            if (GUILayout.Button("Modal 전체 취소"))
++            {
++                ModalService.CancelAll();
++                _status = "Modal 요청을 모두 취소했습니다.";
++            }
++            GUILayout.EndHorizontal();
++
++            GUILayout.Label(
++                $"Modal: open={ModalService.IsOpen}, pending={ModalService.PendingCount}",
++                _statusStyle);
++            GUILayout.Label(_status, _statusStyle);
++            GUILayout.EndVertical();
++        }
++
++        private void SetPublishStatus(string target, bool accepted)
++        {
++            _status = accepted
++                ? $"{target} 요청을 전송했습니다."
++                : $"{target} 요청이 거부되었습니다.";
++        }
++
++        private void EnsureStyles()
++        {
++            _headerStyle ??= new GUIStyle(GUI.skin.label)
++            {
++                fontStyle = FontStyle.Bold,
++                fontSize = 14,
++            };
++
++            _messageStyle ??= new GUIStyle(GUI.skin.textArea)
++            {
++                wordWrap = true,
++            };
++
++            _statusStyle ??= new GUIStyle(GUI.skin.label)
++            {
++                fontSize = 11,
++                wordWrap = true,
++            };
++        }
++
++        private void ClampWindowToScreen()
++        {
++            _windowRect.x = Mathf.Clamp(_windowRect.x, 0f, Mathf.Max(0f, Screen.width - _windowRect.width));
++            _windowRect.y = Mathf.Clamp(_windowRect.y, 0f, Mathf.Max(0f, Screen.height - _windowRect.height));
++        }
++    }
++}
++#endif
+
+A	Assets/01_PROJECT BFX/BFX_Resources/Prefabs/UI/UI.ModalUI.prefab
+A	Assets/01_PROJECT BFX/BFX_Resources/Prefabs/UI/UI.ModalUI.prefab.meta
+M	Assets/01_PROJECT BFX/BFX_Resources/Prefabs/UI/UI.PlayerHUD.prefab
+M	Assets/01_PROJECT BFX/BFX_Resources/Prefabs/UI/UI.PlayerHUD_Dummy.prefab
+M	Assets/01_PROJECT BFX/Scripts/Framework/UI/UIList.cs
+A	Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationRuntimeDebugPanel.cs
+A	Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationRuntimeDebugPanel.cs.meta
+D	Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/MessageFeed/MessageFeedInputTest.cs
+D	Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/MessageFeed/MessageFeedInputTest.cs.meta
+D	Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Radio/RadioRuntimeTestTool.cs
+D	Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Radio/RadioRuntimeTestTool.cs.meta
+A	Assets/01_PROJECT BFX/Scripts/Game/UI/Popup/Modal.meta
+A	Assets/01_PROJECT BFX/Scripts/Game/UI/Popup/Modal/ModalRequest.cs
+A	Assets/01_PROJECT BFX/Scripts/Game/UI/Popup/Modal/ModalRequest.cs.meta
+A	Assets/01_PROJECT BFX/Scripts/Game/UI/Popup/Modal/ModalService.cs
+A	Assets/01_PROJECT BFX/Scripts/Game/UI/Popup/Modal/ModalService.cs.meta
+A	Assets/01_PROJECT BFX/Scripts/Game/UI/Popup/Modal/ModalUI.cs
+A	Assets/01_PROJECT BFX/Scripts/Game/UI/Popup/Modal/ModalUI.cs.meta

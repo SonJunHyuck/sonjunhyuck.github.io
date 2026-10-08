@@ -27,7 +27,9 @@ Unity 기반 프로젝트에서 퀘스트·대화·보상·저장을 연결하�
 
 이 과정에서 추상화의 수보다 **현재 시나리오를 설명하는 데 필요한 책임과 연결의 수**를 기준으로 구조를 검토했습니다. 다만 재접속 이후의 연출 재생 여부까지 보장해야 한다면 별도 상태 관리가 필요할 수 있다는 제약을 함께 고려했습니다.
 
-근거: [구조 재검토 질문](evidence/01-story-structure.png)
+실제 변경에서는 SequenceManager와 Dialogue Bridge뿐 아니라 Sequence 저장·로드 및 초기화 연결까지 제거했습니다. 질문에서 제기한 책임 중복이 여러 코드 영역의 정리로 이어졌습니다.
+
+근거: [구조 재검토 질문](evidence/01-story-structure.png), [삭제 커밋 a0f812e36](https://github.com/redforce01/Project-BFX/commit/a0f812e364b4315a25f2f5a1b255c4ffa54cff42), [코드 근거 상세](CODE_EVIDENCE.md)
 
 ## 2. 콘텐츠를 수정하는 사람의 작업 단위에 맞추기
 
@@ -37,17 +39,23 @@ Sequence 기준으로 묶인 데이터는 특정 NPC의 대화를 찾아 수정�
 
 이 선택의 목적은 **실제 콘텐츠 수정 단위와 파일 단위를 맞춰 변경 범위를 명확히 하는 것**이었습니다. 서로 다른 대화를 나누어 작업하기 쉬운 구성이지만, 작업 시간이나 충돌 감소를 측정한 결과로 주장하지는 않습니다.
 
-근거: [제작 방식 검토](evidence/10-dialogue-authoring.png), [워크북 분리 질문](evidence/02-content-workbook.png)
+이 방향은 NPC별 워크북 분리와 임포터 수정으로 반영됐습니다. 파일명에서 Conversation ID를 얻고 Entries·Links를 파싱하도록 입력 규칙을 변경했습니다.
+
+![Conversation별 파일을 관리하는 Dialogue Importer](media/dialogue-importer-user-capture.png)
+
+근거: [제작 방식 검토](evidence/10-dialogue-authoring.png), [워크북 분리 질문](evidence/02-content-workbook.png), [데이터·임포터 변경 커밋 11aadafdd](https://github.com/redforce01/Project-BFX/commit/11aadafdd806b51b798b8c9e5cfb7dac48b0b859)
 
 ## 3. 연결된 시스템의 상태와 초기화 책임 구분하기
 
-자체 퀘스트 시스템과 외부 대화 시스템을 연결할 때, 퀘스트 상태는 Quest 쪽에서 결정하고 Dialogue는 이를 참조해 대사와 선택지를 고르도록 방향을 잡았습니다. 대화 UI도 DialogueManager가 열기·닫기와 ESC를 관리하고, 프로젝트 UI와의 연결부는 활성화와 기존 UI 정책을 담당하도록 구분했습니다.
+자체 퀘스트 시스템과 외부 대화 시스템을 연결할 때, 퀘스트 상태는 Quest 쪽에서 결정하고 Dialogue는 공개 API를 통해 상태를 조회하거나 퀘스트 시작·보상을 요청하도록 구분했습니다. 대화 UI는 Dialogue System이 표시 전환을 담당하고, 프로젝트 UI와의 연결부는 활성화와 기존 UI 정책을 담당하도록 구성했습니다.
 
 NPC 월드 UI에서는 데이터가 준비되는 시점과 UI가 이를 읽는 시점의 차이가 문제가 됐습니다. 별도 초기화 진입점을 만드는 제안에는 동의했지만, 이를 QuestManager에 종속시키는 방식에는 반대했습니다. 전체 초기화 순서를 아는 곳에서 데이터 준비 후 UI 초기화를 호출하도록 제안했습니다.
 
 이때 고려한 기준은 **데이터를 참조한다는 이유만으로 그 데이터의 관리자가 UI 초기화까지 책임져야 하는 것은 아니라는 점**이었습니다. 순서에 대한 의존성은 명시하면서 도메인 간 책임이 불필요하게 확대되지 않도록 했습니다.
 
-근거: [상태 소유권](evidence/03-quest-ownership.png), [대화 UI 제어](evidence/06-dialogue-lifecycle.png), [초기화 책임](evidence/04-initialization.png)
+실제로 데이터 적용 뒤 Presenter 초기화를 호출하는 코드가 추가됐습니다. 이후에는 공통 초기화 완료 이벤트와 준비 상태 확인으로 발전했습니다. 호출 방식은 달라졌지만 QuestManager가 UI 초기화 생명주기를 소유하지 않는 원칙은 유지했습니다.
+
+근거: [상태 소유권](evidence/03-quest-ownership.png), [대화 UI 제어](evidence/06-dialogue-lifecycle.png), [초기화 책임](evidence/04-initialization.png), [최초 반영 f1ac58fe3](https://github.com/redforce01/Project-BFX/commit/f1ac58fe39438570e90c036ddee3572ab8959785), [후속 발전 c4b293add](https://github.com/redforce01/Project-BFX/commit/c4b293add0f31cbfbb7043dbf427324791353a5c)
 
 ## 추가 사례: 제안을 그대로 수용하지 않고 필요를 다시 확인하기
 
@@ -55,7 +63,9 @@ DialogueManager 접근을 감싸는 래퍼를 검토하던 중, 호출할 메서
 
 알림 시스템에서는 Radio가 공통 NotificationService에 포함되지 않은 이유를 질문하고, 호출 창구를 통합하는 방향을 선택했습니다. 또한 게임 상황을 매번 재현하지 않고도 확인할 수 있도록 텍스트 입력과 전송이 가능한 무전 도구, 알림 종류를 모은 디버그 패널을 요청했습니다. 연속 호출 중 두 번째 메시지가 건너뛰는 현상을 직접 관찰해 문제를 제기한 기록도 남겼습니다.
 
-근거: [래퍼 방향 수정](evidence/05-wrapper-reconsideration.png), [공통 API](evidence/07-notification-api.png), [검증 도구](evidence/08-runtime-testing.png), [큐 실패 관찰](evidence/09-queue-failure.png)
+공통 무전 API 추가와 개별 테스트 도구의 통합은 실제 커밋으로 확인했습니다. 래퍼 철회는 삭제 커밋까지 찾지 못했고, 메시지 누락은 수정·재검증까지 확인하지 못했으므로 각각 설계 판단과 문제 발견의 사례로 한정합니다.
+
+근거: [래퍼 방향 수정](evidence/05-wrapper-reconsideration.png), [공통 API](evidence/07-notification-api.png), [검증 도구](evidence/08-runtime-testing.png), [큐 실패 관찰](evidence/09-queue-failure.png), [구현 반영과 근거 한계](CODE_EVIDENCE.md)
 
 ---
 

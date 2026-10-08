@@ -1,0 +1,348 @@
+diff --git a/Assets/01_PROJECT BFX/Scripts/Game/Sequence/SequenceManager.cs b/Assets/01_PROJECT BFX/Scripts/Game/Sequence/SequenceManager.cs
+deleted file mode 100644
+index 6a07a2fa7..000000000
+--- a/Assets/01_PROJECT BFX/Scripts/Game/Sequence/SequenceManager.cs	
++++ /dev/null
+@@ -1,225 +0,0 @@
+-using System;
+-using System.Collections.Generic;
+-using PixelCrushers.DialogueSystem;
+-using UnityEngine;
+-
+-namespace BFX
+-{
+-    /// <summary>
+-    /// 시퀀스 진행 상태와 대화 기반 시퀀스 시작을 관리한다.
+-    /// </summary>
+-    public sealed class SequenceManager : SingletonBase<SequenceManager>
+-    {
+-        private DialogueSystemController activeDialogueController;
+-        private string activeDialogueSequenceId;
+-
+-        /// <summary>
+-        /// 지정한 시퀀스가 완료됐는지 반환한다.
+-        /// </summary>
+-        public bool IsCompleted(string sequenceId)
+-        {
+-            return TryGetSequence(sequenceId, out SequenceInstanceData sequence) &&
+-                   sequence.state == SequenceState.Completed;
+-        }
+-
+-        /// <summary>
+-        /// 지정한 시퀀스를 시작할 수 있는지 반환한다.
+-        /// </summary>
+-        public bool CanStart(string sequenceId)
+-        {
+-            return IsValidId(sequenceId) && !IsCompleted(sequenceId);
+-        }
+-
+-        /// <summary>
+-        /// 지정한 시퀀스를 진행 상태로 기록한다.
+-        /// </summary>
+-        public bool StartSequence(string sequenceId, string initialBeatId = null)
+-        {
+-            if (!CanStart(sequenceId))
+-            {
+-                return false;
+-            }
+-
+-            bool exists = TryGetSequence(sequenceId, out SequenceInstanceData sequence);
+-            sequence ??= GetOrCreateSequence(sequenceId);
+-            bool changed = !exists || sequence.state != SequenceState.InProgress;
+-            sequence.state = SequenceState.InProgress;
+-
+-            if (!string.IsNullOrWhiteSpace(initialBeatId) && sequence.currentBeatId != initialBeatId)
+-            {
+-                sequence.currentBeatId = initialBeatId;
+-                changed = true;
+-            }
+-
+-            if (changed)
+-            {
+-                SaveDataManager.Save();
+-            }
+-
+-            return true;
+-        }
+-
+-        /// <summary>
+-        /// 지정한 시퀀스의 현재 Beat를 갱신한다.
+-        /// </summary>
+-        public bool SetCurrentBeat(string sequenceId, string beatId)
+-        {
+-            if (!IsValidId(sequenceId) || !IsValidId(beatId) || IsCompleted(sequenceId))
+-            {
+-                return false;
+-            }
+-
+-            SequenceInstanceData sequence = GetOrCreateSequence(sequenceId);
+-            if (sequence.state != SequenceState.InProgress)
+-            {
+-                sequence.state = SequenceState.InProgress;
+-            }
+-
+-            if (sequence.currentBeatId == beatId)
+-            {
+-                return true;
+-            }
+-
+-            sequence.currentBeatId = beatId;
+-            SaveDataManager.Save();
+-            return true;
+-        }
+-
+-        /// <summary>
+-        /// 지정한 시퀀스를 완료 상태로 기록한다.
+-        /// </summary>
+-        public bool CompleteSequence(string sequenceId)
+-        {
+-            if (!IsValidId(sequenceId) || IsCompleted(sequenceId))
+-            {
+-                return false;
+-            }
+-
+-            SequenceInstanceData sequence = GetOrCreateSequence(sequenceId);
+-            sequence.state = SequenceState.Completed;
+-            sequence.currentBeatId = null;
+-            SaveDataManager.Save();
+-            return true;
+-        }
+-
+-        /// <summary>
+-        /// 지정한 Conversation을 시퀀스로 시작하고 종료 시 완료 처리한다.
+-        /// </summary>
+-        public bool TryStartDialogueSequence(
+-            string sequenceId,
+-            string conversationId,
+-            Transform actor,
+-            Transform conversant = null)
+-        {
+-            if (!CanStart(sequenceId) || !IsValidId(conversationId) || DialogueManager.instance == null)
+-            {
+-                return false;
+-            }
+-
+-            if (!DialogueManager.ConversationHasValidEntry(conversationId, actor, conversant))
+-            {
+-                Debug.LogWarning($"[Sequence] Conversation has no valid entry: {conversationId}");
+-                return false;
+-            }
+-
+-            if (!StartSequence(sequenceId))
+-            {
+-                return false;
+-            }
+-
+-            ClearActiveDialogueSequence();
+-            activeDialogueSequenceId = sequenceId;
+-            activeDialogueController = DialogueManager.instance;
+-            activeDialogueController.conversationEnded += OnConversationEnded;
+-            DialogueManager.StartConversation(conversationId, actor, conversant);
+-            return true;
+-        }
+-
+-        /// <summary>
+-        /// 비활성화될 때 대화 종료 이벤트 연결을 해제한다.
+-        /// </summary>
+-        private void OnDisable()
+-        {
+-            ClearActiveDialogueSequence();
+-        }
+-
+-        /// <summary>
+-        /// 자동 시작한 Conversation이 종료되면 시퀀스를 완료 처리한다.
+-        /// </summary>
+-        private void OnConversationEnded(Transform actor)
+-        {
+-            string sequenceId = activeDialogueSequenceId;
+-            ClearActiveDialogueSequence();
+-
+-            if (IsValidId(sequenceId))
+-            {
+-                CompleteSequence(sequenceId);
+-            }
+-        }
+-
+-        private void ClearActiveDialogueSequence()
+-        {
+-            if (activeDialogueController != null)
+-            {
+-                activeDialogueController.conversationEnded -= OnConversationEnded;
+-            }
+-
+-            activeDialogueController = null;
+-            activeDialogueSequenceId = null;
+-        }
+-
+-        private static bool IsValidId(string id)
+-        {
+-            return !string.IsNullOrWhiteSpace(id);
+-        }
+-
+-        private bool TryGetSequence(string sequenceId, out SequenceInstanceData sequence)
+-        {
+-            sequence = null;
+-            if (!IsValidId(sequenceId))
+-            {
+-                return false;
+-            }
+-
+-            List<SequenceInstanceData> sequences = GetSequenceData().sequences;
+-            for (int i = 0; i < sequences.Count; i++)
+-            {
+-                SequenceInstanceData candidate = sequences[i];
+-                if (candidate != null && candidate.sequenceId == sequenceId)
+-                {
+-                    sequence = candidate;
+-                    return true;
+-                }
+-            }
+-
+-            return false;
+-        }
+-
+-        private SequenceInstanceData GetOrCreateSequence(string sequenceId)
+-        {
+-            if (TryGetSequence(sequenceId, out SequenceInstanceData sequence))
+-            {
+-                return sequence;
+-            }
+-
+-            sequence = new SequenceInstanceData
+-            {
+-                sequenceId = sequenceId,
+-                state = SequenceState.InProgress
+-            };
+-            GetSequenceData().sequences.Add(sequence);
+-            return sequence;
+-        }
+-
+-        private static SequenceData GetSequenceData()
+-        {
+-            UserDataModel userDataModel = UserDataModel.Instance;
+-            if (userDataModel.Sequence == null)
+-            {
+-                userDataModel.SetSequenceData(new SequenceData());
+-            }
+-
+-            return userDataModel.Sequence;
+-        }
+-    }
+-}
+
+diff --git a/Assets/01_PROJECT BFX/Scripts/Game/Sequence/Integration/SequenceDialogueBridge.cs b/Assets/01_PROJECT BFX/Scripts/Game/Sequence/Integration/SequenceDialogueBridge.cs
+deleted file mode 100644
+index d7db754b7..000000000
+--- a/Assets/01_PROJECT BFX/Scripts/Game/Sequence/Integration/SequenceDialogueBridge.cs	
++++ /dev/null
+@@ -1,110 +0,0 @@
+-using System;
+-using System.Reflection;
+-using PixelCrushers.DialogueSystem;
+-using UnityEngine;
+-
+-namespace BFX
+-{
+-    /// <summary>
+-    /// Dialogue System Lua 함수와 시퀀스 공개 API를 연결한다.
+-    /// </summary>
+-    [DisallowMultipleComponent]
+-    public sealed class SequenceDialogueBridge : MonoBehaviour
+-    {
+-        private const string IsCompletedFunctionName = "BfxSequenceIsCompleted";
+-        private const string StartFunctionName = "BfxStartSequence";
+-        private const string CompleteFunctionName = "BfxCompleteSequence";
+-        private const string SetCurrentBeatFunctionName = "BfxSetSequenceBeat";
+-
+-        private static readonly string[] LuaFunctionNames =
+-        {
+-            IsCompletedFunctionName,
+-            StartFunctionName,
+-            CompleteFunctionName,
+-            SetCurrentBeatFunctionName
+-        };
+-
+-        private void OnEnable()
+-        {
+-            RegisterLuaFunctions();
+-        }
+-
+-        private void Start()
+-        {
+-            RegisterLuaFunctions();
+-        }
+-
+-        private void OnDisable()
+-        {
+-            UnregisterLuaFunctions();
+-        }
+-
+-        /// <summary>
+-        /// 지정한 시퀀스가 완료됐는지 반환한다.
+-        /// </summary>
+-        public bool BfxSequenceIsCompleted(string sequenceId)
+-        {
+-            return IsValidId(sequenceId) && SequenceManager.Instance.IsCompleted(sequenceId);
+-        }
+-
+-        /// <summary>
+-        /// 지정한 시퀀스를 진행 상태로 기록하고 성공 여부를 반환한다.
+-        /// </summary>
+-        public bool BfxStartSequence(string sequenceId)
+-        {
+-            return IsValidId(sequenceId) && SequenceManager.Instance.StartSequence(sequenceId);
+-        }
+-
+-        /// <summary>
+-        /// 지정한 시퀀스를 완료 처리하고 성공 여부를 반환한다.
+-        /// </summary>
+-        public bool BfxCompleteSequence(string sequenceId)
+-        {
+-            return IsValidId(sequenceId) && SequenceManager.Instance.CompleteSequence(sequenceId);
+-        }
+-
+-        /// <summary>
+-        /// 지정한 시퀀스의 현재 Beat를 갱신하고 성공 여부를 반환한다.
+-        /// </summary>
+-        public bool BfxSetSequenceBeat(string sequenceId, string beatId)
+-        {
+-            return IsValidId(sequenceId) &&
+-                   IsValidId(beatId) &&
+-                   SequenceManager.Instance.SetCurrentBeat(sequenceId, beatId);
+-        }
+-
+-        private void RegisterLuaFunctions()
+-        {
+-            UnregisterLuaFunctions();
+-            RegisterLuaFunction(IsCompletedFunctionName, nameof(BfxSequenceIsCompleted));
+-            RegisterLuaFunction(StartFunctionName, nameof(BfxStartSequence));
+-            RegisterLuaFunction(CompleteFunctionName, nameof(BfxCompleteSequence));
+-            RegisterLuaFunction(SetCurrentBeatFunctionName, nameof(BfxSetSequenceBeat));
+-        }
+-
+-        private void RegisterLuaFunction(string luaFunctionName, string methodName)
+-        {
+-            MethodInfo method = GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public);
+-            if (method == null)
+-            {
+-                Debug.LogError($"[Sequence] Dialogue bridge method not found: {methodName}");
+-                return;
+-            }
+-
+-            Lua.RegisterFunction(luaFunctionName, this, method);
+-        }
+-
+-        private void UnregisterLuaFunctions()
+-        {
+-            foreach (string luaFunctionName in LuaFunctionNames)
+-            {
+-                Lua.UnregisterFunction(luaFunctionName);
+-            }
+-        }
+-
+-        private static bool IsValidId(string id)
+-        {
+-            return !string.IsNullOrWhiteSpace(id);
+-        }
+-    }
+-}

@@ -21,6 +21,8 @@ git switch --track origin/codex/bfx-portfolio-materials
 4. [MEDIA.md](MEDIA.md): 이미지·GIF·영상 용도와 확인 상태
 5. [evidence/README.md](evidence/README.md): 사용자 질문 전체 원문과 출처 ID
 6. [evidence/index.html](evidence/index.html): 질문 이미지 11장 모아보기
+7. [CODE_EVIDENCE.md](CODE_EVIDENCE.md): 질문에서 실제 커밋과 현재 코드로 이어지는 검증
+8. [code-evidence/README.md](code-evidence/README.md): 코드·diff 이미지와 원문 발췌
 
 ## 자료의 성격
 
@@ -28,7 +30,8 @@ git switch --track origin/codex/bfx-portfolio-materials
 - 질문 PNG는 **앱 스크린샷이 아닌 원문 재구성 이미지**입니다. 제목은 편집용이고 본문 문구와 오탈자는 원문을 보존했습니다.
 - 게임 화면 PNG, 프레임 기반 GIF, 사용자가 제공한 MP4 및 그 변환 GIF를 포함합니다.
 - 작업 기간, 팀 규모, 수치 성과는 확인되지 않아 임의로 채우지 않았습니다.
-- 이번 패키지는 코드 재검증 결과가 아닌, 이전 대화와 확보된 자료를 정리한 인수인계입니다.
+- 2026-10-08에 주요 사례의 실제 Git diff와 기준 HEAD 코드를 대조했습니다. 확인 범위와 남은 한계는 `CODE_EVIDENCE.md`에 정리했습니다. 새 런타임 테스트는 수행하지 않았습니다.
+- 사용자가 직접 캡처한 Dialogue Importer 화면도 포함합니다. 질문 재구성 이미지 및 코드 원문 렌더링 자료와 구분합니다.
 - 파일 누락·변경 확인용 SHA-256 목록은 `MANIFEST.json`에 있습니다.
 
-정리일: 2026-10-07
+최초 정리: 2026-10-07 / 코드 근거 보강: 2026-10-08

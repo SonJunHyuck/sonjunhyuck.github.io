@@ -1,0 +1,68 @@
+[통합 패널 추가]
+diff --git a/Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationRuntimeDebugPanel.cs b/Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationRuntimeDebugPanel.cs
+new file mode 100644
+index 000000000..89812fc2a
+--- /dev/null
++++ b/Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Core/NotificationRuntimeDebugPanel.cs	
+@@ -0,0 +1,225 @@
++#if UNITY_EDITOR || DEVELOPMENT_BUILD
++using UnityEngine;
++using UnityEngine.InputSystem;
++
++namespace BFX
++{
++    [DisallowMultipleComponent]
++    public sealed class NotificationRuntimeDebugPanel : MonoBehaviour
++    {
++        private const float WindowWidth = 560f;
++        private const float MaxWindowHeight = 780f;
++
++        private readonly string[] _iconLabels = { "None", "Item", "Notification" };
++
++        private Rect _windowRect = new(20f, 20f, WindowWidth, MaxWindowHeight);
++        private Vector2 _scrollPosition;
++
++        private string _messageFeedMessage = "테스트 메시지";
++        private MessageFeedIconType _messageFeedIconType = MessageFeedIconType.Notification;
++        private string _bannerMessage = "테스트 배너 메시지";
++        private string _radioSpeakerName = "TEST";
++        private string _radioMessage = "테스트 무전 메시지";
++        private string _modalTitle = "테스트 Modal";
++        private string _modalDescription = "Modal 설명을 입력하세요.";
++        private string _status = "F5으로 패널을 열고 닫을 수 있습니다.";
++
++        private bool _visible;
++        private GUIStyle _headerStyle;
++        private GUIStyle _messageStyle;
++        private GUIStyle _statusStyle;
++
++        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
++        private static void Initialize()
++        {
++            if (FindFirstObjectByType<NotificationRuntimeDebugPanel>() != null)
++            {
++                return;
++            }
++
++            GameObject gameObject = new("[Runtime] Notification Debug Panel");
++            DontDestroyOnLoad(gameObject);
++            gameObject.hideFlags = HideFlags.DontSave;
++            gameObject.AddComponent<NotificationRuntimeDebugPanel>();
++        }
++
++        private void Update()
++        {
++            Keyboard keyboard = Keyboard.current;
++            if (keyboard != null && keyboard.f5Key.wasPressedThisFrame)
++            {
++                _visible = !_visible;
++            }
++        }
++
+… [추가 파일 발췌]
+
+[개별 테스트 도구 삭제 목록]
+D	Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/MessageFeed/MessageFeedInputTest.cs
+D	Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/MessageFeed/MessageFeedInputTest.cs.meta
+D	Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Radio/RadioRuntimeTestTool.cs
+D	Assets/01_PROJECT BFX/Scripts/Game/UI/Panel/Notification/Radio/RadioRuntimeTestTool.cs.meta

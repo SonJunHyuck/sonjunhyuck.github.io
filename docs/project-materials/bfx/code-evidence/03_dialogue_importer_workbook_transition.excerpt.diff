@@ -1,0 +1,39 @@
+diff --git a/Assets/01_PROJECT BFX/Scripts/Editor/Dialogue/DialogueImporter.cs b/Assets/01_PROJECT BFX/Scripts/Editor/Dialogue/DialogueImporter.cs
+index 25e95161b..b2eecb23b 100644
+--- a/Assets/01_PROJECT BFX/Scripts/Editor/Dialogue/DialogueImporter.cs	
++++ b/Assets/01_PROJECT BFX/Scripts/Editor/Dialogue/DialogueImporter.cs	
+@@ -14,9 +14,9 @@ namespace BFX.Editor
+     /// </summary>
+     public static class DialogueImporter
+     {
+-        private const string ConversationsSheetName = "Conversations";
+         private const string EntriesSheetName = "Entries";
+-        private const string LinksSheetName = "EntryLinks";
++        private const string LinksSheetName = "Links";
++        private const string ConversationIdPrefix = "cv_";
+ 
+         /// <summary>
+         /// 선택된 Source를 분석해 임포트 결과를 반환한다.
+… [중간 생략]
+@@ -187,9 +182,9 @@ private static SourceImportData ReadSource(DialogueImportProfile profile, Dialog
+-                Dictionary<string, List<Row>> tables = ReadWorkbook(absolutePath);
++                Dictionary<string, Table> tables = ReadWorkbook(absolutePath);
+                 SourceImportData sourceData = new(source, assetPath);
+-                ParseConversations(tables, sourceData, report);
++                ParseConversation(assetPath, sourceData, report);
+                 ParseEntries(profile, tables, sourceData, report);
+                 ParseLinks(tables, sourceData, report);
+                 ValidateSource(profile, sourceData, report);
+… [중간 생략]
+@@ -225,97 +220,83 @@ private static Dictionary<string, List<Row>> ReadWorkbook(string absolutePath)
+-        private static void ParseConversations(Dictionary<string, List<Row>> tables, SourceImportData sourceData, DialogueImportReport report)
++        private static void ParseConversation(string assetPath, SourceImportData sourceData, DialogueImportReport report)
+         {
+-            if (!TryGetTable(tables, ConversationsSheetName, out List<Row> rows))
++            string conversationId = Path.GetFileNameWithoutExtension(assetPath)?.Trim();
++            if (!IsValidConversationId(conversationId))
+             {
+-                report.AddError($"'{ConversationsSheetName}' 시트가 없습니다: {sourceData.assetPath}");
++                report.AddError($"워크북 파일명은 '{ConversationIdPrefix}'로 시작하고 영문, 숫자, 밑줄만 사용해야 합니다: {assetPath}");
+                 return;
+             }

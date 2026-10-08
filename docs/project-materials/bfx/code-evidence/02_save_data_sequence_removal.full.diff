@@ -1,0 +1,68 @@
+diff --git a/Assets/01_PROJECT BFX/Scripts/Game/Data System/SaveDataManager.cs b/Assets/01_PROJECT BFX/Scripts/Game/Data System/SaveDataManager.cs
+index b3f0c8e63..0a145243d 100644
+--- a/Assets/01_PROJECT BFX/Scripts/Game/Data System/SaveDataManager.cs	
++++ b/Assets/01_PROJECT BFX/Scripts/Game/Data System/SaveDataManager.cs	
+@@ -52,7 +52,6 @@ public static bool Load()
+                 userDataModel.GamePlaying = LoadDataPart(GetSaveFilePath(GamePlayingFileName), new GamePlayingData());
+                 userDataModel.FeatureUnlocks = LoadDataPart(GetSaveFilePath(FeatureUnlockFileName), new FeatureUnlockData());
+                 userDataModel.SetQuestData(LoadDataPart(GetSaveFilePath(QuestFileName), new QuestData()));
+-                userDataModel.SetSequenceData(LoadDataPart(GetSaveFilePath(SequenceFileName), new SequenceData()));
+                 NormalizePartyData(userDataModel);
+ 
+                 return true;
+@@ -67,7 +66,6 @@ public static bool Load()
+                 userDataModel.GamePlaying = new GamePlayingData();
+                 userDataModel.FeatureUnlocks = new FeatureUnlockData();
+                 userDataModel.SetQuestData(new QuestData());
+-                userDataModel.SetSequenceData(new SequenceData());
+ 
+                 return false;
+             }
+@@ -98,31 +96,6 @@ public static bool LoadQuestData()
+             }
+         }
+ 
+-        /// <summary>
+-        /// 저장된 시퀀스 데이터를 플레이어 데이터에 적용한다.
+-        /// </summary>
+-        public static bool LoadSequenceData()
+-        {
+-            UserDataModel userDataModel = UserDataModel.Instance;
+-            if (userDataModel == null)
+-            {
+-                Debug.LogError("[SaveDataManager] UserDataModel instance is missing.");
+-                return false;
+-            }
+-
+-            try
+-            {
+-                userDataModel.SetSequenceData(LoadDataPart(GetSaveFilePath(SequenceFileName), new SequenceData()));
+-                return true;
+-            }
+-            catch (Exception ex)
+-            {
+-                Debug.LogError($"[SaveDataManager] Sequence data load failed.\n{ex}");
+-                userDataModel.SetSequenceData(new SequenceData());
+-                return false;
+-            }
+-        }
+-
+         public static bool Save()
+         {
+             UserDataModel userDataModel = UserDataModel.Instance;
+@@ -143,7 +116,6 @@ public static bool Save()
+                 SaveDataPart(GetSaveFilePath(FeatureUnlockFileName), userDataModel.FeatureUnlocks);
+ 
+                 SaveDataPart(GetSaveFilePath(QuestFileName), userDataModel.Quest);
+-                SaveDataPart(GetSaveFilePath(SequenceFileName), userDataModel.Sequence);
+                 if (IsGamePlayingDataSaveEnabled)
+                 {
+                     SaveDataPart(GetSaveFilePath(GamePlayingFileName), userDataModel.GamePlaying);
+@@ -203,7 +175,6 @@ private static void NormalizePartyData(UserDataModel userDataModel)
+             userDataModel.GamePlaying ??= new GamePlayingData();
+             userDataModel.FeatureUnlocks ??= new FeatureUnlockData();
+             userDataModel.FeatureUnlocks.unlockedFeatureIds ??= new List<string>();
+-            userDataModel.SetSequenceData(userDataModel.Sequence);
+             userDataModel.OwnedCharacters.OwnedCharacters ??= new List<CharacterInstance>();
+ 
+             string[] sourceSlots = userDataModel.Party.PartySlots;

@@ -1,0 +1,477 @@
+diff --git a/Assets/01_PROJECT BFX/Scripts/Editor/Dialogue/DialogueImporter.cs b/Assets/01_PROJECT BFX/Scripts/Editor/Dialogue/DialogueImporter.cs
+index 25e95161b..b2eecb23b 100644
+--- a/Assets/01_PROJECT BFX/Scripts/Editor/Dialogue/DialogueImporter.cs	
++++ b/Assets/01_PROJECT BFX/Scripts/Editor/Dialogue/DialogueImporter.cs	
+@@ -14,9 +14,9 @@ namespace BFX.Editor
+     /// </summary>
+     public static class DialogueImporter
+     {
+-        private const string ConversationsSheetName = "Conversations";
+         private const string EntriesSheetName = "Entries";
+-        private const string LinksSheetName = "EntryLinks";
++        private const string LinksSheetName = "Links";
++        private const string ConversationIdPrefix = "cv_";
+ 
+         /// <summary>
+         /// 선택된 Source를 분석해 임포트 결과를 반환한다.
+@@ -120,7 +120,6 @@ private static ImportPlan BuildPlan(DialogueImportProfile profile)
+             for (int i = 0; i < plan.sources.Count; i++)
+             {
+                 SourceImportData sourceData = plan.sources[i];
+-                HashSet<string> previousIds = new(sourceData.source.importedConversationIds, StringComparer.Ordinal);
+                 HashSet<string> nextIds = new(sourceData.conversations.Select(conversation => conversation.conversationId), StringComparer.Ordinal);
+ 
+                 foreach (string conversationId in nextIds)
+@@ -135,10 +134,6 @@ private static ImportPlan BuildPlan(DialogueImportProfile profile)
+                     }
+                 }
+ 
+-                if (profile.removeConversationsMissingFromSource)
+-                {
+-                    report.removedConversationCount += previousIds.Count(conversationId => !nextIds.Contains(conversationId));
+-                }
+             }
+ 
+             return plan;
+@@ -151,7 +146,7 @@ private static Dictionary<string, DialogueImportSource> BuildConversationOwners(
+             for (int sourceIndex = 0; sourceIndex < profile.sources.Count; sourceIndex++)
+             {
+                 DialogueImportSource source = profile.sources[sourceIndex];
+-                if (source == null)
++                if (source == null || !source.enabled)
+                 {
+                     continue;
+                 }
+@@ -187,9 +182,9 @@ private static SourceImportData ReadSource(DialogueImportProfile profile, Dialog
+ 
+             try
+             {
+-                Dictionary<string, List<Row>> tables = ReadWorkbook(absolutePath);
++                Dictionary<string, Table> tables = ReadWorkbook(absolutePath);
+                 SourceImportData sourceData = new(source, assetPath);
+-                ParseConversations(tables, sourceData, report);
++                ParseConversation(assetPath, sourceData, report);
+                 ParseEntries(profile, tables, sourceData, report);
+                 ParseLinks(tables, sourceData, report);
+                 ValidateSource(profile, sourceData, report);
+@@ -202,9 +197,9 @@ private static SourceImportData ReadSource(DialogueImportProfile profile, Dialog
+             }
+         }
+ 
+-        private static Dictionary<string, List<Row>> ReadWorkbook(string absolutePath)
++        private static Dictionary<string, Table> ReadWorkbook(string absolutePath)
+         {
+-            Dictionary<string, List<Row>> tables = new(StringComparer.OrdinalIgnoreCase);
++            Dictionary<string, Table> tables = new(StringComparer.OrdinalIgnoreCase);
+ 
+             using FileStream stream = File.Open(absolutePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+             using IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream);
+@@ -225,97 +220,83 @@ private static Dictionary<string, List<Row>> ReadWorkbook(string absolutePath)
+                     }
+                 }
+ 
+-                List<Row> rows = new();
++                Table table = new(columns);
+                 while (reader.Read())
+                 {
+                     Row row = new(columns);
+                     if (row.Read(reader))
+                     {
+-                        rows.Add(row);
++                        table.rows.Add(row);
+                     }
+                 }
+ 
+-                tables[reader.Name] = rows;
++                tables[reader.Name] = table;
+             } while (reader.NextResult());
+ 
+             return tables;
+         }
+ 
+-        private static void ParseConversations(Dictionary<string, List<Row>> tables, SourceImportData sourceData, DialogueImportReport report)
++        private static void ParseConversation(string assetPath, SourceImportData sourceData, DialogueImportReport report)
+         {
+-            if (!TryGetTable(tables, ConversationsSheetName, out List<Row> rows))
++            string conversationId = Path.GetFileNameWithoutExtension(assetPath)?.Trim();
++            if (!IsValidConversationId(conversationId))
+             {
+-                report.AddError($"'{ConversationsSheetName}' 시트가 없습니다: {sourceData.assetPath}");
++                report.AddError($"워크북 파일명은 '{ConversationIdPrefix}'로 시작하고 영문, 숫자, 밑줄만 사용해야 합니다: {assetPath}");
+                 return;
+             }
+ 
+-            HashSet<string> ids = new(StringComparer.Ordinal);
+-            for (int rowIndex = 0; rowIndex < rows.Count; rowIndex++)
+-            {
+-                string conversationId = rows[rowIndex].Get("conversationId");
+-                if (string.IsNullOrWhiteSpace(conversationId))
+-                {
+-                    continue;
+-                }
+-
+-                conversationId = conversationId.Trim();
+-                if (!ids.Add(conversationId))
+-                {
+-                    report.AddError($"Conversations 시트의 conversationId가 중복됩니다: {conversationId}");
+-                    continue;
+-                }
+-
+-                sourceData.conversations.Add(new ConversationRow
+-                {
+-                    conversationId = conversationId,
+-                    title = rows[rowIndex].Get("title"),
+-                    category = rows[rowIndex].Get("category"),
+-                    description = rows[rowIndex].Get("description")
+-                });
+-            }
+-
+-            if (sourceData.conversations.Count == 0)
++            sourceData.conversations.Add(new ConversationRow
+             {
+-                report.AddError($"Conversations 시트에 유효한 conversationId가 없습니다: {sourceData.assetPath}");
+-            }
++                conversationId = conversationId,
++                title = conversationId
++            });
+         }
+ 
+-        private static void ParseEntries(DialogueImportProfile profile, Dictionary<string, List<Row>> tables, SourceImportData sourceData, DialogueImportReport report)
++        private static void ParseEntries(DialogueImportProfile profile, Dictionary<string, Table> tables, SourceImportData sourceData, DialogueImportReport report)
+         {
+-            if (!TryGetTable(tables, EntriesSheetName, out List<Row> rows))
++            if (!TryGetTable(tables, EntriesSheetName, out Table table))
+             {
+                 report.AddError($"'{EntriesSheetName}' 시트가 없습니다: {sourceData.assetPath}");
+                 return;
+             }
+ 
+-            for (int rowIndex = 0; rowIndex < rows.Count; rowIndex++)
++            if (!ValidateColumns(table, EntriesSheetName, sourceData.assetPath, report,
++                    "entryId", "section", "tags", "actorId", "conversantId", "dialogueText", "menuText", "condition", "script"))
+             {
+-                Row row = rows[rowIndex];
+-                string conversationId = row.Get("conversationId")?.Trim();
++                return;
++            }
++
++            string conversationId = sourceData.ConversationId;
++
++            for (int rowIndex = 0; rowIndex < table.rows.Count; rowIndex++)
++            {
++                Row row = table.rows[rowIndex];
+                 string entryIdText = row.Get("entryId")?.Trim();
+-                if (string.IsNullOrWhiteSpace(conversationId) && string.IsNullOrWhiteSpace(entryIdText))
++                if (string.IsNullOrWhiteSpace(entryIdText))
+                 {
+                     continue;
+                 }
+ 
+-                if (string.IsNullOrWhiteSpace(conversationId) || !int.TryParse(entryIdText, out int entryId) || entryId <= 0)
++                if (!int.TryParse(entryIdText, out int entryId) || entryId <= 0)
+                 {
+-                    report.AddError($"Entries 시트 {rowIndex + 2}행의 conversationId 또는 entryId가 올바르지 않습니다.");
++                    report.AddError($"Entries 시트 {rowIndex + 2}행의 entryId가 올바르지 않습니다: {sourceData.assetPath}");
+                     continue;
+                 }
+ 
+-                string actorId = row.Get("actorId") ?? row.Get("actor");
++                string actorId = row.Get("actorId");
+                 if (string.IsNullOrWhiteSpace(actorId))
+                 {
+-                    report.AddError($"Entries 시트 {rowIndex + 2}행의 actorId가 비어 있습니다.");
++                    report.AddError($"Entries 시트 {rowIndex + 2}행의 actorId가 비어 있습니다: {sourceData.assetPath}");
+                     continue;
+                 }
+ 
+-                string conversantId = row.Get("conversantId") ?? row.Get("conversant");
++                string conversantId = row.Get("conversantId");
+                 sourceData.entries.Add(new EntryRow
+                 {
+                     conversationId = conversationId,
+                     entryId = entryId,
++                    section = row.Get("section")?.Trim() ?? string.Empty,
++                    tags = row.Get("tags")?.Trim() ?? string.Empty,
+                     actorId = actorId.Trim(),
+                     conversantId = string.IsNullOrWhiteSpace(conversantId) ? profile.defaultConversantActor : conversantId.Trim(),
+                     dialogueText = row.Get("dialogueText") ?? string.Empty,
+@@ -326,34 +307,46 @@ private static void ParseEntries(DialogueImportProfile profile, Dictionary<strin
+             }
+         }
+ 
+-        private static void ParseLinks(Dictionary<string, List<Row>> tables, SourceImportData sourceData, DialogueImportReport report)
++        private static void ParseLinks(Dictionary<string, Table> tables, SourceImportData sourceData, DialogueImportReport report)
+         {
+-            if (!TryGetTable(tables, LinksSheetName, out List<Row> rows))
++            if (!TryGetTable(tables, LinksSheetName, out Table table))
+             {
+                 report.AddError($"'{LinksSheetName}' 시트가 없습니다: {sourceData.assetPath}");
+                 return;
+             }
+ 
+-            for (int rowIndex = 0; rowIndex < rows.Count; rowIndex++)
++            if (!ValidateColumns(table, LinksSheetName, sourceData.assetPath, report,
++                    "fromEntryId", "toEntryId", "order"))
+             {
+-                Row row = rows[rowIndex];
+-                string conversationId = row.Get("conversationId")?.Trim();
++                return;
++            }
++
++            string conversationId = sourceData.ConversationId;
++
++            for (int rowIndex = 0; rowIndex < table.rows.Count; rowIndex++)
++            {
++                Row row = table.rows[rowIndex];
+                 string fromEntryIdText = row.Get("fromEntryId")?.Trim();
+                 string toEntryIdText = row.Get("toEntryId")?.Trim();
+-                if (string.IsNullOrWhiteSpace(conversationId) && string.IsNullOrWhiteSpace(fromEntryIdText) && string.IsNullOrWhiteSpace(toEntryIdText))
++                if (string.IsNullOrWhiteSpace(fromEntryIdText) && string.IsNullOrWhiteSpace(toEntryIdText))
+                 {
+                     continue;
+                 }
+ 
+-                if (string.IsNullOrWhiteSpace(conversationId) ||
+-                    !int.TryParse(fromEntryIdText, out int fromEntryId) || fromEntryId < 0 ||
++                if (!int.TryParse(fromEntryIdText, out int fromEntryId) || fromEntryId < 0 ||
+                     !int.TryParse(toEntryIdText, out int toEntryId) || toEntryId <= 0)
+                 {
+-                    report.AddError($"EntryLinks 시트 {rowIndex + 2}행의 링크 정보가 올바르지 않습니다.");
++                    report.AddError($"Links 시트 {rowIndex + 2}행의 링크 정보가 올바르지 않습니다: {sourceData.assetPath}");
++                    continue;
++                }
++
++                string orderText = row.Get("order")?.Trim();
++                if (!int.TryParse(orderText, out int order) || order < 0)
++                {
++                    report.AddError($"Links 시트 {rowIndex + 2}행의 order가 올바르지 않습니다: {sourceData.assetPath}");
+                     continue;
+                 }
+ 
+-                int.TryParse(row.Get("order"), out int order);
+                 sourceData.links.Add(new LinkRow
+                 {
+                     conversationId = conversationId,
+@@ -369,6 +362,11 @@ private static void ValidateSource(DialogueImportProfile profile, SourceImportDa
+             HashSet<string> conversationIds = new(sourceData.conversations.Select(conversation => conversation.conversationId), StringComparer.Ordinal);
+             Dictionary<string, HashSet<int>> entryIdsByConversation = new(StringComparer.Ordinal);
+ 
++            if (sourceData.entries.Count == 0)
++            {
++                report.AddError($"Entries 시트에 유효한 Entry가 없습니다: {sourceData.assetPath}");
++            }
++
+             for (int entryIndex = 0; entryIndex < sourceData.entries.Count; entryIndex++)
+             {
+                 EntryRow entry = sourceData.entries[entryIndex];
+@@ -400,15 +398,34 @@ private static void ValidateSource(DialogueImportProfile profile, SourceImportDa
+                 }
+             }
+ 
++            HashSet<(string conversationId, int fromEntryId, int toEntryId)> linkKeys = new();
++            HashSet<(string conversationId, int fromEntryId, int order)> linkOrders = new();
++            bool hasRootLink = false;
+             for (int linkIndex = 0; linkIndex < sourceData.links.Count; linkIndex++)
+             {
+                 LinkRow link = sourceData.links[linkIndex];
++                hasRootLink |= link.fromEntryId == 0;
+                 if (!entryIdsByConversation.TryGetValue(link.conversationId, out HashSet<int> entryIds) ||
+                     !entryIds.Contains(link.toEntryId) ||
+                     (link.fromEntryId != 0 && !entryIds.Contains(link.fromEntryId)))
+                 {
+-                    report.AddError($"EntryLinks의 대상 또는 출발 Entry를 찾을 수 없습니다: {link.conversationId}/{link.fromEntryId} → {link.toEntryId}");
++                    report.AddError($"Links의 대상 또는 출발 Entry를 찾을 수 없습니다: {link.conversationId}/{link.fromEntryId} → {link.toEntryId}");
++                }
++
++                if (!linkKeys.Add((link.conversationId, link.fromEntryId, link.toEntryId)))
++                {
++                    report.AddError($"Links에 같은 연결이 중복됩니다: {link.conversationId}/{link.fromEntryId} → {link.toEntryId}");
+                 }
++
++                if (!linkOrders.Add((link.conversationId, link.fromEntryId, link.order)))
++                {
++                    report.AddError($"Links의 같은 출발 Entry에 order가 중복됩니다: {link.conversationId}/{link.fromEntryId}/{link.order}");
++                }
++            }
++
++            if (!hasRootLink)
++            {
++                report.AddError($"START에서 시작할 루트 링크가 없습니다: {sourceData.assetPath}");
+             }
+         }
+ 
+@@ -417,18 +434,6 @@ private static void ApplySource(DialogueImportProfile profile, SourceImportData
+             DialogueDatabase database = profile.database;
+             HashSet<string> nextConversationIds = new(sourceData.conversations.Select(conversation => conversation.conversationId), StringComparer.Ordinal);
+ 
+-            if (profile.removeConversationsMissingFromSource)
+-            {
+-                for (int i = sourceData.source.importedConversationIds.Count - 1; i >= 0; i--)
+-                {
+-                    string previousConversationId = sourceData.source.importedConversationIds[i];
+-                    if (!nextConversationIds.Contains(previousConversationId))
+-                    {
+-                        RemoveConversation(database, previousConversationId);
+-                    }
+-                }
+-            }
+-
+             for (int conversationIndex = 0; conversationIndex < sourceData.conversations.Count; conversationIndex++)
+             {
+                 ConversationRow row = sourceData.conversations[conversationIndex];
+@@ -451,6 +456,36 @@ private static void ApplySource(DialogueImportProfile profile, SourceImportData
+             database.ResetCache();
+         }
+ 
++        /// <summary>
++        /// Source가 마지막으로 임포트한 Conversation을 Database에서 제거한다.
++        /// </summary>
++        public static int RemoveImportedConversations(DialogueImportProfile profile, DialogueImportSource source)
++        {
++            if (profile == null || profile.database == null || source == null || source.importedConversationIds == null)
++            {
++                return 0;
++            }
++
++            Undo.RecordObject(profile, "Remove Imported Dialogue");
++            Undo.RecordObject(profile.database, "Remove Imported Dialogue");
++
++            int removedCount = 0;
++            for (int conversationIndex = 0; conversationIndex < source.importedConversationIds.Count; conversationIndex++)
++            {
++                if (RemoveConversation(profile.database, source.importedConversationIds[conversationIndex]))
++                {
++                    removedCount++;
++                }
++            }
++
++            source.importedConversationIds.Clear();
++            profile.database.ResetCache();
++            EditorUtility.SetDirty(profile);
++            EditorUtility.SetDirty(profile.database);
++            AssetDatabase.SaveAssets();
++            return removedCount;
++        }
++
+         private static Conversation CreateConversation(DialogueImportProfile profile, SourceImportData sourceData, ConversationRow row, int conversationNumericId)
+         {
+             Template template = Template.FromDefault();
+@@ -484,6 +519,8 @@ private static Conversation CreateConversation(DialogueImportProfile profile, So
+                 entry.currentMenuText = entryRow.menuText;
+                 entry.conditionsString = entryRow.condition;
+                 entry.userScript = entryRow.script;
++                Field.SetValue(entry.fields, "Section", entryRow.section, FieldType.Text);
++                Field.SetValue(entry.fields, "Tags", entryRow.tags, FieldType.Text);
+                 conversation.dialogueEntries.Add(entry);
+                 entries.Add(entry.id, entry);
+             }
+@@ -503,9 +540,46 @@ private static Conversation CreateConversation(DialogueImportProfile profile, So
+             return conversation;
+         }
+ 
+-        private static bool TryGetTable(Dictionary<string, List<Row>> tables, string tableName, out List<Row> rows)
++        private static bool TryGetTable(Dictionary<string, Table> tables, string tableName, out Table table)
+         {
+-            return tables.TryGetValue(tableName, out rows);
++            return tables.TryGetValue(tableName, out table);
++        }
++
++        private static bool ValidateColumns(Table table, string sheetName, string assetPath, DialogueImportReport report, params string[] requiredColumns)
++        {
++            bool valid = true;
++            for (int columnIndex = 0; columnIndex < requiredColumns.Length; columnIndex++)
++            {
++                string column = requiredColumns[columnIndex];
++                if (table.HasColumn(column))
++                {
++                    continue;
++                }
++
++                report.AddError($"'{sheetName}' 시트에 '{column}' 열이 없습니다: {assetPath}");
++                valid = false;
++            }
++
++            return valid;
++        }
++
++        private static bool IsValidConversationId(string conversationId)
++        {
++            if (string.IsNullOrWhiteSpace(conversationId) || !conversationId.StartsWith(ConversationIdPrefix, StringComparison.Ordinal))
++            {
++                return false;
++            }
++
++            for (int characterIndex = 0; characterIndex < conversationId.Length; characterIndex++)
++            {
++                char character = conversationId[characterIndex];
++                if (!char.IsLetterOrDigit(character) && character != '_')
++                {
++                    return false;
++                }
++            }
++
++            return true;
+         }
+ 
+         private static bool IsExcelFile(string assetPath)
+@@ -519,13 +593,16 @@ private static Conversation FindConversation(DialogueDatabase database, string c
+             return database.conversations.Find(conversation => conversation != null && conversation.Title == conversationId);
+         }
+ 
+-        private static void RemoveConversation(DialogueDatabase database, string conversationId)
++        private static bool RemoveConversation(DialogueDatabase database, string conversationId)
+         {
+             Conversation conversation = FindConversation(database, conversationId);
+-            if (conversation != null)
++            if (conversation == null)
+             {
+-                database.conversations.Remove(conversation);
++                return false;
+             }
++
++            database.conversations.Remove(conversation);
++            return true;
+         }
+ 
+         private static int GetNextConversationId(DialogueDatabase database)
+@@ -576,6 +653,8 @@ private sealed class SourceImportData
+             public readonly List<EntryRow> entries = new();
+             public readonly List<LinkRow> links = new();
+ 
++            public string ConversationId => conversations.Count > 0 ? conversations[0].conversationId : string.Empty;
++
+             public SourceImportData(DialogueImportSource source, string assetPath)
+             {
+                 this.source = source;
+@@ -595,6 +674,8 @@ private sealed class EntryRow
+         {
+             public string conversationId;
+             public int entryId;
++            public string section;
++            public string tags;
+             public string actorId;
+             public string conversantId;
+             public string dialogueText;
+@@ -611,6 +692,22 @@ private sealed class LinkRow
+             public int order;
+         }
+ 
++        private sealed class Table
++        {
++            private readonly Dictionary<string, int> columns;
++            public readonly List<Row> rows = new();
++
++            public Table(Dictionary<string, int> columns)
++            {
++                this.columns = columns;
++            }
++
++            public bool HasColumn(string columnName)
++            {
++                return columns.ContainsKey(columnName);
++            }
++        }
++
+         private sealed class Row
+         {
+             private readonly Dictionary<string, int> columns;
