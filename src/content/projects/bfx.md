@@ -70,17 +70,43 @@ features:
     <p>이 시스템은 노드를 만들고 각 노드에 화자와 대사를 입력한 뒤, 노드 사이의 연결을 설정하는 방식입니다. 대화가 늘어날수록 이러한 편집을 반복해야 했습니다.</p>
     <p>노드마다 입력해야 하는 정보를 데이터 항목으로 정리하고, 스프레드시트에서 일괄적으로 작성·수정할 수 있도록 임포터를 만들었습니다. 대사 정보는 <code>Entries</code> 시트에, 노드 사이의 연결 관계는 <code>Links</code> 시트에 작성하면, 임포터가 이를 읽고 검증해 외부 시스템의 대화 데이터로 반영합니다.</p>
     <p>Conversation 하나당 워크북 하나를 사용하고 파일명을 ID로 삼아, 수정할 대화를 파일 단위로 관리하도록 구성했습니다.</p>
+    <p>대화는 지속적으로 추가·수정되는 콘텐츠이므로, 기획자가 노드를 개별적으로 생성하고 링크를 연결하는 반복 작업을 줄이고자 했습니다. 대화 작성부터 노드 생성과 연결까지 AI와 MCP로 자동화하는 방식도 고려했지만, 반복적인 도구 호출로 인해 토큰 사용량이 많아질 것으로 예상했습니다. 대신 기획자가 AI를 활용해 대화를 작성하고 정해진 스프레드시트 형식에 맞추면, 임포터가 노드 생성과 연결을 처리하도록 구성했습니다. 이를 통해 AI의 작업 범위를 대화 데이터 작성으로 한정하여 토큰 사용량도 줄일 수 있을 것으로 판단했습니다.</p>
+    <p>또한 스프레드시트를 중간 데이터로 두어 게임 데이터와 분리했습니다. 스프레드시트를 수정하더라도 즉시 게임에 반영되지 않고, 기획자가 변경 내용을 검토한 뒤 직접 반영 버튼을 눌러야 적용되도록 했습니다. 이처럼 반영 전에 한 번 더 확인하는 단계를 두어, 편집 실수나 작성 중인 데이터가 게임에 반영되는 위험을 줄이고자 했습니다. NPC와 대화가 추가될 때에도 동일한 절차를 사용하고, 노드 생성과 연결 로직은 임포터에서 일관되게 관리하도록 했습니다.</p>
   </header>
-  <div class="bfx-decision-grid">
-    <div><span>입력</span><p><code>cv_*</code> 형식의 파일명과 Entries·Links 시트를 읽습니다.</p></div>
-    <div><span>검증</span><p>파일명과 시트 데이터를 확인하고 소스별 임포트 결과를 보고합니다.</p></div>
-    <div><span>반영</span><p>Conversation ID를 기준으로 기존 데이터를 갱신합니다.</p></div>
-  </div>
+  <figure class="import-board" id="bfx-import-diagram" aria-label="대화 데이터 임포터 설계: 기획자와 AI가 대화를 작성하고 스프레드시트로 저장합니다. 기획자가 검토 후 반영 버튼을 누르면 임포터가 검증하고 노드와 링크를 생성하여 게임 데이터로 반영합니다.">
+    <span class="import-tag">BFX · 대화 데이터 임포터</span>
+    <section class="import-alternative" aria-label="검토한 방식">
+      <span class="import-label">검토한 방식</span>
+      <div class="import-alt-flow"><span>대화 작성</span><span aria-hidden="true">→</span><span>AI + MCP</span><span aria-hidden="true">→</span><span>노드 생성 · 링크 연결</span></div>
+      <div class="import-note">반복적인 도구 호출 → 토큰 사용량 증가 예상</div>
+    </section>
+    <section aria-label="채택한 흐름" class="import-chosen">
+      <span class="import-label">채택한 흐름</span>
+      <div class="import-flow">
+        <div class="import-node"><span class="import-index">01 / 작성</span><h3>기획자 + AI</h3><span>대화 작성<br>정해진 형식 정리</span></div>
+        <span class="import-arrow" aria-hidden="true">→</span>
+        <div class="import-node"><span class="import-index">02 / 중간 데이터</span><h3>스프레드시트</h3><span>Entries · Links<br>자유롭게 수정</span></div>
+        <span class="import-arrow" aria-hidden="true">→</span>
+        <div class="import-node import-gate"><span class="import-index">03 / 기획자 확인</span><h3>검토 후<br>반영 버튼</h3><span>명시적으로 적용</span></div>
+        <span class="import-arrow" aria-hidden="true">→</span>
+        <div class="import-node"><span class="import-index">04 / 자동 처리</span><h3>임포터</h3><span>데이터 검증<br>노드 · 링크 생성</span></div>
+        <span class="import-arrow" aria-hidden="true">→</span>
+        <div class="import-node import-result"><span class="import-index">05 / 반영</span><h3>게임 데이터</h3><span>대화 시스템에<br>변경 사항 적용</span></div>
+      </div>
+    </section>
+  </figure>
+
+  <figure class="story-media bfx-sheet-media">
+    <a href="/images/projects/bfx/dialogue-spreadsheet.png" target="_blank" rel="noopener" aria-label="대화 스프레드시트 원본 이미지 새 탭에서 보기">
+      <img src="/images/projects/bfx/dialogue-spreadsheet.png" alt="cv_npc_luna 워크북의 Entries 시트. entryId, 화자, 대사, 선택지와 조건을 열로 관리하며 하단에 Entries와 Links 시트가 표시되어 있습니다." width="3600" height="2338" loading="lazy" />
+    </a>
+    <figcaption>작성 데이터 · cv_npc_luna의 실제 Entries 시트. 대사·화자·선택지·조건을 열로 관리하고, 연결 정보는 별도 Links 시트로 분리했습니다.</figcaption>
+  </figure>
   <figure class="story-media bfx-importer-media">
     <a href="/images/projects/bfx/dialogue-importer.png" target="_blank" rel="noopener" aria-label="Dialogue Importer 원본 이미지 새 탭에서 보기">
       <img src="/images/projects/bfx/dialogue-importer.png" alt="Conversation별 워크북을 등록하고 Conversation ID와 최근 임포트 상태를 보여주는 실제 Dialogue Importer 화면" loading="lazy" />
     </a>
-    <figcaption>대화 데이터 임포터 실행 화면 · 이미지를 선택하면 원본 크기로 볼 수 있습니다.</figcaption>
+    <figcaption>검증·반영 도구 · 워크북과 Conversation ID, 임포트 상태를 관리하는 실제 Dialogue Importer 화면.</figcaption>
   </figure>
 </article>
 

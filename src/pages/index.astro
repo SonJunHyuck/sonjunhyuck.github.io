@@ -60,41 +60,49 @@ const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((pro
 ---
 
 <BaseLayout title="프로필 — Son Junhyuck" description="Son Junhyuck의 이력, 역량, 활동을 정리한 게임 개발 포트폴리오">
-  <section class="about-hero">
-    <div class="container hero-layout">
-      <div class="hero-content">
-        <p class="eyebrow hero-role"><span aria-hidden="true">✦</span> GAME CLIENT DEVELOPER</p>
-        <h1>안녕하세요,<br />유연한 협업을<span class="mobile-break"><br /></span> 지향하는<br />개발자<span class="mobile-break"><br /></span><span class="desktop-space"> </span><em>손준혁</em> 입니다.</h1>
-        <div class="hero-contact-group">
-          <p class="hero-group-label">CONNECT</p>
-          <div class="hero-links">
-            <a href="https://github.com/SonJunHyuck" target="_blank" rel="noopener noreferrer" aria-label="손준혁 GitHub 프로필 새 탭에서 열기"><img src="/icons/github.svg" alt="" /></a>
-            <a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="손준혁 Notion 개발일지를 새 탭에서 열기"><img src="/icons/notion.svg" alt="" /></a>
-            <a href="https://www.canva.com/design/DAHICLybg4Y/dWylZ6Ir57iAQCFhZH8y9Q/view?utlId=ha95d026d35" target="_blank" rel="noopener noreferrer" aria-label="손준혁 Canva 포트폴리오 새 탭에서 열기"><img src="/icons/canva.svg" alt="" /></a>
-          </div>
+  <section class="intro-profile" aria-labelledby="intro-title">
+    <div class="container intro-profile-inner">
+      <div class="intro-profile-top">
+        <div class="intro-profile-copy">
+          <p class="eyebrow intro-role">GAME CLIENT DEVELOPER</p>
+          <h1 id="intro-title">부딪히고,<br />설계합니다.</h1>
+          <p class="intro-description">직접 해보며 문제를 이해하고,<br class="intro-copy-break" /> 반복되는 일을 자동화하는 것을 추구하는<br class="intro-copy-break" /> 개발자 <em>손준혁</em>입니다.</p>
+        </div>
+        <figure class="intro-portrait">
+          <img src="/profile.webp" alt="꽃밭에서 촬영한 손준혁 프로필 사진" width="360" height="360" fetchpriority="high" />
+          <figcaption><span>SON JUNHYUCK</span>게임 클라이언트 개발</figcaption>
+        </figure>
+      </div>
+
+      <div class="intro-evidence" aria-labelledby="evidence-title">
+        <h2 id="evidence-title">이런 경험으로 이어졌습니다</h2>
+        <div class="intro-evidence-grid">
+          <a class="intro-evidence-card" href="/projects/project-r/#빌드-자동화">
+            <p class="eyebrow">PROJECT R</p>
+            <h3>빌드·배포 자동화</h3>
+            <p class="intro-evidence-description">소스 동기화부터 배포·알림까지</p>
+            <span class="intro-evidence-link">빌드 파이프라인 보기 <span aria-hidden="true">↗</span></span>
+          </a>
+          <a class="intro-evidence-card" href="/projects/bfx/#dialogue-importer">
+            <p class="eyebrow">BFX</p>
+            <h3>대화 데이터 임포터</h3>
+            <p class="intro-evidence-description">시트 작성부터 검증·반영까지</p>
+            <span class="intro-evidence-link">제작 과정 보기 <span aria-hidden="true">↗</span></span>
+          </a>
         </div>
       </div>
-      <div class="hero-visual" aria-hidden="true">
-        <span class="hero-orbit"></span>
-        <img class="hero-avatar" src="/favicon.png" alt="" />
-        <span class="hero-spark hero-spark-one">✦</span>
-        <span class="hero-spark hero-spark-two">✦</span>
-      </div>
-    </div>
-  </section>
 
-  <section class="profile-section container" aria-labelledby="profile-title">
-    <p class="eyebrow">PROFILE</p>
-    <h2 id="profile-title">프로필</h2>
-    <div class="profile-card">
-      <img class="profile-photo" src="/profile.webp" alt="꽃밭에서 촬영한 손준혁 프로필 사진" />
-      <dl class="profile-details">
-        <div><dt>이름</dt><dd>손준혁 <span>(SON JUNHYUCK)</span></dd></div>
-        <div><dt>직무</dt><dd>게임 클라이언트 개발</dd></div>
-      </dl>
-      <div class="profile-stack">
-        <p>기술 스택</p>
+      <div class="intro-stack">
+        <h2>기술 스택</h2>
         <TagList tags={skills} label="주요 기술" />
+      </div>
+      <div class="intro-connect">
+        <p class="eyebrow">CONNECT</p>
+        <div class="intro-connect-links">
+          <a href="https://github.com/SonJunHyuck" target="_blank" rel="noopener noreferrer" aria-label="손준혁 GitHub 프로필 새 탭에서 열기"><img src="/icons/github.svg" alt="" />GitHub <span aria-hidden="true">↗</span></a>
+          <a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="손준혁 Notion 개발일지를 새 탭에서 열기"><img src="/icons/notion.svg" alt="" />Notion <span aria-hidden="true">↗</span></a>
+          <a href="https://www.canva.com/design/DAHICLybg4Y/dWylZ6Ir57iAQCFhZH8y9Q/view?utlId=ha95d026d35" target="_blank" rel="noopener noreferrer" aria-label="손준혁 Canva 포트폴리오 새 탭에서 열기"><img src="/icons/canva.svg" alt="" />Canva <span aria-hidden="true">↗</span></a>
+        </div>
       </div>
     </div>
   </section>
