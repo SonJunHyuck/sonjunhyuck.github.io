@@ -8,6 +8,7 @@ projectGroup: "games"
 workTypes: ["team"]
 status: "prototype"
 role: "게임 클라이언트 개발"
+period: "2026.05.04–2026.09.08"
 teamSize: "게임 클라이언트 개발 5명"
 platform: ["PC"]
 genres: ["PvE FPS"]

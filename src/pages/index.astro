@@ -53,7 +53,6 @@ const experience = [
   },
 ];
 
-const skills = ['Unity', 'C#', 'Jenkins', 'AWS S3', 'C++', 'OpenGL', 'Compute Shader'];
 const featuredProjectIds = ['project-r', 'inspix-world', 'the-hidden-cheer-squad', 'crowd-formation-control'];
 const projectEntries = await getCollection('projects', ({ data }) => !data.draft);
 const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((project) => project.id === id)).filter((project): project is NonNullable<typeof project> => Boolean(project));
@@ -76,26 +75,22 @@ const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((pro
 
       <div class="intro-evidence" aria-labelledby="evidence-title">
         <h2 id="evidence-title">이런 경험으로 이어졌습니다</h2>
-        <div class="intro-evidence-grid">
-          <a class="intro-evidence-card" href="/projects/project-r/#빌드-자동화">
-            <p class="eyebrow">PROJECT R</p>
-            <h3>빌드·배포 자동화</h3>
-            <p class="intro-evidence-description">소스 동기화부터 배포·알림까지</p>
-            <span class="intro-evidence-link">빌드 파이프라인 보기 <span aria-hidden="true">↗</span></span>
-          </a>
-          <a class="intro-evidence-card" href="/projects/bfx/#dialogue-importer">
-            <p class="eyebrow">BFX</p>
-            <h3>대화 데이터 임포터</h3>
-            <p class="intro-evidence-description">시트 작성부터 검증·반영까지</p>
-            <span class="intro-evidence-link">제작 과정 보기 <span aria-hidden="true">↗</span></span>
-          </a>
-        </div>
+        <ul class="intro-evidence-list" role="list">
+          <li>
+            <a class="intro-evidence-link" href="/projects/project-r/#빌드-자동화">
+              <span><span class="intro-evidence-project">Project R</span> 빌드·배포 자동화</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li>
+            <a class="intro-evidence-link" href="/projects/bfx/#dialogue-importer">
+              <span><span class="intro-evidence-project">BFX</span> 대화 데이터 임포터</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </li>
+        </ul>
       </div>
 
-      <div class="intro-stack">
-        <h2>기술 스택</h2>
-        <TagList tags={skills} label="주요 기술" />
-      </div>
       <div class="intro-connect">
         <p class="eyebrow">CONNECT</p>
         <div class="intro-connect-links">
