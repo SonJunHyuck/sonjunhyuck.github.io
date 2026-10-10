@@ -4,9 +4,11 @@
 
 ## About
 
-`src/pages/index.astro`의 입력 대기 문구를 실제 소개, 경력, 학력, 기술, 활동, 연락처로 교체합니다. 기간, 역할, 성과를 확인할 수 있는 표현을 우선하고 공개하면 안 되는 정보는 넣지 않습니다.
+`src/pages/index.astro`의 해당 구간을 갱신합니다. 작성 기준은 [프로필 스킬](../.agents/skills/portfolio-intro/SKILL.md)의 해당 매뉴얼을 참조합니다.
 
 ## Project
+
+작성 기준은 [프로젝트 스킬](../.agents/skills/portfolio-project/SKILL.md)의 해당 매뉴얼을 참조합니다.
 
 `src/content/projects/`에 기존 예시 파일을 복사해 새 Markdown 파일을 만듭니다. 파일명이 URL 식별자가 됩니다. 필수 정보는 제목, 요약, 설명, 날짜, `game` 또는 `graphics` 기술 분류, `work`·`games`·`research` 중 하나인 `projectGroup`, 작업 성격 태그, 상태, 기술, 핵심 기여입니다. 기간, 역할, 팀 규모, 대표 이미지, 갤러리, 영상, GitHub, 실행 파일, Notion 링크는 확인된 항목만 선택적으로 추가합니다.
 
