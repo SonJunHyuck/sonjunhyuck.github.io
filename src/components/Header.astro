@@ -9,15 +9,15 @@ const detailProject = detailSlug
   : undefined;
 const activeProjectGroup = detailProject?.data.projectGroup;
 const projectLinks = [
-  { href: '/projects/work/', label: '업무경험', section: 'work' },
-  { href: '/projects/games/', label: '게임', section: 'games' },
-  { href: '/projects/research/', label: '연구', section: 'research' },
+  { href: '/projects/?filter=work', label: '업무경험', section: 'work' },
+  { href: '/projects/?filter=games', label: '게임', section: 'games' },
+  { href: '/projects/?filter=research', label: '연구', section: 'research' },
 ];
 
 const isCurrent = (section?: string) => {
   if (section === 'profile') return currentPath === '/';
   if (section === 'work' || section === 'games' || section === 'research') {
-    return currentPath.startsWith(`/projects/${section}/`) || activeProjectGroup === section;
+    return activeProjectGroup === section;
   }
   return false;
 };

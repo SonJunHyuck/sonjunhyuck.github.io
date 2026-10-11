@@ -16,6 +16,57 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
     <h2 id="project-list-heading" class="visually-hidden">전체 프로젝트 목록</h2>
     <div id="all-projects" class="project-carousel-track" tabindex="0" role="region" aria-label="전체 프로젝트 가로 목록">
       {projects.map((project) => <ProjectCard {project} compact />)}
+      <article class="project-card project-card-compact project-next-card" data-project-next>
+        <div>
+          <h2>...</h2>
+          <p>NEXT PROJECT</p>
+        </div>
+      </article>
     </div>
+    <p id="project-filter-status" class="visually-hidden" role="status" aria-live="polite"></p>
+    <p id="project-filter-empty" class="empty-state" hidden>이 분류의 프로젝트를 준비하고 있습니다.</p>
   </section>
 </BaseLayout>
+
+<script>
+  const track = document.querySelector<HTMLElement>('#all-projects');
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-project-filter]')];
+  const cards = [...document.querySelectorAll<HTMLElement>('#all-projects [data-project-groups]')];
+  const nextCard = document.querySelector<HTMLElement>('[data-project-next]');
+  const status = document.querySelector<HTMLElement>('#project-filter-status');
+  const empty = document.querySelector<HTMLElement>('#project-filter-empty');
+  const validFilters = ['all', 'work', 'games', 'research'];
+  const applyFilter = () => {
+    const requested = new URL(location.href).searchParams.get('filter') || 'all';
+    const filter = validFilters.includes(requested) ? requested : 'all';
+    let count = 0;
+    cards.forEach((card) => {
+      card.hidden = filter !== 'all' && !card.dataset.projectGroups?.split(' ').includes(filter);
+      if (!card.hidden) count++;
+    });
+    if (nextCard) nextCard.hidden = filter !== 'all';
+    buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.projectFilter === filter)));
+    const label = buttons.find((button) => button.dataset.projectFilter === filter)?.textContent?.trim() || '전체';
+    if (track) {
+      track.scrollLeft = 0;
+      track.setAttribute('aria-label', `${label} 프로젝트 가로 목록`);
+      track.hidden = count === 0;
+    }
+    if (empty) empty.hidden = count > 0;
+    if (status) status.textContent = `${label} 프로젝트 ${count}개`;
+    document.querySelectorAll<HTMLAnchorElement>('.project-dropdown a').forEach((link) => {
+      if (new URL(link.href).searchParams.get('filter') === filter) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
+  };
+  buttons.forEach((button) => button.addEventListener('click', () => {
+    const url = new URL(location.href);
+    const filter = button.dataset.projectFilter || 'all';
+    if (filter === 'all') url.searchParams.delete('filter');
+    else url.searchParams.set('filter', filter);
+    if (url.href !== location.href) history.pushState(null, '', url);
+    applyFilter();
+  }));
+  window.addEventListener('popstate', applyFilter);
+  applyFilter();
+</script>

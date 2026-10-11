@@ -1,13 +1,10 @@
 ---
-import { projectGroups, type ProjectGroupId } from '../config/projectGroups';
-
-interface Props { current?: ProjectGroupId; }
-const { current } = Astro.props;
+import { projectGroups } from '../config/projectGroups';
 ---
 
-<nav class="project-group-nav" aria-label="프로젝트 목록">
-  <a href="/projects/" aria-current={!current ? 'page' : undefined}>전체</a>
+<div class="project-group-nav" role="group" aria-label="프로젝트 필터">
+  <button type="button" data-project-filter="all" aria-pressed="true" aria-controls="all-projects">전체</button>
   {projectGroups.map((group) => (
-    <a href={group.href} aria-current={current === group.id ? 'page' : undefined}>{group.label}</a>
+    <button type="button" data-project-filter={group.id} aria-pressed="false" aria-controls="all-projects">{group.label}</button>
   ))}
-</nav>
+</div>

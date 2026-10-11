@@ -7,11 +7,12 @@ const { project, compact = false } = Astro.props;
 const { data } = project;
 const categoryLabel = data.category === 'game' ? '게임' : '그래픽스';
 const workTypeLabel = { learning: '학습', experiment: '실험', personal: '개인', team: '팀 프로젝트', professional: '실무', 'live-service': '라이브 서비스', research: '연구' };
-const labels = data.projectGroup === 'work' ? ['업무', '게임'] : [data.projectGroup === 'games' ? '게임' : '연구'];
+const groups = data.projectGroup === 'work' ? ['work', 'games'] : [data.projectGroup];
+const labels = groups.map((group) => ({ work: '업무', games: '게임', research: '연구' })[group]);
 const tags = [categoryLabel, ...data.workTypes.map((type) => workTypeLabel[type]), ...data.technologies.slice(0, 4).map(({ name }) => name)];
 ---
 
-<article class:list={["project-card", { "project-card-compact": compact }]} data-category={data.category}>
+<article class:list={["project-card", { "project-card-compact": compact }]} data-category={data.category} data-project-groups={groups.join(' ')}>
   <a class="project-card-link" href={`/projects/${project.id}/`} aria-label={`${data.title} 상세 보기`}>
     <div class="project-visual">
       {compact && <div class="project-category-stickers">{labels.map((label) => <span>{label}</span>)}</div>}
@@ -19,7 +20,9 @@ const tags = [categoryLabel, ...data.workTypes.map((type) => workTypeLabel[type]
     </div>
     <div class="project-card-body">
       {compact ? <>
-        <h2>{data.title}<span aria-hidden="true">→</span></h2>
+        <h2>{data.title}</h2>
+        <p class="project-card-summary">{data.summary}</p>
+        {data.cardContribution && <p class="project-card-contribution"><span>담당</span>{data.cardContribution}</p>}
         <TagList tags={data.technologies.map(({ name }) => name)} label="기술 스택" />
       </> : <>
       <div class="card-meta"><span>{categoryLabel}</span>{data.isExample && <span class="example-label">예시 콘텐츠</span>}</div>
@@ -27,7 +30,7 @@ const tags = [categoryLabel, ...data.workTypes.map((type) => workTypeLabel[type]
       <p class="project-card-summary">{data.summary}</p>
       {data.cardContribution && <p class="project-card-contribution"><span>담당</span>{data.cardContribution}</p>}
       <TagList {tags} label="프로젝트 분류와 기술" />
-      <span class="detail-link">{data.projectGroup !== 'work' && '프로젝트 상세'} <span aria-hidden="true">→</span></span>
+      {data.projectGroup !== 'work' && <span class="detail-link">프로젝트 상세</span>}
       </>}
     </div>
   </a>
