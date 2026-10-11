@@ -302,3 +302,28 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 #bfx-import-diagram .import-node { line-height:1.6; }
 #bfx-import-diagram > section { margin:0; }
 #dialogue-importer .bfx-sheet-media img { height:auto; max-height:none; cursor:zoom-in; }
+
+/* The overview presents every project in one horizontally scrollable list. */
+.project-hub-intro h1 { word-break: keep-all; }
+.project-carousel-track { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 40px) / 2.18); gap: 20px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scrollbar-color: var(--interactive-line) var(--surface); padding: 4px 4px 20px; scroll-padding: 4px; }
+.project-carousel-track::-webkit-scrollbar { height: 10px; }
+.project-carousel-track::-webkit-scrollbar-track { background: var(--surface); border-radius: 999px; }
+.project-carousel-track::-webkit-scrollbar-thumb { background: var(--interactive-line); border-radius: 999px; }
+.project-card-compact { scroll-snap-align: start; background: var(--surface); border-radius: 10px; }
+.project-card-compact .project-card-link { border-radius: inherit; overflow: hidden; }
+.project-card-compact .project-card-link:hover, .project-card-compact .project-card-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; }
+.project-card-compact .project-visual { position: relative; display: block; aspect-ratio: auto; }
+.project-card-compact .project-visual::before { content: ""; display: block; padding-top: calc(56.25% + 40px); }
+.project-card-compact .project-visual > img { position: absolute; inset: 0; }
+.project-card-compact .project-visual > span { position: absolute; inset: 0; display: grid; place-items: center; }
+.project-category-stickers { position: absolute; z-index: 1; top: 14px; left: 14px; display: flex; flex-wrap: wrap; gap: 6px; letter-spacing: 0; }
+.project-category-stickers span { padding: 6px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-strong); color: var(--ink); font: 800 11px var(--sans); }
+.project-card-compact .project-card-body { padding: 24px; }
+.project-card-compact h2 { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 0 0 18px; font-size: 25px; line-height: 1.3; }
+.project-card-compact h2 > span { flex-shrink: 0; color: var(--accent); }
+.project-card-compact .tag-list { margin-top: auto; }
+@media (max-width: 680px) {
+  .project-carousel-track { grid-auto-columns: calc((100% - 20px) / 1.18); }
+  .project-card-compact .project-card-body { padding: 20px; }
+  .project-card-compact h2 { font-size: 23px; }
+}

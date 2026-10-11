@@ -6,7 +6,7 @@ const { current } = Astro.props;
 ---
 
 <nav class="project-group-nav" aria-label="프로젝트 목록">
-  <a href="/projects/" aria-current={!current ? 'page' : undefined}>안내</a>
+  <a href="/projects/" aria-current={!current ? 'page' : undefined}>전체</a>
   {projectGroups.map((group) => (
     <a href={group.href} aria-current={current === group.id ? 'page' : undefined}>{group.label}</a>
   ))}

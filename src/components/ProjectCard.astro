@@ -2,26 +2,33 @@
 import type { CollectionEntry } from 'astro:content';
 import TagList from './TagList.astro';
 
-interface Props { project: CollectionEntry<'projects'>; }
-const { project } = Astro.props;
+interface Props { project: CollectionEntry<'projects'>; compact?: boolean; }
+const { project, compact = false } = Astro.props;
 const { data } = project;
 const categoryLabel = data.category === 'game' ? '게임' : '그래픽스';
 const workTypeLabel = { learning: '학습', experiment: '실험', personal: '개인', team: '팀 프로젝트', professional: '실무', 'live-service': '라이브 서비스', research: '연구' };
+const labels = data.projectGroup === 'work' ? ['업무', '게임'] : [data.projectGroup === 'games' ? '게임' : '연구'];
 const tags = [categoryLabel, ...data.workTypes.map((type) => workTypeLabel[type]), ...data.technologies.slice(0, 4).map(({ name }) => name)];
 ---
 
-<article class="project-card" data-category={data.category}>
+<article class:list={["project-card", { "project-card-compact": compact }]} data-category={data.category}>
   <a class="project-card-link" href={`/projects/${project.id}/`} aria-label={`${data.title} 상세 보기`}>
     <div class="project-visual">
+      {compact && <div class="project-category-stickers">{labels.map((label) => <span>{label}</span>)}</div>}
       {data.thumbnail ? <img src={data.thumbnail} alt={`${data.title} 대표 이미지`} loading="lazy" /> : <span aria-hidden="true">{data.category === 'game' ? 'GAME' : 'GRAPHICS'}</span>}
     </div>
     <div class="project-card-body">
+      {compact ? <>
+        <h2>{data.title}<span aria-hidden="true">→</span></h2>
+        <TagList tags={data.technologies.map(({ name }) => name)} label="기술 스택" />
+      </> : <>
       <div class="card-meta"><span>{categoryLabel}</span>{data.isExample && <span class="example-label">예시 콘텐츠</span>}</div>
       <h2>{data.title}</h2>
       <p class="project-card-summary">{data.summary}</p>
       {data.cardContribution && <p class="project-card-contribution"><span>담당</span>{data.cardContribution}</p>}
       <TagList {tags} label="프로젝트 분류와 기술" />
-      <span class="detail-link">프로젝트 상세 <span aria-hidden="true">→</span></span>
+      <span class="detail-link">{data.projectGroup !== 'work' && '프로젝트 상세'} <span aria-hidden="true">→</span></span>
+      </>}
     </div>
   </a>
 </article>

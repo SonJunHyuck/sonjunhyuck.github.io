@@ -2,54 +2,20 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectGroupNav from '../../components/ProjectGroupNav.astro';
-import { projectGroups } from '../../config/projectGroups';
+import ProjectCard from '../../components/ProjectCard.astro';
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
-const workGroup = projectGroups.find((group) => group.id === 'work')!;
-const personalGroups = projectGroups.filter((group) => group.id !== 'work');
-const projectsIn = (groupId: typeof projectGroups[number]['id']) => projects.filter((project) => project.data.projectGroup === groupId);
 ---
-<BaseLayout title="Projects — Son Junhyuck" description="업무, 게임, 연구로 나누어 보는 프로젝트">
+<BaseLayout title="Projects — Son Junhyuck" description="게임 및 연구 프로젝트를 소개합니다.">
   <section class="page-intro container project-hub-intro">
     <ProjectGroupNav />
     <p class="eyebrow">PROJECTS</p>
-    <h1>업무에 기여한 <em>프로젝트</em>와<br />게임·연구를 소개합니다.</h1>
+    <h1>게임 및 연구 <em>프로젝트</em>를 소개합니다.</h1>
   </section>
-  <section class="container projects-section" aria-labelledby="project-groups-heading">
-    <h2 id="project-groups-heading" class="visually-hidden">프로젝트 분류</h2>
-    <section class="project-hub-section" aria-labelledby="work-projects-heading">
-      <div class="project-hub-heading">
-        <p class="eyebrow">PROFESSIONAL</p>
-        <h2 id="work-projects-heading">업무 프로젝트</h2>
-      </div>
-      <article class="project-group-card project-group-card-wide">
-        <p class="eyebrow">COMPANY</p>
-        <h3>Voyager</h3>
-        <ul>
-          {projectsIn('work').map((project) => <li><a href={`/projects/${project.id}/`}>{project.data.title}<span aria-hidden="true">상세 →</span></a></li>)}
-        </ul>
-        <a class="detail-link" href={workGroup.href}>업무 프로젝트 전체 보기 <span aria-hidden="true">→</span></a>
-      </article>
-    </section>
-
-    <section class="project-hub-section personal-projects-section" aria-labelledby="personal-projects-heading">
-      <div class="project-hub-heading">
-        <p class="eyebrow">PERSONAL</p>
-        <h2 id="personal-projects-heading">개인 프로젝트</h2>
-      </div>
-      <div class="project-group-grid project-group-grid-personal">
-        {personalGroups.map((group) => (
-          <article class="project-group-card">
-            <p class="eyebrow">{group.eyebrow}</p>
-            <h3><a href={group.href}>{group.title}</a></h3>
-            <p>{group.description}</p>
-            <ul>
-              {projectsIn(group.id).map((project) => <li><a href={`/projects/${project.id}/`}>{project.data.title}<span aria-hidden="true">→</span></a></li>)}
-            </ul>
-            <a class="detail-link" href={group.href}>{group.label} 프로젝트 전체 보기 <span aria-hidden="true">→</span></a>
-          </article>
-        ))}
-      </div>
-    </section>
+  <section class="container projects-section project-carousel" aria-labelledby="project-list-heading">
+    <h2 id="project-list-heading" class="visually-hidden">전체 프로젝트 목록</h2>
+    <div id="all-projects" class="project-carousel-track" tabindex="0" role="region" aria-label="전체 프로젝트 가로 목록">
+      {projects.map((project) => <ProjectCard {project} compact />)}
+    </div>
   </section>
 </BaseLayout>
