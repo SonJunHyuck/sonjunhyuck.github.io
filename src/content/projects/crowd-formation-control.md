@@ -1,6 +1,7 @@
 ---
 title: "군중 대형 제어 시뮬레이션"
-summary: "PBD의 위치 제약을 확장해 군중의 대형과 개별 위치를 제어하는 알고리즘을 연구·구현했습니다."
+summary: "PBD의 위치 제약을 확장해 군중의 대형을 유지하면서 개별 위치를 제어하는 시뮬레이션입니다."
+cardContribution: "제어 알고리즘을 연구하고 C++·OpenGL로 구현했습니다."
 description: "Position Based Dynamics의 제약 개념을 군중 대형 유지에 적용하고, Short Range Distance로 개별 위치를 제어한 그래픽스 연구입니다."
 publishedAt: 2023-06-01
 category: "graphics"

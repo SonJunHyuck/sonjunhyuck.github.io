@@ -1,6 +1,7 @@
 ---
 title: "Project R"
-summary: "Unity 기반 MMORPG에서 UI 및 인게임 콘텐츠 구현 참여 및 빌드·배포 자동화를 담당했습니다."
+summary: "나만의 아바타를 만들어 다양한 미니게임을 즐기며 친구를 사귀는 메타버스 소셜 게임"
+cardContribution: "UI 및 인게임 콘텐츠 구현에 참여하고 빌드·배포 자동화를 담당했습니다."
 description: "빌드 파이프라인, 네트워크 동기화, 데이터 반응형 UI 개발 등 클라이언트 개발 범위를 확장한 실무 프로젝트입니다."
 publishedAt: 2026-03-01
 category: "game"
@@ -10,7 +11,7 @@ status: "prototype"
 period: "2025.06–2026.03"
 role: "Unity 클라이언트 개발"
 platform: ["PC", "Android", "iOS"]
-genres: ["MMORPG"]
+genres: ["Metaverse"]
 thumbnail: "/images/projects/project-r/cover.png"
 gallery:
   - src: "/images/projects/project-r/build-pipeline.png"

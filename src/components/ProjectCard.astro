@@ -18,7 +18,8 @@ const tags = [categoryLabel, ...data.workTypes.map((type) => workTypeLabel[type]
     <div class="project-card-body">
       <div class="card-meta"><span>{categoryLabel}</span>{data.isExample && <span class="example-label">예시 콘텐츠</span>}</div>
       <h2>{data.title}</h2>
-      <p>{data.summary}</p>
+      <p class="project-card-summary">{data.summary}</p>
+      {data.cardContribution && <p class="project-card-contribution"><span>담당</span>{data.cardContribution}</p>}
       <TagList {tags} label="프로젝트 분류와 기술" />
       <span class="detail-link">프로젝트 상세 <span aria-hidden="true">→</span></span>
     </div>

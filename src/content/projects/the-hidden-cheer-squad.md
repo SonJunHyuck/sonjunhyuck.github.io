@@ -1,6 +1,7 @@
 ---
 title: "The Hidden Cheer Squad"
 summary: "밀려오는 적들을 막아내며, 적군을 물리치는 2D 전진형 디펜스 게임입니다."
+cardContribution: "1인 개발로 기획과 클라이언트 개발을 맡아 유닛·스테이지·UI 구조를 구현했습니다."
 description: "밀려오는 적들을 막아내며, 적군을 물리치는 2D 전진형 디펜스 게임"
 publishedAt: 2025-02-01
 category: "game"

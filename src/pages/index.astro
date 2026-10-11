@@ -15,7 +15,7 @@ const experience = [
     projects: [
       {
         name: 'Project R',
-        description: 'Unity 기반 신규 3D MMORPG',
+        description: 'Unity 기반 메타버스 소셜 게임 개발 참여',
         contributions: [
           'Jenkins를 활용한 클라이언트 빌드·배포 자동화',
           '네트워크 동기화를 포함한 감정표현 기능 구현',
@@ -24,7 +24,7 @@ const experience = [
       },
       {
         name: 'InspixWorld',
-        description: 'Unity 기반 3D 게임 라이브서비스 유지보수',
+        description: 'Unity 기반 메타버스 소셜 게임 라이브서비스 유지보수',
         contributions: [
           '라이브 서비스 이슈 분석·수정 및 업데이트 대응',
           '팀원과 수정 공수를 검토하고, 이슈 중요도와 함께 종합해 파트너사와 버전별 수정·업데이트 범위를 조율',
@@ -74,30 +74,23 @@ const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((pro
       </div>
 
       <div class="intro-evidence" aria-labelledby="evidence-title">
-        <h2 id="evidence-title">이런 경험으로 이어졌습니다</h2>
+        <h2 id="evidence-title">이런 경험이 제 소개를 뒷받침합니다</h2>
         <ul class="intro-evidence-list" role="list">
           <li>
             <a class="intro-evidence-link" href="/projects/project-r/#빌드-자동화">
-              <span><span class="intro-evidence-project">Project R</span> 빌드·배포 자동화</span>
-              <span aria-hidden="true">↗</span>
+              <span class="intro-evidence-project">Project R</span>
+              <span class="intro-evidence-description">빌드·배포 자동화</span>
+              <span class="intro-evidence-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
           <li>
             <a class="intro-evidence-link" href="/projects/bfx/#dialogue-importer">
-              <span><span class="intro-evidence-project">BFX</span> 대화 데이터 임포터</span>
-              <span aria-hidden="true">↗</span>
+              <span class="intro-evidence-project">BFX</span>
+              <span class="intro-evidence-description">대화 데이터 임포터</span>
+              <span class="intro-evidence-arrow" aria-hidden="true">↗</span>
             </a>
           </li>
         </ul>
-      </div>
-
-      <div class="intro-connect">
-        <p class="eyebrow">CONNECT</p>
-        <div class="intro-connect-links">
-          <a href="https://github.com/SonJunHyuck" target="_blank" rel="noopener noreferrer" aria-label="손준혁 GitHub 프로필 새 탭에서 열기"><img src="/icons/github.svg" alt="" />GitHub <span aria-hidden="true">↗</span></a>
-          <a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="손준혁 Notion 개발일지를 새 탭에서 열기"><img src="/icons/notion.svg" alt="" />Notion <span aria-hidden="true">↗</span></a>
-          <a href="https://www.canva.com/design/DAHICLybg4Y/dWylZ6Ir57iAQCFhZH8y9Q/view?utlId=ha95d026d35" target="_blank" rel="noopener noreferrer" aria-label="손준혁 Canva 포트폴리오 새 탭에서 열기"><img src="/icons/canva.svg" alt="" />Canva <span aria-hidden="true">↗</span></a>
-        </div>
       </div>
     </div>
   </section>
@@ -205,6 +198,15 @@ const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((pro
           {featuredProjects.map((project) => <ProjectCard {project} />)}
         </div>
       </section>
+
+      <div class="intro-connect">
+        <p class="eyebrow">CONNECT</p>
+        <div class="intro-connect-links">
+          <a href="https://github.com/SonJunHyuck" target="_blank" rel="noopener noreferrer" aria-label="손준혁 GitHub 프로필 새 탭에서 열기"><img src="/icons/github.svg" alt="" />GitHub <span aria-hidden="true">↗</span></a>
+          <a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="손준혁 Notion 개발일지를 새 탭에서 열기"><img src="/icons/notion.svg" alt="" />Notion <span aria-hidden="true">↗</span></a>
+          <a href="https://www.canva.com/design/DAHICLybg4Y/dWylZ6Ir57iAQCFhZH8y9Q/view?utlId=ha95d026d35" target="_blank" rel="noopener noreferrer" aria-label="손준혁 Canva 포트폴리오 새 탭에서 열기"><img src="/icons/canva.svg" alt="" />Canva <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
     </div>
   </div>
 </BaseLayout>

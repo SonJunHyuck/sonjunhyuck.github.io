@@ -1,6 +1,7 @@
 ---
 title: "바람 가시화 지도 시뮬레이션"
-summary: "기상 데이터를 바탕으로 바람의 흐름을 GPU 파티클로 시각화했습니다."
+summary: "기상 데이터에 따른 바람의 흐름을 GPU 파티클로 표현하는 지도 시뮬레이션입니다."
+cardContribution: "기존 WebGL 프로젝트를 C++·OpenGL로 재구현하고 Compute Shader로 파티클을 갱신했습니다."
 description: "기존 WebGL 프로젝트를 C++/OpenGL로 재구현하고, GRIB 기상 데이터와 Compute Shader 기반 파티클로 바람의 흐름을 표현한 학습·연구 프로젝트입니다."
 publishedAt: 2020-04-01
 category: "graphics"

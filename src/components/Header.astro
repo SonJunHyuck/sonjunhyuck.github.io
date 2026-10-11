@@ -8,12 +8,10 @@ const detailProject = detailSlug
   ? (await getCollection('projects', ({ data }) => !data.draft)).find((project) => project.id === detailSlug)
   : undefined;
 const activeProjectGroup = detailProject?.data.projectGroup;
-const links = [
-  { href: '/', label: '프로필', section: 'profile' },
-  { href: '/projects/work/', label: '업무', section: 'work' },
+const projectLinks = [
+  { href: '/projects/work/', label: '업무경험', section: 'work' },
   { href: '/projects/games/', label: '게임', section: 'games' },
   { href: '/projects/research/', label: '연구', section: 'research' },
-  { href: NOTION_DEVLOG_URL, label: '개발일지 ↗', external: true },
 ];
 
 const isCurrent = (section?: string) => {
@@ -34,19 +32,18 @@ const isCurrent = (section?: string) => {
     <div class="header-actions">
       <nav aria-label="주요 탐색">
         <ul>
-          {links.map((link) => (
-            <li>
-              <a
-                href={link.href}
-                target={link.external ? '_blank' : undefined}
-                rel={link.external ? 'noopener noreferrer' : undefined}
-                aria-label={link.external ? '개발일지를 Notion에서 새 탭으로 열기' : undefined}
-                aria-current={!link.external && isCurrent(link.section) ? 'page' : undefined}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+          <li><a href="/" aria-current={isCurrent('profile') ? 'page' : undefined}><span class="nav-label">프로필</span></a></li>
+          <li class="project-navigation">
+            <a href="/projects/" class:list={['project-toggle', { 'is-current': currentPath.startsWith('/projects/') }]} aria-current={currentPath === '/projects/' ? 'page' : undefined} aria-expanded="false" aria-controls="project-navigation-links">
+              <span class="nav-label">프로젝트</span>
+            </a>
+            <ul id="project-navigation-links" class="project-dropdown" hidden>
+              {projectLinks.map((link) => (
+                <li><a href={link.href} aria-current={isCurrent(link.section) ? 'page' : undefined}>{link.label}</a></li>
+              ))}
+            </ul>
+          </li>
+          <li><a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="개발일지를 Notion에서 새 탭으로 열기"><span class="nav-label">개발일지 ↗</span></a></li>
         </ul>
       </nav>
       <div class="theme-switcher" role="group" aria-label="색상 테마 선택">
@@ -87,5 +84,55 @@ const isCurrent = (section?: string) => {
     buttons.forEach((button) => {
       button.addEventListener('click', () => applyTheme(button.dataset.themeValue, true));
     });
+  })();
+</script>
+
+<style>
+  nav > ul { align-items: center; }
+  nav > ul > li > a { display: block; line-height: 1.5; border-bottom: 1px solid transparent; }
+  nav > ul > li > a[aria-current='page'] { border-bottom-color: var(--ink); }
+  .nav-label { display: block; white-space: nowrap; }
+  .project-navigation { position: relative; }
+  .project-toggle.is-current { color: var(--ink); border-bottom: 1px solid var(--ink); }
+  .project-dropdown { position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); z-index: 1; display: flex; align-items: center; flex-wrap: nowrap; justify-content: flex-start; gap: 18px; width: max-content; padding: 12px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); box-shadow: 0 8px 24px var(--shadow); }
+  .project-dropdown::before { content: ''; position: absolute; top: -12px; left: 0; width: 100%; height: 12px; }
+  .project-dropdown[hidden] { display: none; }
+  .project-dropdown a { display: block; white-space: nowrap; }
+  .project-toggle:focus-visible, .project-dropdown a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  @media (max-width: 680px) {
+    .header-actions nav .project-dropdown { gap: 14px; padding: 10px 12px; }
+  }
+  @media (hover: none) {
+    nav > ul { margin-bottom: 48px; }
+    .project-dropdown { top: 100%; }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    const navigation = document.querySelector('.project-navigation');
+    const toggle = navigation?.querySelector('.project-toggle');
+    const dropdown = navigation?.querySelector('.project-dropdown');
+    if (!navigation || !toggle || !dropdown) return;
+    const touch = window.matchMedia('(hover: none)');
+    const setOpen = (open) => {
+      const expanded = touch.matches || open;
+      toggle.setAttribute('aria-expanded', String(expanded));
+      dropdown.hidden = !expanded;
+    };
+    navigation.addEventListener('mouseenter', () => setOpen(true));
+    navigation.addEventListener('mouseleave', () => setOpen(navigation.contains(document.activeElement)));
+    navigation.addEventListener('focusin', () => setOpen(true));
+    navigation.addEventListener('focusout', (event) => {
+      if (!navigation.contains(event.relatedTarget)) setOpen(navigation.matches(':hover'));
+    });
+    navigation.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !dropdown.hidden && !touch.matches) {
+        toggle.focus();
+        setOpen(false);
+      }
+    });
+    touch.addEventListener('change', () => setOpen(false));
+    setOpen(false);
   })();
 </script>

@@ -1,6 +1,7 @@
 ---
 title: "Project BFX"
-summary: "PvE FPS의 퀘스트·대화 연동, 대화 데이터 임포터, 알림 UI를 구현하고 시스템 간 책임과 콘텐츠 작성 방식을 정리했습니다."
+summary: "The Division에서 모티브를 얻어 전투와 NPC 상호작용이 포함된 미션을 수행하는 PvE FPS입니다."
+cardContribution: "퀘스트·대화 연동, 대화 데이터 임포터, 알림 UI를 구현했습니다."
 description: "The Division에서 모티브를 얻은 PvE 중심 FPS입니다. 미션을 수행하며 챕터를 이어가는 게임의 클라이언트 개발에 참여했습니다."
 publishedAt: 2026-10-08
 category: "game"

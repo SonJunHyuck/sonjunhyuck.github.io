@@ -1,6 +1,7 @@
 ---
 title: "InspixWorld"
-summary: "파트너사의 게임 라이브 이슈 대응과 콘텐츠 업데이트를 담당했습니다."
+summary: "나만의 아바타를 만들어 다양한 미니게임을 즐기며 친구를 사귀는 메타버스 소셜 게임"
+cardContribution: "라이브 이슈 대응과 콘텐츠 업데이트, 테스트 환경·온보딩 문서화를 담당했습니다."
 description: "파트너사의 게임 라이브 이슈 대응과 컨텐츠 업데이트"
 publishedAt: 2026-02-01
 category: "game"

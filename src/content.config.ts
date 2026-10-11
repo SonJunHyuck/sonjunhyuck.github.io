@@ -6,6 +6,7 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     summary: z.string(),
+    cardContribution: z.string().optional(),
     description: z.string(),
     publishedAt: z.coerce.date(),
     category: z.enum(['game', 'graphics']),

@@ -169,7 +169,7 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 .project-card-body { flex: 1; display: flex; flex-direction: column; padding: 25px; }
 .card-meta { display: flex; justify-content: space-between; color: var(--muted); font: 10px var(--mono); text-transform: uppercase; }
 .example-label { color: var(--example); }
-.project-card h2 { margin: 13px 0 9px; font-size: clamp(24px, 3vw, 34px); letter-spacing: -.055em; }
+.project-card h2 { margin: 13px 0 9px; font-size: clamp(22px, 2.6vw, 28px); letter-spacing: -.045em; }
 .placeholder-project-card h3 { margin: 13px 0 9px; font-size: clamp(21px, 2.4vw, 28px); letter-spacing: -.045em; }
 .placeholder-project-card { background: var(--surface); }
 .placeholder-project-card .project-visual { background: linear-gradient(145deg, var(--surface-muted), var(--card-line)); }
@@ -177,7 +177,10 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 .about-projects-section { border-bottom: 0; }
 .about-projects-section .section-intro { margin-bottom: 30px; }
 .about-projects-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
-.project-card p { min-height: 3.3em; margin-bottom: 22px; color: var(--muted); line-height: 1.65; }
+.project-card p { line-height: 1.65; }
+.project-card .project-card-summary { min-height: 3.3em; margin-bottom: 12px; color: var(--body-copy); }
+.project-card .project-card-contribution { min-height: 0; margin-bottom: 22px; color: var(--accent-ink); font-size: 13px; }
+.project-card-contribution > span { margin-right: 8px; font-size: 11px; font-weight: 800; }
 .project-card .detail-link { margin-top: auto; padding-top: 28px; }
 .detail-link { display: inline-flex; align-items: center; gap: 8px; width: fit-content; font-size: 12px; font-weight: 800; }
 .detail-link:hover { text-decoration: underline; text-underline-offset: 4px; }
@@ -222,7 +225,7 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
   .project-group-card > p:not(.eyebrow) { min-height: 0; }
   .project-group-nav { margin-bottom: 36px; }
   .projects-grid { grid-template-columns: 1fr; }
-  .project-card p { min-height: 0; }
+  .project-card .project-card-summary { min-height: 0; }
 }
 
 /* Introduction and profile, with links to supporting project work. */
@@ -240,11 +243,12 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 .intro-portrait figcaption span { color: var(--muted); font: 700 10px var(--sans); letter-spacing: .15em; }
 .intro-evidence { margin-top: 36px; }
 .intro-evidence h2 { margin: 0 0 10px; font-size: 15px; font-weight: 800; letter-spacing: -.025em; }
-.intro-evidence-list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
-.intro-evidence-link { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; padding: 10px 12px; border-radius: 6px; color: var(--body-copy); font-size: 14px; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere; transition: background-color .18s ease; }
-.intro-evidence-link:hover { background: var(--accent-soft); }
-.intro-evidence-project { margin-right: 10px; color: var(--muted); font-size: 12px; font-weight: 700; }
-.intro-evidence-link > span:last-child { flex-shrink: 0; color: var(--accent); }
+.intro-evidence-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.intro-evidence-link { display: grid; grid-template-columns: 6rem minmax(0, 1fr) auto; align-items: center; gap: 16px; min-height: 44px; padding: 10px 12px; border: 1px solid var(--interactive-line); border-radius: 6px; background: var(--surface); color: var(--ink); font-size: 14px; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere; transition: border-color .18s ease, color .18s ease; }
+.intro-evidence-link:hover, .intro-evidence-link:focus-visible { border-color: var(--accent); color: var(--accent); }
+.intro-evidence-project { color: var(--muted); font-size: 12px; font-weight: 700; }
+.intro-evidence-description { min-width: 0; }
+.intro-evidence-arrow { color: var(--muted); }
 .intro-connect { margin-top: 26px; }
 .intro-connect > .eyebrow { margin-bottom: 10px; }
 .intro-connect-links { display: flex; flex-wrap: wrap; gap: 12px; }

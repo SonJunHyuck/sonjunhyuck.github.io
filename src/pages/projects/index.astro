@@ -9,11 +9,11 @@ const workGroup = projectGroups.find((group) => group.id === 'work')!;
 const personalGroups = projectGroups.filter((group) => group.id !== 'work');
 const projectsIn = (groupId: typeof projectGroups[number]['id']) => projects.filter((project) => project.data.projectGroup === groupId);
 ---
-<BaseLayout title="Projects — Son Junhyuck" description="업무, 개인 게임, 개인 연구로 나누어 보는 프로젝트">
+<BaseLayout title="Projects — Son Junhyuck" description="업무, 게임, 연구로 나누어 보는 프로젝트">
   <section class="page-intro container project-hub-intro">
     <ProjectGroupNav />
     <p class="eyebrow">PROJECTS</p>
-    <h1>업무에 기여한 프로젝트와<br /><em>개인 게임·연구를 소개합니다.</em></h1>
+    <h1>업무에 기여한 <em>프로젝트</em>와<br />게임·연구를 소개합니다.</h1>
   </section>
   <section class="container projects-section" aria-labelledby="project-groups-heading">
     <h2 id="project-groups-heading" class="visually-hidden">프로젝트 분류</h2>
