@@ -135,20 +135,15 @@ features:
   </div>
 </article>
 
-<h2 id="ai-usage">AI 활용</h2>
 
-<p class="bfx-ai-lead">이 프로젝트에서는 Unity MCP를 적극 활용했습니다. 구현할 내용과 방향을 자연어로 정리한 뒤 AI와 논의하고, 필요한 동작과 제약을 설명했습니다. 제안된 구조는 그대로 적용하기보다 <span class="bfx-text-highlight">실제 미션 진행과 콘텐츠 작성 방식에 맞는지 검토</span>하며 구체화했습니다.</p>
+## 마치며
 
-<article class="bfx-case bfx-ai-case" id="ai-workbook">
-  <header>
-    <h3>AI 제안을 실제 대화 시스템에 맞게 재설계</h3>
-    <p>게임이 챕터 단위로 진행되는 흐름을 기획하면서 이를 Sequence라는 단위로 정의했습니다. 이 기획을 바탕으로 AI와 논의하자, 제안된 코드 구조도 Sequence를 중심으로 이어졌습니다. 하지만 기획상의 구분을 그대로 코드에 옮기는 방식은 이미 사용 중인 Dialogue System의 구조와 잘 맞지 않았습니다.</p>
-    <p>Dialogue System은 Conversation을 대화의 단위로 사용합니다. 따라서 <span class="bfx-text-highlight">기획 용어보다 실제 사용하는 도구의 데이터 단위에 맞춰 설계</span>하는 편이 연동과 수정에 적합하다고 판단했습니다. Sequence 중심 구성을 그대로 받아들이지 않고, NPC의 대화를 Conversation별로 관리하는 방향을 제안했습니다.</p>
-    <p>이를 반영해 <span class="bfx-text-highlight">Conversation별 워크북과 Entries·Links 시트로 데이터 구성을 변경</span>했습니다. NPC를 기준으로 수정할 대화 파일을 찾고, 해당 파일에서 대사와 연결 정보를 관리하도록 구성했습니다.</p>
-    <p>이 과정에서 AI의 제안을 실제 사용 방식과 계속 대조하고, 맞지 않는 부분에는 이유와 대안을 제시했습니다. <span class="bfx-text-highlight">기획 방향과 최종 설계는 직접 판단</span>하고, AI는 대안을 검토하고 구현을 구체화하는 데 활용했습니다.</p>
-  </header>
-  <details class="bfx-proof">
-    <summary>설계 변경을 제안한 대화 기록</summary>
-    <div><img src="/images/projects/bfx/evidence-content-workbook.png" alt="Sequence 중심 데이터 구성을 재검토하고 NPC의 대화를 Conversation별 워크북과 Entries·Links 시트로 나누자고 제안한 대화 원문 재구성" loading="lazy" /><p class="bfx-limit">대화 원문 재구성 · 실제 앱 캡처 아님</p></div>
-  </details>
-</article>
+이 프로젝트는 이전 회사 동료들과 각자의 시간을 할애해 진행한 사이드 프로젝트입니다. 제한된 시간 안에서 AI를 적극적으로 활용해 게임을 만들어가는 방법을 함께 고민했습니다.
+
+프로젝트 이전에는 바이브 코딩에 회의적이었고, AI도 필요한 순간에만 보조적으로 사용했습니다. 하지만 Unity MCP를 활용해 자연어로 구현 방향을 설명하고 게임을 만들어가면서 생각이 달라졌습니다. 개발 속도의 변화를 체감했고, 제가 직접 작성한 코드보다 더 나은 구조를 제안받는 경험도 있었습니다.
+
+물론 그 과정이 항상 매끄럽지는 않았습니다. 잘못된 전제를 바로잡고 방향을 반복해서 설명해야 했으며, 오류가 누적된 대화는 맥락을 버리고 다시 시작하기도 했습니다. 특히 Dialogue System과 직접 구현한 퀘스트 시스템을 연동할 때는 기존 도구의 구조에 맞지 않는 제안이 이어져, <span class="bfx-text-highlight">설계 방향을 직접 정하고 제안을 검토하며 구현을 진행했습니다.</span>
+
+이 경험을 통해 관심은 AI를 사용할지 말지에서, <span class="bfx-text-highlight">필요한 맥락과 제약을 전달해 신뢰할 수 있는 결과를 얻는 방법</span>으로 옮겨갔습니다. AI의 도움을 더 적극적으로 받아들이면서도, 결과를 판단하는 책임은 제가 맡아야 한다고 느꼈습니다.
+
+코드가 빠르게 만들어질수록 이를 이해하는 일도 중요해졌습니다. 동료들과 함께 개발하는 만큼, 제가 맡은 구현은 스스로 이해하고 설명할 수 있어야 했습니다. <span class="bfx-text-highlight">이해하지 못한 코드가 지식 부채로 남지 않도록</span>, 생성된 코드의 구조와 동작을 확인하는 데 더 많은 시간을 들였습니다. 이 프로젝트를 통해 AI와 함께 개발한다는 것은 구현 속도를 높이는 동시에, 결과를 이해하고 검토하는 책임을 이어가는 일이라고 느꼈습니다. 앞으로도 이 경험을 바탕으로 AI를 적극적으로 활용하며, 구현과 검토를 함께 발전시켜 나가고자 합니다.

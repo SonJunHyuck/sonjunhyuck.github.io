@@ -355,3 +355,5 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 @media (max-width: 640px) {
   .project-detail > section + section, .project-detail > .story > h2:not(:first-child) { padding-top: 28px; }
 }
+
+.project-detail > .story > article + article { border-top: 1px solid var(--line); }
