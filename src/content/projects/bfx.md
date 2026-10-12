@@ -44,12 +44,28 @@ features:
   <header>
     <span class="bfx-case-number">기능 01</span>
     <h3>외부 대화 도구의 반복 편집 개선</h3>
-    <p>팀에서는 개발 시간을 줄이기 위해 대화 시스템을 직접 구현하는 대신 외부 도구를 활용하기로 했습니다. 여러 선택지를 검토한 끝에 Pixel Crushers의 Dialogue System을 선택했습니다.</p>
-    <p>Dialogue System은 노드마다 화자와 대사를 입력하고 연결하는 방식으로, 대화 흐름을 직관적으로 구성할 수 있습니다. 다만 대화가 늘어날수록 노드를 개별적으로 편집하는 작업도 반복됐습니다. 기존 시스템의 대화 실행 기능은 활용하되, <span class="bfx-text-highlight">콘텐츠를 작성하고 수정하는 과정은 더 간편하게 만들고자 했습니다.</span></p>
-    <p>이를 위해 <span class="bfx-text-highlight">대사와 연결 관계를 테이블로 관리하는 임포터</span>를 구현했습니다. 기획자는 스프레드시트에서 대화를 일괄 작성·수정하고, 임포터는 데이터를 검증한 뒤 <span class="bfx-text-highlight">노드 생성과 연결을 처리</span>하도록 구성했습니다.</p>
-    <p>대사·화자 등 노드 정보는 <code>Entries</code> 시트에, 노드 간 연결 정보는 <code>Links</code> 시트에 작성합니다. 임포터는 두 시트의 데이터를 읽어 Dialogue System의 대화 데이터로 반영합니다.</p>
-    <p>스프레드시트는 <span class="bfx-text-highlight">게임 데이터와 분리된 중간 데이터</span>로 두었습니다. 수정 내용은 즉시 적용되지 않고, 기획자가 검토한 뒤 임포터를 통해 반영하도록 했습니다. 이 확인 단계로 편집 실수나 작성 중인 데이터가 게임에 반영될 위험을 줄이고자 했습니다.</p>
   </header>
+  <p>팀에서는 개발 시간을 줄이기 위해 대화 시스템을 직접 구현하는 대신 외부 도구를 활용하기로 했습니다. 여러 선택지를 검토한 끝에 Pixel Crushers의 Dialogue System을 선택했습니다. Dialogue System은 노드마다 화자와 대사를 입력하고 연결하는 방식으로, 대화 흐름을 직관적으로 구성할 수 있습니다. 다만 대화가 늘어날수록 노드를 개별적으로 편집하는 작업도 반복됐습니다.</p>
+  <figure class="story-media">
+    <img src="/images/projects/bfx/dialogue-node-editing.gif" alt="Dialogue System에서 대화 노드를 개별적으로 편집하는 과정" width="800" height="450" loading="lazy" />
+    <figcaption>Pixel Crushers의 Dialogue System 대화 제작 노드 시스템</figcaption>
+  </figure>
+  <p>기존 시스템의 대화 실행 기능은 활용하되, <span class="bfx-text-highlight">콘텐츠를 작성하고 수정하는 과정은 더 간편하게 만들고자 했습니다.</span> 이를 위해 <span class="bfx-text-highlight">대사와 연결 관계를 테이블로 관리하는 임포터</span>를 구현했습니다. 기획자는 스프레드시트에서 대화를 일괄 작성·수정하고, 임포터는 데이터를 검증한 뒤 <span class="bfx-text-highlight">노드 생성과 연결을 처리</span>하도록 구성했습니다. 대사·화자 등 노드 정보는 <code>Entries</code> 시트에, 노드 간 연결 정보는 <code>Links</code> 시트에 작성합니다. 임포터는 두 시트의 데이터를 읽어 Dialogue System의 대화 데이터로 반영합니다.</p>
+  <div class="bfx-import-media-grid">
+  <figure class="story-media bfx-sheet-media">
+    <a href="/images/projects/bfx/dialogue-spreadsheet.png" target="_blank" rel="noopener" aria-label="대화 스프레드시트 원본 이미지 새 탭에서 보기">
+      <img src="/images/projects/bfx/dialogue-spreadsheet.png" alt="cv_npc_luna 워크북의 Entries 시트. entryId, 화자, 대사, 선택지와 조건을 열로 관리하며 하단에 Entries와 Links 시트가 표시되어 있습니다." width="3600" height="2338" loading="lazy" />
+    </a>
+    <figcaption>게임 내 NPC Luna의 대화 관리 시트. 대사, 화자, 선택지, 조건을 관리하고, 노드 간 연결 정보는 Links 시트에서 관리합니다.</figcaption>
+  </figure>
+  <figure class="story-media bfx-importer-media">
+    <a href="/images/projects/bfx/dialogue-importer.png" target="_blank" rel="noopener" aria-label="Dialogue Importer 원본 이미지 새 탭에서 보기">
+      <img src="/images/projects/bfx/dialogue-importer.png" alt="Conversation별 워크북을 등록하고 Conversation ID와 최근 임포트 상태를 보여주는 실제 Dialogue Importer 화면" loading="lazy" />
+    </a>
+    <figcaption>대화 임포터 화면 — 스프레드시트를 등록해 게임 데이터로 반영할 수 있습니다.</figcaption>
+  </figure>
+  </div>
+    <p>스프레드시트는 <span class="bfx-text-highlight">게임 데이터와 분리된 중간 데이터</span>로 두었습니다. 수정 내용은 즉시 적용되지 않고, 기획자가 검토한 뒤 임포터를 통해 반영하도록 했습니다. 이 확인 단계로 편집 실수나 작성 중인 데이터가 게임에 반영될 위험을 줄이고자 했습니다.</p>
   <figure class="import-board" id="bfx-import-diagram" aria-label="테이블 기반 대화 제작 도구 설계: 기획자가 대화를 작성하고 스프레드시트로 저장합니다. 기획자가 검토 후 반영 버튼을 누르면 임포터가 검증하고 노드와 링크를 생성하여 게임 데이터로 반영합니다.">
     <span class="import-tag">BFX · 테이블 기반 대화 제작 도구</span>
     <section aria-label="채택한 흐름" class="import-chosen">
@@ -67,21 +83,6 @@ features:
       </div>
     </section>
   </figure>
-
-  <div class="bfx-import-media-grid">
-  <figure class="story-media bfx-sheet-media">
-    <a href="/images/projects/bfx/dialogue-spreadsheet.png" target="_blank" rel="noopener" aria-label="대화 스프레드시트 원본 이미지 새 탭에서 보기">
-      <img src="/images/projects/bfx/dialogue-spreadsheet.png" alt="cv_npc_luna 워크북의 Entries 시트. entryId, 화자, 대사, 선택지와 조건을 열로 관리하며 하단에 Entries와 Links 시트가 표시되어 있습니다." width="3600" height="2338" loading="lazy" />
-    </a>
-    <figcaption>게임 내 NPC Luna의 대화 관리 시트. 대사, 화자, 선택지, 조건을 관리하고, 노드 간 연결 정보는 Links 시트에서 관리합니다.</figcaption>
-  </figure>
-  <figure class="story-media bfx-importer-media">
-    <a href="/images/projects/bfx/dialogue-importer.png" target="_blank" rel="noopener" aria-label="Dialogue Importer 원본 이미지 새 탭에서 보기">
-      <img src="/images/projects/bfx/dialogue-importer.png" alt="Conversation별 워크북을 등록하고 Conversation ID와 최근 임포트 상태를 보여주는 실제 Dialogue Importer 화면" loading="lazy" />
-    </a>
-    <figcaption>대화 임포터 화면 — 스프레드시트를 등록해 게임 데이터로 반영할 수 있습니다.</figcaption>
-  </figure>
-  </div>
 </article>
 
 <article class="bfx-case bfx-feature" id="quest-dialogue">

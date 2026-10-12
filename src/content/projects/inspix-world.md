@@ -24,11 +24,9 @@ technologies:
     purpose: "파트너사 자료를 바탕으로 Dedicated Server 테스트 실행 방법 확인"
 features:
   - title: "라이브 이슈 대응"
-    description: "전달받은 변경 사항을 기준으로 수정 대상과 영향 범위를 정리하고, 콘텐츠 수정과 업데이트 대응을 병행하며 처리 우선순위를 조율했습니다."
-  - title: "테스트 환경 파악"
-    description: "파트너사 자료를 기반으로 Standalone 테스트 환경을 구성하고, Docker 기반 Dedicated Server 실행 방법과 패치 절차를 확인했습니다."
+    description: "파트너사로부터 전달받은 이슈 리스트를 기준으로 영향 범위를 파악하고 대응 우선순위를 조율하며, 콘텐츠 수정 및 업데이트를 진행했습니다."
   - title: "협업 및 문서화"
-    description: "테스트 서버 오픈, 에셋 번들 및 플레이어 빌드 절차와 이슈 해결 현황을 문서화하고, 신규 투입 인원을 위한 온보딩·기술 가이드를 작성했습니다."
+    description: "테스트 환경 구축 방법과 에셋·앱 빌드 절차를 파악하고, 이를 온보딩·기술 가이드로 문서화했습니다."
 challenges:
   - problem: "전달받은 절차대로 Dedicated Server 테스트 환경이 동작하지 않음"
     solution: "Standalone과 Docker 기반 DS의 실행 조건을 단계별로 확인하고, 동작 가능한 실행 방법으로 절차를 수정했습니다."
@@ -43,10 +41,6 @@ challenges:
   <img src="/images/projects/inspix-world/issue-list-redacted.png" alt="민감한 정보를 블러 처리한 이슈 해결 현황 관리 화면" loading="lazy" />
   <figcaption>이슈 해결 현황과 버전별 반영 범위 관리 일부</figcaption>
 </figure>
-
-## 테스트 환경 파악
-
-파트너사 자료를 기반으로 Standalone 테스트 환경을 구성했습니다. 테스트 환경 구축 절차는 문서화해 관련 자료로 남겼습니다.
 
 ## 협업 및 문서화
 
