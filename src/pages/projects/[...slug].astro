@@ -10,6 +10,7 @@ const isProjectR = project.id === 'project-r';
 const isInspixWorld = project.id === 'inspix-world';
 const isHiddenCheerSquad = project.id === 'the-hidden-cheer-squad';
 const isBfx = project.id === 'bfx';
+const bfxLeadHighlight = 'The Division에서 모티브를 얻은 PvE 중심 FPS입니다.';
 const isPersonalResearch = project.id === 'crowd-formation-control' || project.id === 'wind-map-simulation';
 const usesCaseStudyLayout = isProjectR || isInspixWorld || isHiddenCheerSquad || isBfx || isPersonalResearch;
 const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || isPersonalResearch;
@@ -17,7 +18,7 @@ const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || i
 <BaseLayout title={data.title} description={data.summary}>
   <article class:list={["project-detail", "container", { "case-study-detail": usesCaseStudyLayout, "inspix-world-detail": isInspixWorld, "bfx-detail": isBfx }]}>
     <a class="back-link" href="/projects/">← 돌아가기</a>
-    <header><p class="eyebrow">{data.category === 'game' ? 'GAME' : 'GRAPHICS'} PROJECT {data.isExample && '· EXAMPLE'}</p><h1>{data.title}</h1><p class="lead">{data.description}</p></header>
+    <header><p class="eyebrow">{data.category === 'game' ? 'GAME' : 'GRAPHICS'} PROJECT {data.isExample && '· EXAMPLE'}</p><h1>{data.title}</h1><p class="lead">{isBfx && data.description.startsWith(bfxLeadHighlight) ? <><span class="lead-highlight">{bfxLeadHighlight}</span>{data.description.slice(bfxLeadHighlight.length)}</> : data.description}</p></header>
     {data.thumbnail && <img class="project-cover" src={data.thumbnail} alt={`${data.title} 대표 이미지`} />}
     <dl class="facts">
       {data.period && <div><dt>기간</dt><dd>{data.period}</dd></div>}
@@ -29,7 +30,10 @@ const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || i
     {showsRepresentativeMedia && data.videos.length > 0 && <section aria-labelledby="project-videos"><p class="eyebrow">MEDIA</p><h2 id="project-videos">대표 미디어</h2><div class="video-grid">{data.videos.map((video) => <article class="video-item"><div class="video"><iframe src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}`} title={video.title} loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen /></div><h3>{video.title}</h3>{video.description && <p>{video.description}</p>}<a href={video.url} target="_blank" rel="noopener noreferrer">YouTube에서 보기 ↗</a></article>)}</div></section>}
     {!usesCaseStudyLayout && data.gallery.length > 0 && <section><h2>Gallery</h2><div class="gallery">{data.gallery.map((image) => <figure><img src={image.src} alt={image.alt} loading="lazy" />{image.caption && <figcaption>{image.caption}</figcaption>}</figure>)}</div></section>}
     {!usesCaseStudyLayout && <section><p class="eyebrow">TECH STACK</p><h2>사용 기술</h2><ul class="tech">{data.technologies.map((tech) => <li><strong>{tech.name}</strong><span>{tech.purpose}</span></li>)}</ul></section>}
-    {!isBfx && <section><p class="eyebrow">CONTRIBUTION</p><h2>{usesCaseStudyLayout ? '구현 및 기여' : '본인 기여 · 핵심 구현'}</h2><div class:list={["feature-grid", { "feature-grid-wide": usesCaseStudyLayout }]}>{data.features.map((feature) => <div><h3>{feature.title}</h3><p>{feature.description}</p></div>)}</div></section>}
+    <section><p class="eyebrow">CONTRIBUTION</p><h2 id={isBfx ? 'overview' : undefined}>{usesCaseStudyLayout ? '구현 및 기여' : '본인 기여 · 핵심 구현'}</h2><div class:list={["feature-grid", { "feature-grid-wide": usesCaseStudyLayout }]}>{data.features.map((feature) => {
+      const highlightIndex = feature.highlight ? feature.description.indexOf(feature.highlight) : -1;
+      return <div><h3>{feature.title}</h3><p>{feature.highlight && highlightIndex >= 0 ? <>{feature.description.slice(0, highlightIndex)}<span class="feature-highlight">{feature.highlight}</span>{feature.description.slice(highlightIndex + feature.highlight.length)}</> : feature.description}</p></div>;
+    })}</div></section>
     {!usesCaseStudyLayout && data.challenges.length > 0 && <section><h2>문제 해결</h2><div class="challenges">{data.challenges.map((item) => <article><h3>{item.problem}</h3><p><strong>해결:</strong> {item.solution}</p>{item.result && <p><strong>결과:</strong> {item.result}</p>}</article>)}</div></section>}
     <section class:list={["story", { "case-study-story": usesCaseStudyLayout }]}><Content /></section>
     <div class="links">{data.repositoryUrl && <a class="button button-primary" href={data.repositoryUrl} target="_blank" rel="noreferrer">GitHub ↗</a>}{data.playableUrl && <a class="button button-outline" href={data.playableUrl} target="_blank" rel="noreferrer">실행·다운로드 ↗</a>}{data.notionUrl && <a class="button button-outline" href={data.notionUrl} target="_blank" rel="noreferrer">Notion 기록 ↗</a>}{data.externalLinks.map((link) => <a class="button button-outline" href={link.url} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</div>
@@ -41,6 +45,7 @@ const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || i
   .bfx-detail .project-cover { max-height: none; aspect-ratio: auto; object-fit: contain; }
   .bfx-detail > header { padding-bottom: 32px; }
   .bfx-detail > header .lead { max-width: 100%; }
+  .bfx-detail > header .lead :global(.lead-highlight) { color: var(--accent); }
   .bfx-detail > .facts { margin-bottom: 28px; }
   .bfx-detail > .story { margin-top: 34px; }
   .bfx-detail .facts small { color: var(--muted); font-size: .76rem; }
@@ -51,7 +56,7 @@ const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || i
   .story :global(.bfx-kicker), .story :global(.bfx-case-number) { color: var(--accent); font: 700 11px var(--mono); letter-spacing: .08em; }
   .story :global(.bfx-video video) { display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 4px; background: #000; }
   .story :global(.bfx-case) { margin: 0; padding: 46px 0; border: 0; border-top: 1px solid var(--line); background: transparent; }
-  .story :global(#quest-dialogue), .story :global(#ai-workbook) { border-top: 0; }
+  .story :global(#ai-workbook) { border-top: 0; }
   .story :global(.bfx-case > header) { padding: 0; }
   .story :global(.bfx-case > header h3) { max-width: 100%; margin: 8px 0 10px; font-size: clamp(1.3rem, 2.2vw, 1.7rem); letter-spacing: -.02em; }
   .story :global(.bfx-case > header p) { max-width: 100%; }
@@ -60,11 +65,12 @@ const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || i
   .story :global(.bfx-decision-grid > div) { padding: 22px; background: var(--paper); }
   .story :global(.bfx-decision-grid span) { display: block; margin-bottom: 9px; color: var(--accent); font-size: .76rem; font-weight: 800; }
   .story :global(.bfx-decision-grid p) { margin: 0; font-size: .92rem; line-height: 1.7; }
-  .story :global(.bfx-flow) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 30px 0; }
-  .story :global(.bfx-flow > div) { position: relative; padding: 24px; border: 1px solid var(--line); background: var(--paper); }
-  .story :global(.bfx-flow span) { display: grid; place-items: center; width: 28px; height: 28px; margin-bottom: 18px; border-radius: 50%; background: var(--button-bg); color: var(--button-text); font: 700 11px var(--mono); }
-  .story :global(.bfx-flow strong) { display: block; }
-  .story :global(.bfx-flow p) { margin: 8px 0 0; font-size: .86rem; }
+  .story :global(.bfx-flow) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin: 22px 0; }
+  .story :global(.bfx-flow > div) { position: relative; padding: 12px 14px; border: 1px solid var(--soft-line); border-radius: 4px; }
+  .story :global(.bfx-flow > div:not(:last-child)::after) { content: "→"; position: absolute; right: -23px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+  .story :global(.bfx-flow strong) { display: block; font-size: .86rem; font-weight: 600; }
+  .story :global(.bfx-flow p) { margin: 4px 0 0; color: var(--muted); font-size: .78rem; word-break: keep-all; }
+  @media (max-width: 760px) { .story :global(.bfx-flow) { gap: 24px; }.story :global(.bfx-flow > div:not(:last-child)::after) { content: "↓"; right: auto; top: auto; left: 50%; bottom: -23px; transform: translateX(-50%); } }
   .story :global(.bfx-notification-list) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin: 28px 0 8px; border: 1px solid var(--line); background: var(--line); }
   .story :global(.bfx-notification-list > div) { padding: 18px 20px; background: var(--paper); }
   .story :global(.bfx-notification-list strong), .story :global(.bfx-notification-list span) { display: block; }

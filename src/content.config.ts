@@ -39,6 +39,7 @@ const projects = defineCollection({
     features: z.array(z.object({
       title: z.string(),
       description: z.string(),
+      highlight: z.string().optional(),
     })),
     challenges: z.array(z.object({
       problem: z.string(),

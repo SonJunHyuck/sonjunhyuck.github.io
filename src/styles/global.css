@@ -324,6 +324,7 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 .project-category-stickers span { padding: 6px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-strong); color: var(--ink); font: 800 11px var(--sans); }
 .project-card-compact .project-card-body { padding: 24px; }
 .project-card-compact h2 { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 0 0 18px; font-size: 25px; line-height: 1.3; }
+.bfx-detail .feature-highlight, .bfx-detail .bfx-text-highlight { color: var(--accent); }
 .project-next-card { display: grid; place-items: center; border-style: dashed; padding: 24px; text-align: center; }
 .project-next-card h2 { display: block; margin-bottom: 12px; color: var(--muted); }
 .project-next-card p { margin-bottom: 0; color: var(--muted); font-size: 14px; }
@@ -335,4 +336,22 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
   .project-carousel-track { grid-auto-columns: calc((100% - 20px) / 1.18); }
   .project-card-compact .project-card-body { padding: 20px; }
   .project-card-compact h2 { font-size: 23px; }
+}
+
+/* BFX authoring examples share a row; clip only the screenshot's macOS menu bar. */
+#dialogue-importer .bfx-import-media-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+#dialogue-importer .bfx-import-media-grid figure { min-width: 0; margin: 24px 0; }
+#dialogue-importer .bfx-import-media-grid a { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 4px; }
+#dialogue-importer .bfx-import-media-grid img { border: 0; border-radius: 0; height: auto; max-height: none; }
+#dialogue-importer .bfx-sheet-media img { margin-top: -2.222222%; }
+@media (max-width: 640px) { #dialogue-importer .bfx-import-media-grid { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+
+/* Shared separators for major sections in every project detail. */
+.project-detail > section + section { border-top: 1px solid var(--line); padding-top: 40px; }
+.project-detail > .story > h2:not(:first-child) { border-top: 1px solid var(--line); padding-top: 40px; }
+.project-detail > .story > h2:first-child { margin-top: 0; }
+.project-detail > .story > .bfx-case:first-child { border-top: 0; padding-top: 0; }
+.bfx-detail #notification-ui > header h4 { margin: 24px 0 14px; font-size: 1.05rem; }
+@media (max-width: 640px) {
+  .project-detail > section + section, .project-detail > .story > h2:not(:first-child) { padding-top: 28px; }
 }
