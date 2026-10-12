@@ -1,8 +1,8 @@
 ---
 title: "군중 대형 제어 시뮬레이션"
-summary: "PBD의 위치 제약을 확장해 군중의 대형을 유지하면서 개별 위치를 제어하는 시뮬레이션입니다."
+summary: "Position Based Dynamics (PBD)의 제약 개념을 군중 대형 유지에 적용하여 군중 개개인의 위치를 제어한 그래픽스 연구입니다."
 cardContribution: "제어 알고리즘을 연구하고 C++·OpenGL로 구현했습니다."
-description: "Position Based Dynamics의 제약 개념을 군중 대형 유지에 적용하고, Short Range Distance로 개별 위치를 제어한 그래픽스 연구입니다."
+description: "Position Based Dynamics (PBD)의 제약 개념을 군중 대형 유지에 적용하여 군중 개개인의 위치를 제어한 그래픽스 연구입니다."
 publishedAt: 2023-06-01
 category: "graphics"
 projectGroup: "research"
@@ -27,10 +27,13 @@ technologies:
 features:
   - title: "기술 분석 및 해석"
     description: "Position Based Dynamics의 핵심 원리를 분석하고, 기존 군중 시뮬레이션 연구의 한계를 파악해 개선 방향을 도출했습니다."
+    highlight: "기존 군중 시뮬레이션 연구의 한계를 파악"
   - title: "제어 알고리즘 설계"
     description: "PBD의 위치 제약 개념을 확장해 군중의 대형을 유지하면서 개별 위치를 제어하는 알고리즘을 설계했습니다."
+    highlight: "군중의 대형을 유지하면서 개별 위치를 제어"
   - title: "시뮬레이션 구현 및 검증"
     description: "C++와 OpenGL로 대형 제어 시뮬레이션을 구현하고, 다양한 대형을 유지하는 군중 움직임을 검증했습니다."
+    highlight: "C++와 OpenGL로 대형 제어 시뮬레이션을 구현"
 challenges:
   - problem: "기존 군중 시뮬레이션에서 개별 이동과 목표 대형 유지의 동시 제어"
     solution: "PBD 제약 개념을 대형 제어에 맞게 확장하고 SRD 기반 위치 보정을 적용했습니다."
@@ -44,7 +47,7 @@ externalLinks:
 
 ## 기술 분석 및 해석
 
-Position Based Dynamics의 핵심 원리를 분석하고, 기존 PBD 기반 군중 시뮬레이션 연구가 개별 에이전트의 충돌과 이동을 처리하는 방식을 살펴봤습니다. 군중의 자연스러운 움직임과 함께 목표 대형을 유지할 수 있도록 기존 연구의 한계를 파악하고 개선 방향을 도출했습니다.
+Position Based Dynamics의 핵심 원리를 분석하고, 기존 PBD 기반 군중 시뮬레이션 연구가 개별 에이전트의 충돌과 이동을 처리하는 방식을 살펴봤습니다. <span class="text-highlight">군중의 자연스러운 움직임과 함께 목표 대형을 유지</span>할 수 있도록 기존 연구의 한계를 파악하고 개선 방향을 도출했습니다.
 
 <div class="story-media-grid">
   <figure class="story-media">
@@ -59,11 +62,11 @@ Position Based Dynamics의 핵심 원리를 분석하고, 기존 PBD 기반 군�
 
 ## 제어 알고리즘 설계
 
-PBD의 위치 제약 개념을 군중 대형 제어로 확장했습니다. Short Range Distance를 이용해 대형 안에서 에이전트의 개별 위치를 보정하고, 군중이 이동하는 동안 목표 대형을 유지할 수 있도록 제어 알고리즘을 설계했습니다.
+<span class="text-highlight">PBD의 위치 제약 개념을 군중 대형 제어로 확장</span>했습니다. <span class="text-highlight">Short Range Distance를 이용해 대형 안에서 에이전트의 개별 위치를 보정</span>하고, 군중이 이동하는 동안 목표 대형을 유지할 수 있도록 제어 알고리즘을 설계했습니다.
 
 ## 시뮬레이션 구현 및 검증
 
-C++와 OpenGL로 PBD 기반 군중 대형 제어 시뮬레이션을 구현했습니다. 서로 다른 대형과 이동 경로를 적용해 군중이 목표 대형을 유지하며 이동하는 과정을 시각적으로 검증했습니다.
+C++와 OpenGL로 PBD 기반 군중 대형 제어 시뮬레이션을 구현했습니다. <span class="text-highlight">서로 다른 대형과 이동 경로를 적용</span>해 군중이 목표 대형을 유지하며 이동하는 과정을 시각적으로 검증했습니다.
 
 <figure class="story-media">
   <img src="/images/projects/crowd-formation-control/formation-simulation.png" alt="빨간색과 파란색 군중이 서로 다른 이동 경로를 따라 대형을 유지하는 시뮬레이션" loading="lazy" />
