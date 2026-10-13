@@ -1,9 +1,7 @@
 # 프로필의 프로젝트 카드
 
-프로필은 프로젝트 페이지의 카드를 재사용한다.
+공유 데이터·컴포넌트·카드 구성과 상세 수정 시 동기화는 [AGENTS.md](../../../../AGENTS.md)의 콘텐츠 기준을 따른다. 카드의 표시 항목은 [목록 매뉴얼](../../portfolio-project/references/list.md)을 참조한다.
 
-- [프로필](../../../../src/pages/index.astro)과 [프로젝트 목록](../../../../src/pages/projects/index.astro)은 [프로젝트 데이터](../../../../src/content/projects)와 [ProjectCard.astro](../../../../src/components/ProjectCard.astro)를 공유한다.
-- 프로필은 표시할 프로젝트의 선택과 순서만 관리한다. 제목·요약·이미지·기술 정보를 별도로 복사하지 않는다.
-- 상세를 수정하면 summary와 메타데이터에 미치는 영향을 검토하고 필요한 값을 함께 갱신한다.
-- 변경 후 프로젝트 목록과 프로필 양쪽의 카드가 상세 내용과 일치하는지 확인한다.
-- 자기소개에 쓰는 근거 카드는 이 프로젝트 카드 목록과 구분한다.
+- 프로필의 노출 선택과 순서는 [index.astro](../../../../src/pages/index.astro)에서 관리한다.
+- 공유 원본은 [프로젝트 데이터](../../../../src/content/projects)와 [ProjectCard.astro](../../../../src/components/ProjectCard.astro)다.
+- 자기소개에 쓰는 근거 카드는 프로젝트 카드 목록과 구분한다.
