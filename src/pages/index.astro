@@ -15,6 +15,7 @@ const experience = [
     projects: [
       {
         name: 'Project R',
+        href: '/projects/project-r/',
         description: 'Unity 기반 메타버스 소셜 게임 개발 참여',
         contributions: [
           'Jenkins를 활용한 클라이언트 빌드·배포 자동화',
@@ -24,6 +25,7 @@ const experience = [
       },
       {
         name: 'InspixWorld',
+        href: '/projects/inspix-world/',
         description: 'Unity 기반 메타버스 소셜 게임 라이브서비스 유지보수',
         contributions: [
           '라이브 서비스 이슈 분석·수정 및 업데이트 대응',
@@ -64,8 +66,8 @@ const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((pro
       <div class="intro-profile-top">
         <div class="intro-profile-copy">
           <p class="eyebrow intro-role">GAME CLIENT DEVELOPER</p>
-          <h1 id="intro-title">부딪히고,<br />설계합니다.</h1>
-          <p class="intro-description">직접 해보며 문제를 이해하고,<br class="intro-copy-break" /> 반복되는 일을 자동화하는 것을 추구하는<br class="intro-copy-break" /> 개발자 <em>손준혁</em>입니다.</p>
+          <h1 id="intro-title">부딪히고, 설계합니다.</h1>
+          <p class="intro-description">직접 해보며 문제를 이해하고, 반복되는 일을 자동화하는 것을 추구하는 개발자 <em>손준혁</em>입니다.</p>
         </div>
         <figure class="intro-portrait">
           <img src="/profile.webp" alt="꽃밭에서 촬영한 손준혁 프로필 사진" width="360" height="360" fetchpriority="high" />
@@ -125,7 +127,7 @@ const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((pro
                 <div class="project-contributions">
                   {item.projects.map((project) => (
                     <section class="contribution-group">
-                      <h4>{project.name}</h4>
+                      <h4>{'href' in project ? <a href={project.href}>{project.name}</a> : project.name}</h4>
                       <p>{project.description}</p>
                       <ul>{project.contributions.map((contribution) => <li>{contribution}</li>)}</ul>
                     </section>

@@ -25,7 +25,7 @@ const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || i
       {data.role && <div><dt>역할</dt><dd>{data.role}</dd></div>}
       {(data.teamSize || data.team) && <div><dt>팀 규모</dt><dd>{data.teamSize ?? data.team}</dd></div>}
       {data.platform.length > 0 && <div><dt>플랫폼</dt><dd>{data.platform.join(' · ')}</dd></div>}
-      {isBfx && <div><dt>상태</dt><dd>1차 개발 종료<br /><small>2차 개발 착수 계획 미정</small></dd></div>}
+      {isBfx && <div><dt>상태</dt><dd>1차 개발 종료 · <small>2차 개발 착수 계획 미정</small></dd></div>}
     </dl>
     {showsRepresentativeMedia && data.videos.length > 0 && <section aria-labelledby="project-videos"><p class="eyebrow">MEDIA</p><h2 id="project-videos">대표 미디어</h2><div class="video-grid">{data.videos.map((video) => <article class="video-item"><div class="video"><iframe src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}`} title={video.title} loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen /></div><h3>{video.title}</h3>{video.description && <p>{video.description}</p>}<a href={video.url} target="_blank" rel="noopener noreferrer">YouTube에서 보기 ↗</a></article>)}</div></section>}
     {!usesCaseStudyLayout && data.gallery.length > 0 && <section><h2>Gallery</h2><div class="gallery">{data.gallery.map((image) => <figure><img src={image.src} alt={image.alt} loading="lazy" />{image.caption && <figcaption>{image.caption}</figcaption>}</figure>)}</div></section>}

@@ -1,6 +1,6 @@
 # 업무 프로젝트
 
-보이저엑스의 [Project R](../../../../src/content/projects/project-r.md)과 [Inspix World](../../../../src/content/projects/inspix-world.md)를 구분한다.
+보이저의 [Project R](../../../../src/content/projects/project-r.md)과 [Inspix World](../../../../src/content/projects/inspix-world.md)를 구분한다.
 
 - Canva 원자료와 최신 사용자 정정을 대조하며 의미를 유지해 요약한다.
 - 프로젝트의 구현 결과와 사용자 기여를 구분하고 실제 수행 범위를 설명한다.

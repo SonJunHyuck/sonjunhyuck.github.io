@@ -71,15 +71,15 @@ features:
     <section aria-label="채택한 흐름" class="import-chosen">
       <span class="import-label">채택한 흐름</span>
       <div class="import-flow">
-        <div class="import-node"><span class="import-index">01 / 작성</span><h3>기획자</h3><span>대화 작성<br>정해진 형식 정리</span></div>
+        <div class="import-node"><span class="import-index">01 / 작성</span><h3>기획자</h3><span>대화 작성 · 정해진 형식 정리</span></div>
         <span class="import-arrow" aria-hidden="true">→</span>
-        <div class="import-node"><span class="import-index">02 / 중간 데이터</span><h3>스프레드시트</h3><span>Entries · Links<br>자유롭게 수정</span></div>
+        <div class="import-node"><span class="import-index">02 / 중간 데이터</span><h3>스프레드시트</h3><span>Entries · Links 자유롭게 수정</span></div>
         <span class="import-arrow" aria-hidden="true">→</span>
-        <div class="import-node import-gate"><span class="import-index">03 / 기획자 확인</span><h3>검토 후<br>반영 버튼</h3><span>명시적으로 적용</span></div>
+        <div class="import-node import-gate"><span class="import-index">03 / 기획자 확인</span><h3>검토 후 반영 버튼</h3><span>명시적으로 적용</span></div>
         <span class="import-arrow" aria-hidden="true">→</span>
-        <div class="import-node"><span class="import-index">04 / 자동 처리</span><h3>임포터</h3><span>데이터 검증<br>노드 · 링크 생성</span></div>
+        <div class="import-node"><span class="import-index">04 / 자동 처리</span><h3>임포터</h3><span>데이터 검증 · 노드와 링크 생성</span></div>
         <span class="import-arrow" aria-hidden="true">→</span>
-        <div class="import-node import-result"><span class="import-index">05 / 반영</span><h3>게임 데이터</h3><span>대화 시스템에<br>변경 사항 적용</span></div>
+        <div class="import-node import-result"><span class="import-index">05 / 반영</span><h3>게임 데이터</h3><span>대화 시스템에 변경 사항 적용</span></div>
       </div>
     </section>
   </figure>

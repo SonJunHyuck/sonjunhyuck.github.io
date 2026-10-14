@@ -15,8 +15,8 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
   <section class="container projects-section project-carousel" aria-labelledby="project-list-heading">
     <h2 id="project-list-heading" class="visually-hidden">전체 프로젝트 목록</h2>
     <div id="all-projects" class="project-carousel-track" tabindex="0" role="region" aria-label="전체 프로젝트 가로 목록">
-      {projects.map((project) => <ProjectCard {project} compact />)}
-      <article class="project-card project-card-compact project-next-card" data-project-next>
+      {projects.map((project) => <ProjectCard {project} />)}
+      <article class="project-card project-next-card" data-project-next>
         <div>
           <h2>...</h2>
           <p>NEXT PROJECT</p>
