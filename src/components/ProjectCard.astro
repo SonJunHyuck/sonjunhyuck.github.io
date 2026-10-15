@@ -6,14 +6,14 @@ interface Props { project: CollectionEntry<'projects'>; }
 const { project } = Astro.props;
 const { data } = project;
 const groups = data.projectGroup === 'work' ? ['work', 'games'] : [data.projectGroup];
-const labels = groups.map((group) => ({ work: '업무', games: '게임', research: '연구' })[group]);
+const labels = groups.map((group) => ({ work: '업무', games: '게임', research: '연구', ai: 'AI 활용' })[group]);
 ---
 
 <article class="project-card" data-category={data.category} data-project-groups={groups.join(' ')}>
   <a class="project-card-link" href={`/projects/${project.id}/`} aria-label={`${data.title} 상세 보기`}>
     <div class="project-visual">
       <div class="project-category-stickers">{labels.map((label) => <span>{label}</span>)}</div>
-      {data.thumbnail ? <img src={data.thumbnail} alt={`${data.title} 대표 이미지`} loading="lazy" /> : <span aria-hidden="true">{data.category === 'game' ? 'GAME' : 'GRAPHICS'}</span>}
+      {data.thumbnail ? <img src={data.thumbnail} alt={`${data.title} 대표 이미지`} loading="lazy" /> : <span aria-hidden="true">{data.category === 'game' ? 'GAME' : data.category === 'ai' ? 'AI 활용' : 'GRAPHICS'}</span>}
     </div>
     <div class="project-card-body">
       <h2>{data.title}</h2>

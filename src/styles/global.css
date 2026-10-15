@@ -281,29 +281,29 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 
 /* BFX dialogue import workflow */
 
-#bfx-import-diagram { --font-size-base:16px; }
-#bfx-import-diagram {            color:var(--ink); background:radial-gradient(var(--line) .8px,transparent .8px) 0 0/20px 20px,var(--paper); border:4px solid var(--interactive-line); border-radius:28px; box-shadow:7px 8px 0 var(--line); margin:28px 9px 12px 0; padding:32px 20px 22px; position:relative; font-family:inherit; }
-#bfx-import-diagram .import-tag { position:absolute; top:-16px; left:22px; background:var(--button-bg); color:var(--button-text); border-radius:30px; padding:6px 16px; font-weight:700; }
-#bfx-import-diagram .import-label {font-weight:700; color:var(--subtle-copy);}
-#bfx-import-diagram .import-alternative {padding:0 0 18px; border-bottom:1px solid var(--line);}
-#bfx-import-diagram .import-alt-flow {display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:8px 0; font-weight:600;}
-#bfx-import-diagram .import-note {color:var(--subtle-copy);}
-#bfx-import-diagram .import-chosen {padding-top:18px;}
-#bfx-import-diagram .import-chosen > .import-label {color:var(--accent);}
-#bfx-import-diagram .import-flow {display:grid; grid-template-columns:1fr 16px 1fr 16px 1fr 16px 1fr 16px 1fr; align-items:stretch; margin-top:14px;}
-#bfx-import-diagram .import-node {background:var(--surface); border:3px solid var(--interactive-line); border-radius:18px; padding:15px 5px; text-align:center; display:flex; flex-direction:column; justify-content:center; gap:10px; min-width:0;}
-#bfx-import-diagram .import-index {font-size:calc(var(--font-size-base)*.8); color:var(--subtle-copy);}
-#bfx-import-diagram h3 {font-size:var(--font-size-base); font-weight:800; margin:0; word-break:keep-all;}
-#bfx-import-diagram .import-node>span:last-child {font-size:calc(var(--font-size-base)*.85); word-break:keep-all;}
-#bfx-import-diagram .import-arrow {align-self:center; text-align:center; font-weight:800; color:var(--accent);}
-#bfx-import-diagram .import-gate {background:var(--button-bg); color:var(--button-text); border-color:var(--accent); box-shadow:3px 4px 0 var(--line);}
-#bfx-import-diagram .import-gate .import-index {color:var(--button-text);}
-#bfx-import-diagram .import-result {border-style:double; border-width:5px; border-color:var(--accent); background:var(--accent-soft);}
-@media(max-width:620px) {#bfx-import-diagram .import-flow {grid-template-columns:1fr; gap:6px;} #bfx-import-diagram .import-arrow {transform:rotate(90deg);} #bfx-import-diagram .import-node {padding:14px; gap:5px;} #bfx-import-diagram {padding:30px 16px 20px;} }
+:is(#bfx-import-diagram, .portfolio-import-diagram) { --font-size-base:16px; }
+:is(#bfx-import-diagram, .portfolio-import-diagram) {            color:var(--ink); background:radial-gradient(var(--line) .8px,transparent .8px) 0 0/20px 20px,var(--paper); border:4px solid var(--interactive-line); border-radius:28px; box-shadow:7px 8px 0 var(--line); margin:28px 9px 12px 0; padding:32px 20px 22px; position:relative; font-family:inherit; }
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-tag { position:absolute; top:-16px; left:22px; background:var(--button-bg); color:var(--button-text); border-radius:30px; padding:6px 16px; font-weight:700; }
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-label {font-weight:700; color:var(--subtle-copy);}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-alternative {padding:0 0 18px; border-bottom:1px solid var(--line);}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-alt-flow {display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:8px 0; font-weight:600;}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-note {color:var(--subtle-copy);}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-chosen {padding-top:18px;}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-chosen > .import-label {color:var(--accent);}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-flow {display:grid; grid-template-columns:var(--import-columns,1fr 16px 1fr 16px 1fr 16px 1fr 16px 1fr); align-items:stretch; margin-top:14px;}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-node {background:var(--surface); border:3px solid var(--interactive-line); border-radius:18px; padding:15px 5px; text-align:center; display:flex; flex-direction:column; justify-content:center; gap:10px; min-width:0;}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-index {font-size:calc(var(--font-size-base)*.8); color:var(--subtle-copy);}
+:is(#bfx-import-diagram, .portfolio-import-diagram) h3 {font-size:var(--font-size-base); font-weight:800; margin:0; word-break:keep-all;}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-node>span:last-child {font-size:calc(var(--font-size-base)*.85); word-break:keep-all;}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-arrow {align-self:center; text-align:center; font-weight:800; color:var(--accent);}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-gate {background:var(--button-bg); color:var(--button-text); border-color:var(--accent); box-shadow:3px 4px 0 var(--line);}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-gate .import-index {color:var(--button-text);}
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-result {border-style:double; border-width:5px; border-color:var(--accent); background:var(--accent-soft);}
+@media(max-width:620px) {:is(#bfx-import-diagram, .portfolio-import-diagram) .import-flow {grid-template-columns:1fr; gap:6px;} :is(#bfx-import-diagram, .portfolio-import-diagram) .import-arrow {transform:rotate(90deg);} :is(#bfx-import-diagram, .portfolio-import-diagram) .import-node {padding:14px; gap:5px;} :is(#bfx-import-diagram, .portfolio-import-diagram) {padding:30px 16px 20px;} }
 
-#bfx-import-diagram .import-node h3 { color:inherit; font-size:1rem; margin:0; line-height:1.4; }
-#bfx-import-diagram .import-node { line-height:1.6; }
-#bfx-import-diagram > section { margin:0; }
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-node h3 { color:inherit; font-size:1rem; margin:0; line-height:1.4; }
+:is(#bfx-import-diagram, .portfolio-import-diagram) .import-node { line-height:1.6; }
+:is(#bfx-import-diagram, .portfolio-import-diagram) > section { margin:0; }
 #dialogue-importer .bfx-sheet-media img { height:auto; max-height:none; cursor:zoom-in; }
 
 /* The overview presents every project in one horizontally scrollable list. */
@@ -357,3 +357,36 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 }
 
 .project-detail > .story > article + article { border-top: 1px solid var(--line); }
+
+/* Portfolio concept diagrams: internal page models follow the shared palette. */
+.portfolio-import-diagram .portfolio-diagram-title { margin: 8px 0 24px; font-size: 1.15rem; line-height: 1.5; }
+.portfolio-comparison { display: grid; grid-template-columns: minmax(0,1fr) 24px minmax(0,1fr); gap: 12px; align-items: stretch; }
+.portfolio-stage { min-width: 0; padding: 20px 16px; border: 2px solid var(--interactive-line); border-radius: 18px; background: var(--surface); }
+.portfolio-stage-after { border: 3px solid var(--accent); background: var(--accent-soft); }
+.portfolio-pill { display: inline-block; padding: 4px 12px; border-radius: 999px; background: var(--button-bg); color: var(--button-text); font-size: .8rem; font-weight: 700; }
+.portfolio-comparison-arrow { align-self: center; text-align: center; color: var(--accent); font-weight: 800; }
+.portfolio-pages { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin: 20px 0; align-items: start; }
+.portfolio-page { min-width: 0; min-height: 130px; padding: 10px 6px; border: 1px solid var(--interactive-line); border-radius: 6px; background: var(--paper); }
+.portfolio-page strong { display: block; font-size: .7rem; text-align: center; }
+.portfolio-page-body { width: 80%; margin: 15px auto 0; display: grid; gap: 8px; }
+.portfolio-page-body i { display: block; height: 9px; border-radius: 2px; background: var(--line); }
+.portfolio-pages-before .portfolio-page:nth-child(1) .portfolio-page-body { width: 96%; gap: 5px; }
+.portfolio-pages-before .portfolio-page:nth-child(2) .portfolio-page-body { width: 60%; margin-top: 23px; gap: 13px; }
+.portfolio-pages-before .portfolio-page:nth-child(3) .portfolio-page-body { width: 80%; margin-top: 10px; gap: 10px; }
+.portfolio-pages-before .portfolio-page:nth-child(2) i { background: var(--muted); }
+.portfolio-pages-after .portfolio-page-body i:first-child { background: var(--accent); }
+.story .portfolio-stage > p { margin: 0; font-size: .83rem; text-align: center; }
+.story .portfolio-request { margin: -8px 0 20px; color: var(--muted); font-size: .85rem; }
+.portfolio-workflow { display: grid; gap: 16px; }
+.story .portfolio-steps { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 24px; list-style: none; padding: 0; margin: 18px 0 0; }
+.story .portfolio-steps li { position: relative; padding: 12px 6px; border: 1px solid var(--interactive-line); border-radius: 10px; background: var(--paper); text-align: center; font-size: .85rem; word-break: keep-all; }
+.portfolio-steps li:not(:last-child)::after { content: '→'; position: absolute; right: -20px; color: var(--accent); }
+.story .portfolio-next h3 { margin: 12px 0; font-size: 1.15rem; }
+.story .portfolio-next p:last-child { color: var(--muted); font-size: .8rem; }
+@media (max-width: 700px) {
+  .portfolio-comparison { grid-template-columns: minmax(0,1fr); }
+  .portfolio-comparison-arrow { transform: rotate(90deg); }
+  .portfolio-page { min-height: 115px; }
+  .story .portfolio-steps { grid-template-columns: minmax(0,1fr); gap: 22px; }
+  .portfolio-steps li:not(:last-child)::after { right: auto; left: 50%; bottom: -25px; transform: translateX(-50%) rotate(90deg); }
+}

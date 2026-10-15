@@ -6,11 +6,11 @@ import ProjectCard from '../../components/ProjectCard.astro';
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 ---
-<BaseLayout title="Projects — Son Junhyuck" description="게임 및 연구 프로젝트를 소개합니다.">
+<BaseLayout title="Projects — Son Junhyuck" description="업무와 개인 프로젝트를 소개합니다.">
   <section class="page-intro container project-hub-intro">
     <ProjectGroupNav />
     <p class="eyebrow">PROJECTS</p>
-    <h1>게임 및 연구 <em>프로젝트</em>를 소개합니다.</h1>
+    <h1>업무와 개인 <em>프로젝트</em>를 소개합니다.</h1>
   </section>
   <section class="container projects-section project-carousel" aria-labelledby="project-list-heading">
     <h2 id="project-list-heading" class="visually-hidden">전체 프로젝트 목록</h2>
@@ -29,13 +29,15 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
 </BaseLayout>
 
 <script>
+  import { projectGroups } from '../../config/projectGroups';
+
   const track = document.querySelector<HTMLElement>('#all-projects');
   const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-project-filter]')];
   const cards = [...document.querySelectorAll<HTMLElement>('#all-projects [data-project-groups]')];
   const nextCard = document.querySelector<HTMLElement>('[data-project-next]');
   const status = document.querySelector<HTMLElement>('#project-filter-status');
   const empty = document.querySelector<HTMLElement>('#project-filter-empty');
-  const validFilters = ['all', 'work', 'games', 'research'];
+  const validFilters: string[] = ['all', ...projectGroups.map((group) => group.id)];
   const applyFilter = () => {
     const requested = new URL(location.href).searchParams.get('filter') || 'all';
     const filter = validFilters.includes(requested) ? requested : 'all';

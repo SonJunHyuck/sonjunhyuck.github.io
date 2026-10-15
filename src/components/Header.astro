@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { NOTION_DEVLOG_URL } from '../config/links';
+import { getProjectGroupNavLabel, projectGroups } from '../config/projectGroups';
 
 const { currentPath = '/' } = Astro.props;
 const detailSlug = currentPath.match(/^\/projects\/([^/]+)\/?$/)?.[1];
@@ -8,18 +9,9 @@ const detailProject = detailSlug
   ? (await getCollection('projects', ({ data }) => !data.draft)).find((project) => project.id === detailSlug)
   : undefined;
 const activeProjectGroup = detailProject?.data.projectGroup;
-const projectLinks = [
-  { href: '/projects/?filter=work', label: '업무경험', section: 'work' },
-  { href: '/projects/?filter=games', label: '게임', section: 'games' },
-  { href: '/projects/?filter=research', label: '연구', section: 'research' },
-];
-
 const isCurrent = (section?: string) => {
   if (section === 'profile') return currentPath === '/';
-  if (section === 'work' || section === 'games' || section === 'research') {
-    return activeProjectGroup === section;
-  }
-  return false;
+  return activeProjectGroup === section;
 };
 ---
 
@@ -38,8 +30,8 @@ const isCurrent = (section?: string) => {
               <span class="nav-label">프로젝트</span>
             </a>
             <ul id="project-navigation-links" class="project-dropdown" hidden>
-              {projectLinks.map((link) => (
-                <li><a href={link.href} aria-current={isCurrent(link.section) ? 'page' : undefined}>{link.label}</a></li>
+              {projectGroups.map((group) => (
+                <li><a href={group.href} aria-current={isCurrent(group.id) ? 'page' : undefined}>{getProjectGroupNavLabel(group)}</a></li>
               ))}
             </ul>
           </li>

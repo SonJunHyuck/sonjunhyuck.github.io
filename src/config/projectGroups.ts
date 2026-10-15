@@ -2,6 +2,7 @@ export const projectGroups = [
   {
     id: 'work',
     label: '업무',
+    navLabel: '업무경험',
     eyebrow: 'PROFESSIONAL WORK',
     title: '업무 프로젝트',
     description: '팀과 제품 환경에서 맡은 역할, 협업, 구현 결과를 정리했습니다.',
@@ -16,6 +17,14 @@ export const projectGroups = [
     href: '/projects/?filter=games',
   },
   {
+    id: 'ai',
+    label: 'AI 활용',
+    eyebrow: 'PERSONAL AI APPLICATION',
+    title: 'AI 활용',
+    description: 'AI를 활용한 프로젝트와 협업 과정을 정리했습니다.',
+    href: '/projects/?filter=ai',
+  },
+  {
     id: 'research',
     label: '연구',
     eyebrow: 'PERSONAL RESEARCH',
@@ -26,5 +35,8 @@ export const projectGroups = [
 ] as const;
 
 export type ProjectGroupId = typeof projectGroups[number]['id'];
+
+export const getProjectGroupNavLabel = (group: typeof projectGroups[number]) =>
+  'navLabel' in group ? group.navLabel : group.label;
 
 export const getProjectGroup = (id: ProjectGroupId) => projectGroups.find((group) => group.id === id)!;
