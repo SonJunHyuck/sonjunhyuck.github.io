@@ -355,6 +355,7 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 .project-detail > .story > h2:not(:first-child) { border-top: 1px solid var(--line); padding-top: 40px; }
 .project-detail > .story > h2:first-child { margin-top: 0; }
 .project-detail > .story > .bfx-case:first-child { border-top: 0; padding-top: 0; }
+.story .bfx-case > h4 { margin: 28px 0 14px; font-size: 1.05rem; }
 .bfx-detail #notification-ui > header h4 { margin: 24px 0 14px; font-size: 1.05rem; }
 @media (max-width: 640px) {
   .project-detail > section + section, .project-detail > .story > h2:not(:first-child) { padding-top: 28px; }
@@ -424,4 +425,19 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
   .portfolio-decision-row > .portfolio-decision-arrow { transform: rotate(90deg); }
   .portfolio-theme-paths { grid-template-columns: minmax(0,1fr); }
   .portfolio-import-diagram .portfolio-diagram-title { margin-bottom: 28px; }
+}
+
+/* Compact handoff diagrams keep the reading flow within the common width. */
+.portfolio-model-flow { grid-template-columns: minmax(0,1fr) 100px minmax(0,1fr); margin-top: 20px; }
+.portfolio-command-arrow { font-size: .85rem; }
+.portfolio-guideline-fixes > div { display: grid; grid-template-columns: minmax(0,1fr) 24px minmax(0,1.4fr); gap: 12px; align-items: center; }
+.story .portfolio-guideline-fixes p { margin: 0; }
+.portfolio-handoff { display: grid; gap: 16px; margin-top: 20px; }
+.portfolio-handoff > div { padding: 16px; border: 1px solid var(--interactive-line); border-radius: 12px; background: var(--surface); }
+.story .portfolio-handoff p { margin: 8px 0 0; font-size: .9rem; }
+@media (max-width: 620px) {
+  .portfolio-model-flow { grid-template-columns: minmax(0,1fr); }
+  .portfolio-model-flow > .portfolio-command-arrow { transform: none; }
+  .portfolio-guideline-fixes > div { grid-template-columns: minmax(0,1fr); gap: 6px; }
+  .portfolio-guideline-fixes .portfolio-decision-arrow { transform: rotate(90deg); }
 }
