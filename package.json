@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",
-    "astro": "^5.0.0"
+    "@google/model-viewer": "^4.4.0",
+    "astro": "^5.0.0",
+    "three": "^0.183.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

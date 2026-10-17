@@ -238,16 +238,17 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 /* Introduction and profile, with links to supporting project work. */
 .intro-profile { padding: 64px 0 0; }
 .intro-profile-inner { padding-bottom: 32px; border-bottom: 1px solid var(--line); }
-.intro-profile-top { display: grid; grid-template-columns: minmax(0, 1fr) 300px; align-items: start; gap: 44px; }
+.intro-profile-top { position: relative; display: grid; grid-template-columns: calc((100% - 40px) * .35) minmax(0, 1fr) 180px; align-items: center; gap: 20px; }
 .intro-role { color: var(--accent); font: 800 12px var(--sans); letter-spacing: .12em; }
-.intro-profile h1 { margin: 20px 0 24px; font-size: clamp(48px, 5.7vw, 72px); line-height: 1.15; letter-spacing: -.065em; word-break: keep-all; }
+.intro-profile h1 { margin: 0 0 12px; font-size: clamp(40px, 5.7vw, 56px); line-height: 1.15; letter-spacing: -.065em; word-break: keep-all; }
 .intro-description { margin-bottom: 0; color: var(--body-copy); font-size: 20px; line-height: 1.65; letter-spacing: -.035em; word-break: keep-all; overflow-wrap: break-word; }
 .intro-description em { position: relative; isolation: isolate; display: inline-block; font-weight: 800; }
 .intro-description em::after { position: absolute; z-index: -1; right: 0; bottom: .12em; left: 0; height: .18em; border-radius: 999px; background: var(--highlight); content: ''; transform: rotate(-2deg); }
-.intro-portrait { margin: 0; }
-.intro-portrait img { display: block; width: 100%; height: auto; aspect-ratio: 1; border-radius: 18px; object-fit: cover; object-position: 50% 45%; }
-.intro-portrait figcaption { display: grid; gap: 8px; margin-top: 15px; text-align: center; color: var(--body-copy); font-size: 14px; }
-.intro-portrait figcaption span { color: var(--muted); font: 700 10px var(--sans); letter-spacing: .15em; }
+.intro-portrait { grid-column: 1; position: relative; width: 100%; min-width: 0; margin: 0; align-self: stretch; min-height: 420px; overflow: hidden; }
+.intro-portrait img { display: block; width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; object-position: 50% 44%; transform: scale(1.45); }
+.intro-portrait::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to right, var(--paper), transparent 18%, transparent 65%, var(--paper)); }
+.intro-portrait figcaption { z-index: 1; position: absolute; inset: auto 0 0; display: grid; gap: 8px; padding: 32px 18px 22px 48px; text-align: right; color: #fff; font-size: 14px; background: linear-gradient(to right, transparent, rgb(0 0 0 / .7)); }
+.intro-portrait figcaption span { color: #fff; font: 700 16px var(--sans); letter-spacing: .12em; }
 .intro-evidence { margin-top: 36px; }
 .intro-evidence h2 { margin: 0 0 10px; font-size: 15px; font-weight: 800; letter-spacing: -.025em; }
 .intro-evidence-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
@@ -266,17 +267,17 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 :root[data-theme='dark'] .intro-connect-links img { filter: invert(1); }
 .intro-profile + .resume .resume-section:first-child { padding-top: 48px; }
 @media (max-width: 900px) {
-  .intro-profile-top { grid-template-columns: minmax(0, 1fr) 240px; gap: 28px; }
+  .intro-profile-top { grid-template-columns: calc((100% - 32px) * .35) minmax(0, 1fr) 160px; gap: 16px; }
   .intro-description { font-size: 18px; }
 }
 @media (max-width: 680px) {
   .intro-profile { padding-top: 40px; }
   .intro-profile-top { grid-template-columns: minmax(0, 1fr); gap: 28px; }
-  .intro-profile h1 { font-size: clamp(44px, 10vw, 60px); margin-top: 18px; }
+  .intro-profile h1 { font-size: clamp(40px, 10vw, 56px); margin-top: 0; }
   .intro-description { max-width: 460px; font-size: 18px; }
-  .intro-portrait { display: grid; grid-template-columns: 100px minmax(0, 1fr); align-items: center; gap: 20px; }
-  .intro-portrait img { border-radius: 12px; }
-  .intro-portrait figcaption { margin: 0; text-align: left; }
+  .intro-portrait { grid-column: 1; width: 100%; margin-left: 0; min-height: 300px; }
+  .intro-portrait::after { background: linear-gradient(to right, var(--paper), transparent 18%, transparent 82%, var(--paper)), linear-gradient(to top, var(--paper), transparent 25%); }
+  .intro-portrait figcaption { text-align: right; }
   .intro-evidence { margin-top: 30px; }
   .intro-connect-links { gap: 8px; }
   .intro-connect-links a { min-width: 0; flex: 1 1 auto; gap: 7px; padding: 9px 12px; }

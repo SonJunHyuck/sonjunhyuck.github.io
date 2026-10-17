@@ -1,0 +1,182 @@
+---
+interface Props {
+  instanceId: string;
+}
+const { instanceId } = Astro.props;
+const attitudes = [
+  { label: '직접 부딪혀 이해합니다', category: '경험하는 태도', href: '/reflections/voyager/#implementation-focus', image: '/images/projects/inspix-world/cover.png', alt: 'InspixWorld 게임 화면', text: '라이브 서비스와 빌드 파이프라인을 경험하며, 구현 너머의 프로젝트 흐름을 배웠습니다.' },
+  { label: '주어진 문제를 책임집니다', category: '책임지는 태도', href: '/projects/project-r/#빌드-자동화', image: '/images/projects/project-r/build-pipeline.png', alt: 'Project R 빌드 파이프라인', text: 'Project R에서 빌드 파이프라인을 정의하고 Jenkins 기반 빌드·배포 자동화를 구현했습니다.' },
+  { label: '반복을 구조로 바꿉니다', category: '개선하는 태도', href: '/projects/bfx/#dialogue-importer', image: '/images/projects/bfx/dialogue-importer.png', alt: 'BFX 대화 데이터 임포터', text: '반복되는 대화 노드 편집을 테이블 기반 제작과 임포트 흐름으로 바꿨습니다.' },
+  { label: '근거로 방향을 조율합니다', category: '함께 결정하는 태도', href: '/projects/bfx/', image: '/images/projects/bfx/cover.png', alt: 'Project BFX 대표 화면', text: 'BFX에서 일정과 공간의 범위를 고려해, 필드 방향을 지상 군사기지에서 지하 공간으로 조율했습니다.' },
+  { label: '동료의 적응을 돕습니다', category: '함께하는 태도', href: '/reflections/voyager/#onboarding-guide', image: '/images/reflections/voyager/onboarding-message-redacted.webp', alt: '이름과 사진을 가린 동료의 감사 메시지', text: '신입 동료의 멘토를 맡고, 반복해서 필요한 설명을 온보딩 가이드로 남겼습니다.' },
+  { label: '작게 시작하며 배웁니다', category: '키워가는 태도', href: '/projects/portfolio-website/', image: '/images/projects/portfolio-website/cover.png', alt: 'AI 협업 포트폴리오 화면', text: '익숙하지 않은 웹 프런트엔드에 AI 협업으로 도전하며, 결과를 검토하고 작업 기준을 다듬고 있습니다.' },
+];
+---
+<div class="intro-hex" data-intro-hex>
+  <h1 id={`${instanceId}-title`} class="visually-hidden">손준혁의 개발 경험과 태도</h1>
+  <slot />
+  <div class="hex-stage">
+    <svg class="hex-waves" viewBox="0 0 600 660" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <polygon class="hex-boundary" points="300,150 455.884573,240 455.884573,420 300,510 144.115427,420 144.115427,240" />
+      <polygon class="hex-travel" pathLength="100" points="300,150 455.884573,240 455.884573,420 300,510 144.115427,420 144.115427,240" />
+    </svg>
+    <ul class="hex-nodes" role="list">
+      {attitudes.map((attitude, index) => (
+        <li class={`hex-node node-${index}`}>
+          <a href={attitude.href} data-node={index} aria-controls={`${instanceId}-preview-${index}`} aria-expanded="false"><span class="node-dot" aria-hidden="true"></span><span class="node-label">{attitude.label.slice(0, attitude.label.lastIndexOf(' '))}<br />{attitude.label.slice(attitude.label.lastIndexOf(' ') + 1)}</span></a>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <ul class="attitude-buttons" aria-label="태도별 관련 경험">
+    {attitudes.map((attitude, index) => (
+      <li><a href={attitude.href} data-attitude-button={index} aria-controls={`${instanceId}-preview-${index}`} aria-expanded="false"><span>{attitude.label.slice(0, attitude.label.lastIndexOf(' '))}<br />{attitude.label.slice(attitude.label.lastIndexOf(' ') + 1)}</span><span aria-hidden="true">↗</span></a></li>
+    ))}
+  </ul>
+  <div class="hex-previews">
+    {attitudes.map((attitude, index) => (
+      <section id={`${instanceId}-preview-${index}`} class="hex-preview" hidden aria-label={attitude.label}>
+        <button class="preview-close" type="button" aria-label="경험 미리보기 닫기">×</button>
+        <img src={attitude.image} alt={attitude.alt} width="280" height="140" loading="lazy" />
+        <div class="preview-copy"><p class="preview-category">{attitude.category}</p>
+        <p class="preview-text">{attitude.text}</p>
+        <a class="preview-link" href={attitude.href}>관련 경험 읽기 →</a></div>
+      </section>
+    ))}
+  </div>
+</div>
+<script>
+  const closePreviews = new Set<() => void>();
+  document.querySelectorAll<HTMLElement>('[data-intro-hex]').forEach((root) => {
+    const nodes = [...root.querySelectorAll<HTMLAnchorElement>('[data-node]')];
+    const buttons = [...root.querySelectorAll<HTMLAnchorElement>('[data-attitude-button]')];
+    const triggers = [...nodes, ...buttons];
+    const previews = [...root.querySelectorAll<HTMLElement>('.hex-preview')];
+    const coarse = window.matchMedia('(hover: none), (pointer: coarse)');
+    let active = -1;
+    let stopHandoff: (() => void) | undefined;
+    let dismissTimer: ReturnType<typeof setTimeout>;
+    const close = () => {
+      clearTimeout(dismissTimer);
+      stopHandoff?.();
+      stopHandoff = undefined;
+      previews.forEach((preview) => { preview.hidden = true; });
+      triggers.forEach((node) => node.setAttribute('aria-expanded', 'false'));
+      active = -1;
+    };
+    closePreviews.add(close);
+    const open = (index: number) => {
+      closePreviews.forEach((dismiss) => dismiss());
+      previews[index].hidden = false;
+      nodes[index].setAttribute('aria-expanded', 'true');
+      buttons[index].setAttribute('aria-expanded', 'true');
+      active = index;
+    };
+    triggers.forEach((node) => {
+      const index = Number(node.dataset.node ?? node.dataset.attitudeButton);
+      node.addEventListener('mouseenter', () => { if (!coarse.matches) open(index); });
+      node.addEventListener('focus', () => open(index));
+      node.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowDown' || (event.key === 'Tab' && !event.shiftKey && active === index)) {
+          event.preventDefault();
+          open(index);
+          previews[index].querySelector<HTMLAnchorElement>('.preview-link')?.focus();
+        }
+      });
+      node.addEventListener('click', (event) => {
+        if (coarse.matches) { event.preventDefault(); open(index); }
+      });
+    });
+    // Keep the fixed preview reachable while crossing the space below its node.
+    root.addEventListener('mouseleave', (event) => {
+      if (coarse.matches || root.contains(document.activeElement) || active < 0) return;
+      stopHandoff?.();
+      const panel = previews[active].getBoundingClientRect();
+      const originX = event.clientX;
+      const originY = event.clientY;
+      const trackHandoff = (move: PointerEvent) => {
+        if (active < 0 || root.contains(move.target as Node)) {
+          clearTimeout(dismissTimer);
+          document.removeEventListener('pointermove', trackHandoff);
+          return;
+        }
+        const withinPassage = move.clientX >= Math.min(originX, panel.left) - 24 &&
+          move.clientX <= Math.max(originX, panel.right) + 24 &&
+          move.clientY >= Math.min(originY, panel.top) - 24 &&
+          move.clientY <= Math.max(originY, panel.bottom) + 24;
+        clearTimeout(dismissTimer);
+        if (!withinPassage) {
+          dismissTimer = setTimeout(close, 400);
+          document.removeEventListener('pointermove', trackHandoff);
+        }
+      };
+      stopHandoff = () => document.removeEventListener('pointermove', trackHandoff);
+      document.addEventListener('pointermove', trackHandoff);
+    });
+    root.addEventListener('mouseenter', () => clearTimeout(dismissTimer));
+    root.addEventListener('focusout', (event) => {
+      if (!root.contains(event.relatedTarget as Node)) close();
+    });
+    root.querySelectorAll('.preview-close').forEach((button) => button.addEventListener('click', () => {
+      const previous = active;
+      if (previous >= 0) nodes[previous].focus();
+      close();
+    }));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && active >= 0) { nodes[active].focus(); close(); }
+    });
+    document.addEventListener('pointerdown', (event) => { if (!root.contains(event.target as Node)) close(); });
+  });
+</script>
+<style>
+  .intro-hex { display: contents; }
+  .intro-role { margin-bottom: 10px; }
+  .hex-stage { position: relative; height: 390px; margin-top: 0; }
+  .hex-stage::before { content: ''; position: absolute; inset: 12% 18%; pointer-events: none; background: radial-gradient(ellipse at center, color-mix(in srgb, var(--accent) 12%, transparent), color-mix(in srgb, var(--accent) 4%, transparent) 45%, transparent 72%); }
+  .hex-waves { position: absolute; width: 100%; height: 100%; overflow: visible; }
+  .hex-boundary { fill: none; stroke: var(--accent); stroke-width: 1; opacity: .28; vector-effect: non-scaling-stroke; }
+  .hex-travel { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 8 92; opacity: .65; vector-effect: non-scaling-stroke; animation: hex-travel 12s linear infinite; }
+  @keyframes hex-travel { to { stroke-dashoffset: -100; } }
+  .hex-nodes { margin: 0; padding: 0; list-style: none; }
+  .hex-node { position: absolute; transform: translate(-50%, -50%); }
+  .node-0 { left: 50%; top: 22.727273%; } .node-1 { left: 75.980762%; top: 36.363636%; } .node-2 { left: 75.980762%; top: 63.636364%; }
+  .node-3 { left: 50%; top: 77.272727%; } .node-4 { left: 24.019238%; top: 63.636364%; } .node-5 { left: 24.019238%; top: 36.363636%; }
+  .hex-node a { display: grid; place-items: center; position: relative; width: 28px; height: 28px; color: var(--ink); font-size: 14px; font-weight: 700; line-height: 1.55; word-break: keep-all; text-decoration: none; border-radius: 50%; }
+  .node-dot { width: 18px; height: 18px; border: 2px solid var(--paper); border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent); transition: box-shadow .18s ease; }
+  .node-label { position: absolute; width: 150px; }
+  .node-0 .node-label { bottom: 35px; text-align: center; }
+  .node-3 .node-label { top: 35px; text-align: center; }
+  .node-1 .node-label, .node-2 .node-label { left: 22px; text-align: left; width: 105px; }
+  .node-4 .node-label, .node-5 .node-label { right: 22px; text-align: right; width: 105px; }
+  .hex-node a:hover, .hex-node a[aria-expanded='true'] { color: var(--accent-ink); }
+  .hex-node a:hover .node-dot, .hex-node a[aria-expanded='true'] .node-dot { box-shadow: 0 0 0 5px var(--paper), 0 0 0 8px color-mix(in srgb, var(--accent) 32%, transparent); }
+  .hex-node a:focus-visible, .preview-close:focus-visible, .preview-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  .hex-preview { position: fixed; z-index: 100; bottom: 0; left: 50%; width: calc(min(var(--content-width), 100vw - 48px) - 40px); max-height: min(45dvh, 400px); overflow-y: auto; overscroll-behavior: contain; transform: translateX(-50%); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 0 24px; border: 1px solid var(--line); border-radius: 18px 18px 0 0; padding: 12px 24px max(20px, env(safe-area-inset-bottom)); background: var(--paper); box-shadow: 0 -12px 36px color-mix(in srgb, var(--ink) 12%, transparent); animation: preview-rise .25s ease-out; }
+  @keyframes preview-rise { from { opacity: 0; translate: 0 24px; } to { opacity: 1; translate: 0 0; } }
+  .hex-preview[hidden] { display: none; }
+  .hex-preview img { display: block; width: 100%; height: clamp(100px, 22dvh, 220px); object-fit: contain; background: var(--surface); border-radius: 8px; }
+  .preview-copy { align-self: center; padding-right: 16px; }
+  .preview-close { position: sticky; z-index: 1; grid-column: 1 / -1; justify-self: end; top: 0; display: block; margin: 0 -12px 4px auto; width: 32px; height: 32px; flex-shrink: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); color: var(--ink); font-size: 22px; cursor: pointer; }
+  .preview-category { margin: 10px 0 5px; font-size: 11px; font-weight: 700; color: var(--muted); }
+  .preview-text { margin: 0 0 10px; font-size: 15px; line-height: 1.7; word-break: keep-all; }
+  .preview-link { color: var(--accent-ink); font-size: 12px; font-weight: 700; }
+  @media (max-width: 900px) { .hex-stage { margin-top: 0; } }
+  @media (max-width: 900px) and (min-width: 681px) { .hex-node a { font-size: 12px; } .node-1 .node-label, .node-2 .node-label { left: 24px; width: 68px; } .node-4 .node-label, .node-5 .node-label { right: 24px; width: 68px; } }
+  @media (max-width: 680px) { .hex-stage { height: 350px; } .hex-node a { font-size: 12px; } .node-1 .node-label, .node-2 .node-label { left: 26px; width: clamp(60px, 16vw, 100px); } .node-4 .node-label, .node-5 .node-label { right: 26px; width: clamp(60px, 16vw, 100px); } }
+  @media (max-width: 370px) { .node-1 .node-label, .node-2 .node-label { left: 18px; width: 54px; } .node-4 .node-label, .node-5 .node-label { right: 18px; width: 54px; } }
+  @media (max-width: 680px) { .hex-preview { width: calc(min(var(--content-width), 100vw - 32px) - 40px); display: block; padding: 12px 16px max(20px, env(safe-area-inset-bottom)); } .hex-preview img { height: clamp(100px, 18dvh, 180px); } .preview-copy { padding-right: 0; } .preview-close { margin-right: -4px; } }
+  .hex-stage { grid-column: 2; min-width: 0; height: auto; aspect-ratio: 600 / 660; align-self: center; }
+  .attitude-buttons { grid-column: 3; align-self: center; display: grid; gap: 10px; list-style: none; margin: 0; padding: 0; }
+  .attitude-buttons a { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 64px; padding: 10px 12px; border: 1px solid var(--interactive-line); border-radius: 8px; background: var(--surface); color: var(--ink); font-size: 13px; line-height: 1.5; font-weight: 700; }
+  .attitude-buttons a:hover, .attitude-buttons a[aria-expanded='true'] { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-soft); }
+  .attitude-buttons a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+  .hex-previews { display: contents; }
+  .hex-node .node-label { width: 100px; font-size: 11px; white-space: nowrap; text-align: center; left: 50%; right: auto; top: 26px; bottom: auto; transform: translateX(-50%); }
+  .node-0 .node-label { top: auto; bottom: 28px; }
+  @media (max-width: 680px) {
+    .hex-stage { grid-column: 1; }
+    .attitude-buttons { grid-column: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hex-node .node-label { font-size: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .hex-travel { animation: none; stroke-dasharray: none; opacity: .35; } .hex-preview { animation: none; } .node-dot { transition: none; } }
+</style>

@@ -1,0 +1,80 @@
+---
+interface Props { eager?: boolean; }
+const { eager = false } = Astro.props;
+---
+<figure class="intro-portrait profile-character" data-profile-character>
+  <div class="character-stage">
+    <div class="character-floor" aria-hidden="true"></div>
+    <model-viewer
+      src="/models/blue-cap-buddy.glb"
+      alt="파란 모자를 쓴 3D 캐릭터"
+      loading={eager ? 'eager' : 'lazy'}
+      camera-controls
+      disable-zoom
+      touch-action="pan-y"
+      interaction-prompt="none"
+      shadow-intensity="1"
+    ></model-viewer>
+    <p class="character-status" role="status">3D 캐릭터를 준비하고 있습니다.</p>
+  </div>
+  <figcaption>
+    <span>손준혁 (SON JUNHYUCK)</span>
+    게임 클라이언트 개발
+    <a class="character-credit" href="https://www.meshy.ai/" target="_blank" rel="noopener noreferrer">3D 캐릭터 제작: Meshy</a>
+  </figcaption>
+  <noscript><p class="character-noscript">3D 캐릭터를 보려면 JavaScript를 켜 주세요.</p></noscript>
+</figure>
+<script>
+  const characters = document.querySelectorAll<HTMLElement>('[data-profile-character]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  characters.forEach((root) => {
+    const viewer = root.querySelector<HTMLElement>('model-viewer')!;
+    const status = root.querySelector<HTMLElement>('.character-status')!;
+    const updateMotion = () => viewer.setAttribute('interpolation-decay', reducedMotion.matches ? '0' : '50');
+    updateMotion();
+    reducedMotion.addEventListener('change', updateMotion);
+    viewer.addEventListener('load', () => {
+      status.hidden = true;
+      root.dataset.loaded = 'true';
+    });
+    viewer.addEventListener('error', () => {
+      delete root.dataset.loaded;
+      status.hidden = false;
+      status.textContent = '3D 캐릭터를 불러오지 못했습니다.';
+    });
+  });
+  import('@google/model-viewer').catch(() => {
+    characters.forEach((root) => {
+      root.querySelector<HTMLElement>('.character-status')!.textContent = '이 환경에서는 3D 캐릭터를 표시할 수 없습니다.';
+    });
+  });
+</script>
+<style>
+  .profile-character { display: flex; flex-direction: column; overflow: visible; }
+  .profile-character::after { display: none; }
+  .character-stage { position: relative; flex: 1; min-height: 300px; }
+  .character-floor { position: absolute; inset: 0; overflow: hidden; pointer-events: none; opacity: 0; }
+  [data-loaded='true'] .character-floor { opacity: 1; }
+  .character-floor::before {
+    content: '';
+    position: absolute;
+    left: -20%;
+    bottom: -8%;
+    width: 140%;
+    height: 44%;
+    background: repeating-conic-gradient(var(--line) 0% 25%, var(--surface) 0% 50%) 50% / 40px 40px;
+    transform: perspective(240px) rotateX(60deg);
+    mask-image: radial-gradient(ellipse at center, #000 20%, transparent 70%);
+    opacity: .65;
+  }
+  model-viewer { display: block; width: 100%; height: 100%; min-height: 300px; position: absolute; inset: 0; z-index: 1; --progress-bar-color: var(--accent); }
+  model-viewer:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  .character-status { position: absolute; inset: 45% 12px auto; z-index: 2; margin: 0; pointer-events: none; color: var(--muted); text-align: center; font-size: 13px; }
+  .character-status[hidden] { display: none; }
+  .profile-character figcaption { position: static; padding: 16px 0 0; text-align: center; color: var(--ink); background: none; }
+  .profile-character figcaption span { color: var(--ink); letter-spacing: .04em; }
+  .character-credit { color: var(--muted); font-size: 11px; text-decoration: underline; text-underline-offset: 3px; }
+  .character-credit:hover { color: var(--accent-ink); }
+  .character-credit:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  .character-noscript { color: var(--muted); font-size: 13px; text-align: center; }
+</style>

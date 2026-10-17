@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import IntroHex from '../components/IntroHex.astro';
+import ProfileCharacter from '../components/ProfileCharacter.astro';
 import TagList from '../components/TagList.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
@@ -64,49 +66,11 @@ const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((pro
   <section class="intro-profile" aria-labelledby="intro-title">
     <div class="container intro-profile-inner">
       <div class="intro-profile-top">
-        <div class="intro-profile-copy">
-          <p class="eyebrow intro-role">GAME CLIENT DEVELOPER</p>
-          <h1 id="intro-title">부딪히고, 설계합니다.</h1>
-          <p class="intro-description">직접 해보며 문제를 이해하고, 반복되는 일을 자동화하는 것을 추구하는 개발자 <em>손준혁</em>입니다.</p>
-        </div>
-        <figure class="intro-portrait">
-          <img src="/profile.webp" alt="꽃밭에서 촬영한 손준혁 프로필 사진" width="360" height="360" fetchpriority="high" />
-          <figcaption><span>SON JUNHYUCK</span>게임 클라이언트 개발</figcaption>
-        </figure>
+        <IntroHex instanceId="intro">
+          <ProfileCharacter eager />
+        </IntroHex>
       </div>
 
-      <div class="intro-evidence" aria-labelledby="evidence-title">
-        <h2 id="evidence-title">이런 경험이 제 소개를 뒷받침합니다</h2>
-        <ul class="intro-evidence-list" role="list">
-          <li>
-            <a class="intro-evidence-link" href="/projects/project-r/#빌드-자동화">
-              <span class="intro-evidence-project">Project R</span>
-              <span class="intro-evidence-description">빌드·배포 자동화</span>
-              <span class="intro-evidence-arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
-            <a class="intro-evidence-link" href="/projects/bfx/#dialogue-importer">
-              <span class="intro-evidence-project">BFX</span>
-              <span class="intro-evidence-description">대화 데이터 임포터</span>
-              <span class="intro-evidence-arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="intro-evidence" aria-labelledby="other-experience-title">
-        <h2 id="other-experience-title">이런 경험도 있어요</h2>
-        <ul class="intro-evidence-list" role="list">
-          <li>
-            <a class="intro-evidence-link" href="/projects/crowd-formation-control/">
-              <span class="intro-evidence-project">그래픽스 연구</span>
-              <span class="intro-evidence-description">군중 대형 제어 시뮬레이션</span>
-              <span class="intro-evidence-arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-        </ul>
-      </div>
     </div>
   </section>
 
@@ -157,11 +121,11 @@ const featuredProjects = featuredProjectIds.map((id) => projectEntries.find((pro
             <h3 id="degree-title">학위</h3>
             <ul class="info-list">
               <li>
-                <div><strong>계명대학교 대학원</strong><span>컴퓨터공학과 석사 · 컴퓨터 그래픽스 연구실 군중 시뮬레이션 연구</span></div>
+                <div><strong>석사</strong><span>계명대학교 대학원 : 컴퓨터공학과</span><span>컴퓨터 그래픽스 연구실 군중 시뮬레이션 연구</span></div>
                 <time>2021.08–2023.08 · 졸업</time>
               </li>
               <li>
-                <div><strong>계명대학교</strong><span>게임모바일콘텐츠학과 학사</span></div>
+                <div><strong>학사</strong><span>계명대학교 : 게임모바일콘텐츠학과</span></div>
                 <time>2012.03–2020.08 · 졸업</time>
               </li>
             </ul>
