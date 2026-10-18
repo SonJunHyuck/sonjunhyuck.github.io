@@ -1,36 +1,58 @@
 ---
+const iconSources = import.meta.glob<string>('../assets/icons/lucide/*.svg', { eager: true, query: '?raw', import: 'default' });
+const iconNames = ['shield-check', 'scan-eye', 'wrench', 'messages-square', 'handshake', 'sprout'];
+const icons = iconNames.map((name) => iconSources[`../assets/icons/lucide/${name}.svg`].replace(/<svg[^>]*>|<\/svg>/g, ''));
+// Six equal annular sectors, ordered clockwise from the top.
+const polar = (radius: number, angle: number) => [300 + radius * Math.cos(angle * Math.PI / 180), 290 + radius * Math.sin(angle * Math.PI / 180)];
+const sectorPaths = iconNames.map((_, index) => {
+  const start = -120 + index * 60;
+  const end = start + 60;
+  return `M ${polar(275, start)} A 275 275 0 0 1 ${polar(275, end)} L ${polar(112, end)} A 112 112 0 0 0 ${polar(112, start)} Z`;
+});
+const iconCenters = iconNames.map((_, index) => polar(194, -90 + index * 60));
 interface Props {
   instanceId: string;
 }
 const { instanceId } = Astro.props;
 const attitudes = [
+  { label: '주어진 일에 대한 책임감', category: '책임감', href: '/projects/project-r/#빌드-자동화', image: '/images/projects/project-r/cover.png', alt: 'Project R 대표 화면', text: 'Project R에서 빌드 파이프라인을 정의하고 Jenkins 기반 빌드·배포 자동화를 구현했습니다.' },
   { label: '흐름을 보는 시야', category: '전체를 보는 시야', href: '/reflections/voyager/#implementation-focus', image: '/images/projects/inspix-world/cover.png', alt: 'InspixWorld 게임 화면', text: '라이브 서비스와 빌드 파이프라인을 경험하며, 구현 너머의 프로젝트 흐름을 배웠습니다.' },
-  { label: '주어진 일에 대한 책임감', category: '책임감', href: '/projects/project-r/#빌드-자동화', image: '/images/projects/project-r/build-pipeline.png', alt: 'Project R 빌드 파이프라인', text: 'Project R에서 빌드 파이프라인을 정의하고 Jenkins 기반 빌드·배포 자동화를 구현했습니다.' },
-  { label: '개선을 실행하는 태도', category: '개선과 실행', href: '/projects/bfx/#dialogue-importer', image: '/images/projects/bfx/dialogue-importer.png', alt: 'BFX 대화 데이터 임포터', text: '반복되는 대화 노드 편집을 테이블 기반 제작과 임포트 흐름으로 바꿨습니다.' },
+  { label: '개선을 실행하는 태도', category: '개선과 실행', href: '/projects/bfx/#dialogue-importer', image: '/images/projects/bfx/cover.png', alt: 'Project BFX 대표 화면', text: '반복되는 대화 노드 편집을 테이블 기반 제작과 임포트 흐름으로 바꿨습니다.' },
   { label: '적극적인 커뮤니케이션', category: '소통과 조율', href: '/projects/bfx/', image: '/images/projects/bfx/cover.png', alt: 'Project BFX 대표 화면', text: 'BFX에서 일정과 공간의 범위를 고려해, 필드 방향을 지상 군사기지에서 지하 공간으로 조율했습니다.' },
   { label: '협력하는 자세', category: '협력', href: '/reflections/voyager/#onboarding-guide', image: '/images/reflections/voyager/onboarding-message-redacted.webp', alt: '이름과 사진을 가린 동료의 감사 메시지', text: '신입 동료의 멘토를 맡고, 반복해서 필요한 설명을 온보딩 가이드로 남겼습니다.' },
   { label: '배우며 성장하는 자세', category: '배움과 성장', href: '/projects/portfolio-website/', image: '/images/projects/portfolio-website/cover.png', alt: 'AI 협업 포트폴리오 화면', text: '익숙하지 않은 웹 프런트엔드에 AI 협업으로 도전하며, 결과를 검토하고 작업 기준을 다듬고 있습니다.' },
-];
+].map((attitude) => {
+  const splitAt = attitude.label.lastIndexOf(' ');
+  return { ...attitude, lines: [attitude.label.slice(0, splitAt), attitude.label.slice(splitAt + 1)] };
+});
 ---
 <div class="intro-hex" data-intro-hex>
   <h1 id={`${instanceId}-title`} class="visually-hidden">손준혁의 개발 경험과 태도</h1>
   <slot />
   <div class="hex-stage">
-    <svg class="hex-waves" viewBox="0 0 600 660" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      <polygon class="hex-boundary" points="300,150 455.884573,240 455.884573,420 300,510 144.115427,420 144.115427,240" />
-      <polygon class="hex-travel" pathLength="100" points="300,150 455.884573,240 455.884573,420 300,510 144.115427,420 144.115427,240" />
-    </svg>
-    <ul class="hex-nodes" role="list">
+    <svg class="hex-sectors" viewBox="0 0 600 650" aria-labelledby={`${instanceId}-hex-title`}>
+      <title id={`${instanceId}-hex-title`}>개발 경험으로 이어지는 여섯 가지 태도</title>
+      <circle class="hex-core" cx="300" cy="290" r="104" />
       {attitudes.map((attitude, index) => (
-        <li class={`hex-node node-${index}`}>
-          <a href={attitude.href} data-node={index} aria-controls={`${instanceId}-preview-${index}`} aria-expanded="false"><span class="node-dot" aria-hidden="true"></span><span class="node-label">{attitude.label.slice(0, attitude.label.lastIndexOf(' '))}<br />{attitude.label.slice(attitude.label.lastIndexOf(' ') + 1)}</span></a>
-        </li>
+        <a class="hex-sector" href={attitude.href} data-node={index} aria-label={attitude.label} aria-controls={`${instanceId}-preview-${index}`} aria-expanded="false">
+          <path class="sector-face" d={sectorPaths[index]} />
+          <svg class="sector-icon" x={iconCenters[index][0] - 24} y={iconCenters[index][1] - 24} width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g set:html={icons[index]} /></svg>
+        </a>
       ))}
-    </ul>
+      <g class="wheel-identity" data-wheel-identity aria-hidden="true">
+        <ellipse cx="274" cy="282" rx="8" ry="16" />
+        <ellipse cx="326" cy="282" rx="8" ry="16" />
+        <path d="M 288 315 Q 300 325 312 315" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+      </g>
+      {icons.map((icon, index) => (
+        <svg data-wheel-icon={index} x="262" y="252" width="76" height="76" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g set:html={icon} /></svg>
+      ))}
+    </svg>
+    <p class="wheel-caption" data-wheel-caption aria-live="polite" aria-atomic="true"></p>
   </div>
   <ul class="attitude-buttons" aria-label="태도별 관련 경험">
     {attitudes.map((attitude, index) => (
-      <li><a href={attitude.href} data-attitude-button={index} aria-controls={`${instanceId}-preview-${index}`} aria-expanded="false"><span>{attitude.label.slice(0, attitude.label.lastIndexOf(' '))}<br />{attitude.label.slice(attitude.label.lastIndexOf(' ') + 1)}</span><span aria-hidden="true">↗</span></a></li>
+      <li><a href={attitude.href} data-attitude-button={index} aria-controls={`${instanceId}-preview-${index}`} aria-expanded="false"><span>{attitude.lines[0]}<br />{attitude.lines[1]}</span><span aria-hidden="true">↗</span></a></li>
     ))}
   </ul>
   <div class="hex-previews">
@@ -48,21 +70,30 @@ const attitudes = [
 <script>
   const closePreviews = new Set<() => void>();
   document.querySelectorAll<HTMLElement>('[data-intro-hex]').forEach((root) => {
-    const nodes = [...root.querySelectorAll<HTMLAnchorElement>('[data-node]')];
+    const nodes = [...root.querySelectorAll<SVGAElement>('[data-node]')];
     const buttons = [...root.querySelectorAll<HTMLAnchorElement>('[data-attitude-button]')];
     const triggers = [...nodes, ...buttons];
     const previews = [...root.querySelectorAll<HTMLElement>('.hex-preview')];
+    const identity = root.querySelector<SVGGElement>('[data-wheel-identity]')!;
+    const centerIcons = [...root.querySelectorAll<SVGElement>('[data-wheel-icon]')];
+    const caption = root.querySelector<HTMLElement>('[data-wheel-caption]')!;
+    const showSelection = (index: number) => {
+      triggers.forEach((trigger) => {
+        trigger.toggleAttribute('data-selected', Number((trigger as HTMLElement).dataset.node ?? (trigger as HTMLElement).dataset.attitudeButton) === index);
+      });
+      identity.style.display = index < 0 ? '' : 'none';
+      centerIcons.forEach((icon, i) => { icon.style.display = i === index ? 'block' : 'none'; });
+      caption.textContent = index < 0 ? '' : nodes[index].getAttribute('aria-label');
+    };
     const coarse = window.matchMedia('(hover: none), (pointer: coarse)');
     let active = -1;
-    let stopHandoff: (() => void) | undefined;
     let dismissTimer: ReturnType<typeof setTimeout>;
     const close = () => {
       clearTimeout(dismissTimer);
-      stopHandoff?.();
-      stopHandoff = undefined;
       previews.forEach((preview) => { preview.hidden = true; });
       triggers.forEach((node) => node.setAttribute('aria-expanded', 'false'));
       active = -1;
+      showSelection(-1);
     };
     closePreviews.add(close);
     const open = (index: number) => {
@@ -71,13 +102,18 @@ const attitudes = [
       nodes[index].setAttribute('aria-expanded', 'true');
       buttons[index].setAttribute('aria-expanded', 'true');
       active = index;
+      showSelection(index);
     };
     triggers.forEach((node) => {
       const index = Number(node.dataset.node ?? node.dataset.attitudeButton);
       node.addEventListener('mouseenter', () => { if (!coarse.matches) open(index); });
-      node.addEventListener('focus', () => open(index));
+      node.addEventListener('focus', () => { if (node.matches(':focus-visible')) open(index); });
+      node.addEventListener('mouseleave', () => {
+        if (!coarse.matches) leaveHover();
+      });
       node.addEventListener('keydown', (event) => {
-        if (event.key === 'ArrowDown' || (event.key === 'Tab' && !event.shiftKey && active === index)) {
+        const keyEvent = event as KeyboardEvent;
+        if (keyEvent.key === 'ArrowDown' || (keyEvent.key === 'Tab' && !keyEvent.shiftKey && active === index)) {
           event.preventDefault();
           open(index);
           previews[index].querySelector<HTMLAnchorElement>('.preview-link')?.focus();
@@ -87,33 +123,27 @@ const attitudes = [
         if (coarse.matches) { event.preventDefault(); open(index); }
       });
     });
-    // Keep the fixed preview reachable while crossing the space below its node.
-    root.addEventListener('mouseleave', (event) => {
-      if (coarse.matches || root.contains(document.activeElement) || active < 0) return;
-      stopHandoff?.();
-      const panel = previews[active].getBoundingClientRect();
-      const originX = event.clientX;
-      const originY = event.clientY;
-      const trackHandoff = (move: PointerEvent) => {
-        if (active < 0 || root.contains(move.target as Node)) {
-          clearTimeout(dismissTimer);
-          document.removeEventListener('pointermove', trackHandoff);
-          return;
-        }
-        const withinPassage = move.clientX >= Math.min(originX, panel.left) - 24 &&
-          move.clientX <= Math.max(originX, panel.right) + 24 &&
-          move.clientY >= Math.min(originY, panel.top) - 24 &&
-          move.clientY <= Math.max(originY, panel.bottom) + 24;
-        clearTimeout(dismissTimer);
-        if (!withinPassage) {
-          dismissTimer = setTimeout(close, 400);
-          document.removeEventListener('pointermove', trackHandoff);
-        }
-      };
-      stopHandoff = () => document.removeEventListener('pointermove', trackHandoff);
-      document.addEventListener('pointermove', trackHandoff);
+    const hasKeyboardFocus = () => triggers.some((trigger) => trigger.matches(':focus-visible')) ||
+      previews.some((preview) => preview.querySelector(':focus-visible') !== null);
+    const leaveHover = () => {
+      const focusedTrigger = triggers.find((trigger) => trigger.matches(':focus-visible'));
+      if (focusedTrigger) {
+        const index = Number(focusedTrigger.dataset.node ?? focusedTrigger.dataset.attitudeButton);
+        if (active !== index) open(index);
+        return;
+      }
+      if (hasKeyboardFocus() || active < 0) return;
+      // Clear hover feedback immediately; keep only the panel briefly reachable.
+      showSelection(-1);
+      clearTimeout(dismissTimer);
+      dismissTimer = setTimeout(close, 400);
+    };
+    previews.forEach((preview) => {
+      preview.addEventListener('mouseenter', () => clearTimeout(dismissTimer));
+      preview.addEventListener('mouseleave', () => {
+        if (!coarse.matches && !hasKeyboardFocus()) close();
+      });
     });
-    root.addEventListener('mouseenter', () => clearTimeout(dismissTimer));
     root.addEventListener('focusout', (event) => {
       if (!root.contains(event.relatedTarget as Node)) close();
     });
@@ -130,27 +160,19 @@ const attitudes = [
 </script>
 <style>
   .intro-hex { display: contents; }
-  .intro-role { margin-bottom: 10px; }
-  .hex-stage { position: relative; height: 390px; margin-top: 0; }
-  .hex-stage::before { content: ''; position: absolute; inset: 12% 18%; pointer-events: none; background: radial-gradient(ellipse at center, color-mix(in srgb, var(--accent) 12%, transparent), color-mix(in srgb, var(--accent) 4%, transparent) 45%, transparent 72%); }
-  .hex-waves { position: absolute; width: 100%; height: 100%; overflow: visible; }
-  .hex-boundary { fill: none; stroke: var(--accent); stroke-width: 1; opacity: .28; vector-effect: non-scaling-stroke; }
-  .hex-travel { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 8 92; opacity: .65; vector-effect: non-scaling-stroke; animation: hex-travel 12s linear infinite; }
-  @keyframes hex-travel { to { stroke-dashoffset: -100; } }
-  .hex-nodes { margin: 0; padding: 0; list-style: none; }
-  .hex-node { position: absolute; transform: translate(-50%, -50%); }
-  .node-0 { left: 50%; top: 22.727273%; } .node-1 { left: 75.980762%; top: 36.363636%; } .node-2 { left: 75.980762%; top: 63.636364%; }
-  .node-3 { left: 50%; top: 77.272727%; } .node-4 { left: 24.019238%; top: 63.636364%; } .node-5 { left: 24.019238%; top: 36.363636%; }
-  .hex-node a { display: grid; place-items: center; position: relative; width: 28px; height: 28px; color: var(--ink); font-size: 14px; font-weight: 700; line-height: 1.55; word-break: keep-all; text-decoration: none; border-radius: 50%; }
-  .node-dot { width: 18px; height: 18px; border: 2px solid var(--paper); border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent); transition: box-shadow .18s ease; }
-  .node-label { position: absolute; width: 150px; }
-  .node-0 .node-label { bottom: 35px; text-align: center; }
-  .node-3 .node-label { top: 35px; text-align: center; }
-  .node-1 .node-label, .node-2 .node-label { left: 22px; text-align: left; width: 105px; }
-  .node-4 .node-label, .node-5 .node-label { right: 22px; text-align: right; width: 105px; }
-  .hex-node a:hover, .hex-node a[aria-expanded='true'] { color: var(--accent-ink); }
-  .hex-node a:hover .node-dot, .hex-node a[aria-expanded='true'] .node-dot { box-shadow: 0 0 0 5px var(--paper), 0 0 0 8px color-mix(in srgb, var(--accent) 32%, transparent); }
-  .hex-node a:focus-visible, .preview-close:focus-visible, .preview-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  .hex-stage { position: relative; grid-column: 2; min-width: 0; aspect-ratio: 600 / 650; align-self: center; container-type: inline-size; }
+  .hex-sectors { display: block; width: 100%; height: 100%; overflow: visible; color: var(--ink); }
+  .hex-core { fill: var(--surface); stroke: var(--line); stroke-width: 2; }
+  .hex-sector { color: var(--muted); text-decoration: none; outline: none; }
+  .sector-face { fill: var(--surface); stroke: var(--paper); stroke-width: 8; stroke-linejoin: round; transition: fill .16s ease; }
+  .sector-icon { pointer-events: none; }
+  .hex-sector:hover, .hex-sector[data-selected] { color: var(--button-text); }
+  .hex-sector:hover .sector-face, .hex-sector[data-selected] .sector-face { fill: var(--button-bg); }
+  .hex-sector:focus-visible .sector-face { stroke: var(--focus); stroke-width: 6; }
+  .wheel-identity { fill: currentColor; pointer-events: none; }
+  [data-wheel-icon] { display: none; pointer-events: none; color: var(--accent-ink); }
+  .wheel-caption { position: absolute; bottom: 0; left: 0; width: 100%; margin: 0; min-height: 1.6em; color: var(--ink); font-size: clamp(10px, 4cqw, 20px); line-height: 1.6; font-weight: 750; text-align: center; white-space: nowrap; }
+  .preview-close:focus-visible, .preview-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
   .hex-preview { position: fixed; z-index: 100; bottom: 0; left: 50%; width: calc(min(var(--content-width), 100vw - 48px) - 40px); max-height: min(45dvh, 400px); overflow-y: auto; overscroll-behavior: contain; transform: translateX(-50%); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 0 24px; border: 1px solid var(--line); border-radius: 18px 18px 0 0; padding: 12px 24px max(20px, env(safe-area-inset-bottom)); background: var(--paper); box-shadow: 0 -12px 36px color-mix(in srgb, var(--ink) 12%, transparent); animation: preview-rise .25s ease-out; }
   @keyframes preview-rise { from { opacity: 0; translate: 0 24px; } to { opacity: 1; translate: 0 0; } }
   .hex-preview[hidden] { display: none; }
@@ -159,27 +181,18 @@ const attitudes = [
   .preview-close { position: sticky; z-index: 1; grid-column: 1 / -1; justify-self: end; top: 0; display: block; margin: 0 -12px 4px auto; width: 32px; height: 32px; flex-shrink: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); color: var(--ink); font-size: 22px; cursor: pointer; }
   .preview-category { margin: 10px 0 5px; font-size: 11px; font-weight: 700; color: var(--muted); }
   .preview-text { margin: 0 0 10px; font-size: 15px; line-height: 1.7; word-break: keep-all; }
-  .preview-link { color: var(--accent-ink); font-size: 12px; font-weight: 700; }
-  @media (max-width: 900px) { .hex-stage { margin-top: 0; } }
-  @media (max-width: 900px) and (min-width: 681px) { .hex-node a { font-size: 12px; } .node-1 .node-label, .node-2 .node-label { left: 24px; width: 68px; } .node-4 .node-label, .node-5 .node-label { right: 24px; width: 68px; } }
-  @media (max-width: 680px) { .hex-stage { height: 350px; } .hex-node a { font-size: 12px; } .node-1 .node-label, .node-2 .node-label { left: 26px; width: clamp(60px, 16vw, 100px); } .node-4 .node-label, .node-5 .node-label { right: 26px; width: clamp(60px, 16vw, 100px); } }
-  @media (max-width: 370px) { .node-1 .node-label, .node-2 .node-label { left: 18px; width: 54px; } .node-4 .node-label, .node-5 .node-label { right: 18px; width: 54px; } }
+  .preview-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 16px; border: 1px solid var(--button-bg); border-radius: 8px; background: var(--button-bg); color: var(--button-text); font-size: 13px; font-weight: 800; line-height: 1.5; text-decoration: none; }
+  .preview-link:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
   @media (max-width: 680px) { .hex-preview { width: calc(min(var(--content-width), 100vw - 32px) - 40px); display: block; padding: 12px 16px max(20px, env(safe-area-inset-bottom)); } .hex-preview img { height: clamp(100px, 18dvh, 180px); } .preview-copy { padding-right: 0; } .preview-close { margin-right: -4px; } }
-  .hex-stage { grid-column: 2; min-width: 0; height: auto; aspect-ratio: 600 / 660; align-self: center; container-type: inline-size; }
   .attitude-buttons { grid-column: 3; align-self: center; display: grid; gap: 10px; list-style: none; margin: 0; padding: 0; }
   .attitude-buttons a { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 64px; padding: 10px 12px; border: 1px solid var(--interactive-line); border-radius: 8px; background: var(--surface); color: var(--ink); font-size: 13px; line-height: 1.5; font-weight: 700; }
-  .attitude-buttons a:hover, .attitude-buttons a[aria-expanded='true'] { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-soft); }
+  .attitude-buttons a > span:first-child { white-space: nowrap; }
+  .attitude-buttons a:hover, .attitude-buttons a[data-selected] { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-soft); }
   .attitude-buttons a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
   .hex-previews { display: contents; }
-  .hex-node .node-label { width: 100px; font-size: 11px; white-space: nowrap; text-align: center; left: 50%; right: auto; top: 26px; bottom: auto; transform: translateX(-50%); }
-  .node-0 .node-label { top: auto; bottom: 28px; }
-  .node-1 .node-label, .node-2 .node-label, .node-4 .node-label, .node-5 .node-label { top: 50%; bottom: auto; width: max-content; max-width: calc(24cqw - 2px); white-space: normal; overflow-wrap: anywhere; transform: translateY(-50%); }
-  .node-1 .node-label, .node-2 .node-label { left: 26px; right: auto; text-align: left; }
-  .node-4 .node-label, .node-5 .node-label { right: 26px; left: auto; text-align: right; }
   @media (max-width: 680px) {
-    .hex-stage { grid-column: 1; }
+    .hex-stage { grid-column: 1; width: 100%; max-width: 440px; justify-self: center; }
     .attitude-buttons { grid-column: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .hex-node .node-label { font-size: 12px; }
   }
-  @media (prefers-reduced-motion: reduce) { .hex-travel { animation: none; stroke-dasharray: none; opacity: .35; } .hex-preview { animation: none; } .node-dot { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .hex-preview { animation: none; } .sector-face { transition: none; } }
 </style>

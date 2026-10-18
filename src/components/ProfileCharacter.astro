@@ -4,6 +4,7 @@ const { eager = false } = Astro.props;
 ---
 <figure class="intro-portrait profile-character" data-profile-character>
   <div class="character-stage">
+    <p class="character-speech">안녕하세요! 손준혁입니다. 어색하죠? 계속 공사중입니다!<span class="character-speech-tail" aria-hidden="true"></span></p>
     <canvas class="character-canvas" tabindex="0" role="img" aria-label="파란 모자를 쓴 3D 캐릭터와 정사각형 체크무늬 무대. 좌우 방향키 또는 마우스로 회전할 수 있습니다." data-eager={eager}></canvas>
     <p class="character-status" role="status">3D 캐릭터를 준비하고 있습니다.</p>
   </div>
@@ -24,6 +25,8 @@ const { eager = false } = Astro.props;
   .character-canvas { display: block; width: 100%; height: 100%; min-height: 300px; position: absolute; inset: 0; touch-action: pan-y; cursor: grab; }
   .character-canvas:active { cursor: grabbing; }
   .character-canvas:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+  .character-speech { position: absolute; left: 50%; top: calc(var(--character-head-top, 24%) - 14px); transform: translate(-50%, -100%); z-index: 1; width: max-content; max-width: min(240px, calc(100% - 16px)); box-sizing: border-box; margin: 0; padding: 12px 16px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); color: var(--ink); font-size: clamp(13px, 1.5vw, 15px); font-weight: 600; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere; pointer-events: none; }
+  .character-speech-tail { position: absolute; left: 50%; bottom: -7px; width: 12px; height: 12px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--surface); transform: translateX(-50%) rotate(45deg); }
   .character-status { position: absolute; inset: 45% 12px auto; z-index: 2; margin: 0; pointer-events: none; color: var(--muted); text-align: center; font-size: 13px; }
   .character-status[hidden] { display: none; }
   .profile-character figcaption { position: static; padding: 16px 0 0; text-align: center; color: var(--ink); background: none; }

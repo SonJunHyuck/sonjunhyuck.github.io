@@ -59,6 +59,10 @@ function mount(root) {
     camera.position.set(0, targetHeight + distance * 0.43, distance);
     camera.lookAt(0, targetHeight, 0);
     camera.updateProjectionMatrix();
+    camera.updateMatrixWorld();
+    // The model is normalized to two units high; keep the bubble just above its hat.
+    const head = new THREE.Vector3(0, 2.005, 0).project(camera);
+    stage.style.setProperty('--character-head-top', `${(1 - head.y) * height / 2}px`);
     render();
   };
   const theme = () => {
