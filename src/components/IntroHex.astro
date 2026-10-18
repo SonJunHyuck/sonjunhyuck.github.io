@@ -21,10 +21,7 @@ const attitudes = [
   { label: '적극적인 커뮤니케이션', category: '소통과 조율', href: '/projects/bfx/', image: '/images/projects/bfx/cover.png', alt: 'Project BFX 대표 화면', text: 'BFX에서 일정과 공간의 범위를 고려해, 필드 방향을 지상 군사기지에서 지하 공간으로 조율했습니다.' },
   { label: '협력하는 자세', category: '협력', href: '/reflections/voyager/#onboarding-guide', image: '/images/reflections/voyager/onboarding-message-redacted.webp', alt: '이름과 사진을 가린 동료의 감사 메시지', text: '신입 동료의 멘토를 맡고, 반복해서 필요한 설명을 온보딩 가이드로 남겼습니다.' },
   { label: '배우며 성장하는 자세', category: '배움과 성장', href: '/projects/portfolio-website/', image: '/images/projects/portfolio-website/cover.png', alt: 'AI 협업 포트폴리오 화면', text: '익숙하지 않은 웹 프런트엔드에 AI 협업으로 도전하며, 결과를 검토하고 작업 기준을 다듬고 있습니다.' },
-].map((attitude) => {
-  const splitAt = attitude.label.lastIndexOf(' ');
-  return { ...attitude, lines: [attitude.label.slice(0, splitAt), attitude.label.slice(splitAt + 1)] };
-});
+];
 ---
 <div class="intro-hex" data-intro-hex>
   <h1 id={`${instanceId}-title`} class="visually-hidden">손준혁의 개발 경험과 태도</h1>
@@ -50,11 +47,6 @@ const attitudes = [
     </svg>
     <p class="wheel-caption" data-wheel-caption aria-live="polite" aria-atomic="true"></p>
   </div>
-  <ul class="attitude-buttons" aria-label="태도별 관련 경험">
-    {attitudes.map((attitude, index) => (
-      <li><a href={attitude.href} data-attitude-button={index} aria-controls={`${instanceId}-preview-${index}`} aria-expanded="false"><span>{attitude.lines[0]}<br />{attitude.lines[1]}</span><span aria-hidden="true">↗</span></a></li>
-    ))}
-  </ul>
   <div class="hex-previews">
     {attitudes.map((attitude, index) => (
       <section id={`${instanceId}-preview-${index}`} class="hex-preview" hidden aria-label={attitude.label}>
@@ -71,15 +63,13 @@ const attitudes = [
   const closePreviews = new Set<() => void>();
   document.querySelectorAll<HTMLElement>('[data-intro-hex]').forEach((root) => {
     const nodes = [...root.querySelectorAll<SVGAElement>('[data-node]')];
-    const buttons = [...root.querySelectorAll<HTMLAnchorElement>('[data-attitude-button]')];
-    const triggers = [...nodes, ...buttons];
     const previews = [...root.querySelectorAll<HTMLElement>('.hex-preview')];
     const identity = root.querySelector<SVGGElement>('[data-wheel-identity]')!;
     const centerIcons = [...root.querySelectorAll<SVGElement>('[data-wheel-icon]')];
     const caption = root.querySelector<HTMLElement>('[data-wheel-caption]')!;
     const showSelection = (index: number) => {
-      triggers.forEach((trigger) => {
-        trigger.toggleAttribute('data-selected', Number((trigger as HTMLElement).dataset.node ?? (trigger as HTMLElement).dataset.attitudeButton) === index);
+      nodes.forEach((trigger) => {
+        trigger.toggleAttribute('data-selected', Number(trigger.dataset.node) === index);
       });
       identity.style.display = index < 0 ? '' : 'none';
       centerIcons.forEach((icon, i) => { icon.style.display = i === index ? 'block' : 'none'; });
@@ -91,7 +81,7 @@ const attitudes = [
     const close = () => {
       clearTimeout(dismissTimer);
       previews.forEach((preview) => { preview.hidden = true; });
-      triggers.forEach((node) => node.setAttribute('aria-expanded', 'false'));
+      nodes.forEach((node) => node.setAttribute('aria-expanded', 'false'));
       active = -1;
       showSelection(-1);
     };
@@ -100,12 +90,11 @@ const attitudes = [
       closePreviews.forEach((dismiss) => dismiss());
       previews[index].hidden = false;
       nodes[index].setAttribute('aria-expanded', 'true');
-      buttons[index].setAttribute('aria-expanded', 'true');
       active = index;
       showSelection(index);
     };
-    triggers.forEach((node) => {
-      const index = Number(node.dataset.node ?? node.dataset.attitudeButton);
+    nodes.forEach((node) => {
+      const index = Number(node.dataset.node);
       node.addEventListener('mouseenter', () => { if (!coarse.matches) open(index); });
       node.addEventListener('focus', () => { if (node.matches(':focus-visible')) open(index); });
       node.addEventListener('mouseleave', () => {
@@ -123,12 +112,12 @@ const attitudes = [
         if (coarse.matches) { event.preventDefault(); open(index); }
       });
     });
-    const hasKeyboardFocus = () => triggers.some((trigger) => trigger.matches(':focus-visible')) ||
+    const hasKeyboardFocus = () => nodes.some((trigger) => trigger.matches(':focus-visible')) ||
       previews.some((preview) => preview.querySelector(':focus-visible') !== null);
     const leaveHover = () => {
-      const focusedTrigger = triggers.find((trigger) => trigger.matches(':focus-visible'));
+      const focusedTrigger = nodes.find((trigger) => trigger.matches(':focus-visible'));
       if (focusedTrigger) {
-        const index = Number(focusedTrigger.dataset.node ?? focusedTrigger.dataset.attitudeButton);
+        const index = Number(focusedTrigger.dataset.node);
         if (active !== index) open(index);
         return;
       }
@@ -184,15 +173,9 @@ const attitudes = [
   .preview-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 16px; border: 1px solid var(--button-bg); border-radius: 8px; background: var(--button-bg); color: var(--button-text); font-size: 13px; font-weight: 800; line-height: 1.5; text-decoration: none; }
   .preview-link:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
   @media (max-width: 680px) { .hex-preview { width: calc(min(var(--content-width), 100vw - 32px) - 40px); display: block; padding: 12px 16px max(20px, env(safe-area-inset-bottom)); } .hex-preview img { height: clamp(100px, 18dvh, 180px); } .preview-copy { padding-right: 0; } .preview-close { margin-right: -4px; } }
-  .attitude-buttons { grid-column: 3; align-self: center; display: grid; gap: 10px; list-style: none; margin: 0; padding: 0; }
-  .attitude-buttons a { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 64px; padding: 10px 12px; border: 1px solid var(--interactive-line); border-radius: 8px; background: var(--surface); color: var(--ink); font-size: 13px; line-height: 1.5; font-weight: 700; }
-  .attitude-buttons a > span:first-child { white-space: nowrap; }
-  .attitude-buttons a:hover, .attitude-buttons a[data-selected] { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-soft); }
-  .attitude-buttons a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
   .hex-previews { display: contents; }
   @media (max-width: 680px) {
     .hex-stage { grid-column: 1; width: 100%; max-width: 440px; justify-self: center; }
-    .attitude-buttons { grid-column: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (prefers-reduced-motion: reduce) { .hex-preview { animation: none; } .sector-face { transition: none; } }
 </style>
