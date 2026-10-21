@@ -6,10 +6,11 @@ import Footer from '../components/Footer.astro';
 interface Props {
   title: string;
   description?: string;
-  redirectTo?: string;
 }
 
-const { title, description = 'Son Junhyuck의 게임 개발 포트폴리오', redirectTo } = Astro.props;
+const { title, description = 'Son Junhyuck의 게임 개발 포트폴리오' } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const shareImageUrl = new URL('/favicon2.png', Astro.site);
 ---
 
 <!doctype html>
@@ -36,9 +37,19 @@ const { title, description = 'Son Junhyuck의 게임 개발 포트폴리오', re
         document.documentElement.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
       })();
     </script>
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="canonical" href={new URL(redirectTo ?? Astro.url.pathname, Astro.site)} />
-    {redirectTo && <meta http-equiv="refresh" content={`0;url=${redirectTo}`} />}
+    <link rel="icon" type="image/png" href="/favicon2.png" />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Son Junhyuck" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={shareImageUrl} />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Son Junhyuck 아이덴티티 캐릭터" />
+    <meta name="twitter:card" content="summary" />
     <title>{title}</title>
   </head>
   <body>

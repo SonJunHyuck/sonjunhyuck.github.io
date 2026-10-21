@@ -52,7 +52,7 @@ notionUrl: "https://sonnysmile.notion.site/183ed1cbaf6c807bb6fff35bcedc4beb"
 기존 WebGL 기반 바람 지도 프로젝트를 <span class="text-highlight">C++와 OpenGL 환경으로 재구현</span>했습니다. 데이터 처리와 렌더링 흐름을 데스크톱 그래픽스 환경에 맞게 옮기고, 대규모 파티클 연산으로 확장할 수 있는 기반을 마련했습니다.
 
 <figure class="story-media">
-  <img src="/images/projects/wind-map-simulation/mapbox-webgl-reference.png" alt="Mapbox의 WebGL 기반 바람 지도 프로젝트 화면" loading="lazy" />
+  <img src="/images/projects/wind-map-simulation/mapbox-webgl-reference.webp" alt="Mapbox의 WebGL 기반 바람 지도 프로젝트 화면" loading="lazy" />
   <figcaption>재구현의 기반이 된 Mapbox WebGL 바람 지도 프로젝트 · <a href="https://medium.com/mapbox/how-i-built-a-wind-map-with-webgl-b63022b5537f" target="_blank" rel="noreferrer">원문 보기 ↗</a></figcaption>
 </figure>
 
@@ -74,7 +74,7 @@ GRIB 기상 데이터를 텍스처 정보로 변환하는 원리를 해석했습
 ImGui를 통해 <span class="text-highlight">파티클 수와 물리 변수를 실시간으로 조정</span>했습니다. 설정 변화에 따른 시스템 부하와 시각적 결과를 즉시 확인하며 파티클 표현을 검증하고 최적화했습니다.
 
 <figure class="story-media">
-  <img src="/images/projects/wind-map-simulation/opengl-new-version.png" alt="ImGui 제어 화면과 대규모 파티클로 표현한 OpenGL 바람 지도 시뮬레이션" loading="lazy" />
+  <img src="/images/projects/wind-map-simulation/opengl-new-version.webp" alt="ImGui 제어 화면과 대규모 파티클로 표현한 OpenGL 바람 지도 시뮬레이션" loading="lazy" />
   <figcaption>C++·OpenGL 환경으로 재구현한 바람 지도 시뮬레이션</figcaption>
 </figure>
 

@@ -13,7 +13,7 @@ period: "2026.05.04–2026.09.08"
 teamSize: "게임 클라이언트 개발 5명"
 platform: ["PC"]
 genres: ["PvE FPS"]
-thumbnail: "/images/projects/bfx/cover.png"
+thumbnail: "/images/projects/bfx/cover.webp"
 gallery:
   - src: "/images/projects/bfx/dialogue-preview.png"
     alt: "Project BFX에서 NPC와 대화하는 게임 화면"
@@ -53,8 +53,8 @@ features:
   <p>기존 시스템의 대화 실행 기능은 활용하되, <span class="bfx-text-highlight">콘텐츠를 작성하고 수정하는 과정은 더 간편하게 만들고자 했습니다.</span> 이를 위해 <span class="bfx-text-highlight">대사와 연결 관계를 테이블로 관리하는 임포터</span>를 구현했습니다. 기획자는 스프레드시트에서 대화를 일괄 작성·수정하고, 임포터는 데이터를 검증한 뒤 <span class="bfx-text-highlight">노드 생성과 연결을 처리</span>하도록 구성했습니다. 대사·화자 등 노드 정보는 <code>Entries</code> 시트에, 노드 간 연결 정보는 <code>Links</code> 시트에 작성합니다. 임포터는 두 시트의 데이터를 읽어 Dialogue System의 대화 데이터로 반영합니다.</p>
   <div class="bfx-import-media-grid">
   <figure class="story-media bfx-sheet-media">
-    <a href="/images/projects/bfx/dialogue-spreadsheet.png" target="_blank" rel="noopener" aria-label="대화 스프레드시트 원본 이미지 새 탭에서 보기">
-      <img src="/images/projects/bfx/dialogue-spreadsheet.png" alt="cv_npc_luna 워크북의 Entries 시트. entryId, 화자, 대사, 선택지와 조건을 열로 관리하며 하단에 Entries와 Links 시트가 표시되어 있습니다." width="3600" height="2338" loading="lazy" />
+    <a href="/images/projects/bfx/dialogue-spreadsheet.webp" target="_blank" rel="noopener" aria-label="대화 스프레드시트 원본 이미지 새 탭에서 보기">
+      <img src="/images/projects/bfx/dialogue-spreadsheet.webp" alt="cv_npc_luna 워크북의 Entries 시트. entryId, 화자, 대사, 선택지와 조건을 열로 관리하며 하단에 Entries와 Links 시트가 표시되어 있습니다." width="3600" height="2338" loading="lazy" />
     </a>
     <figcaption>게임 내 NPC Luna의 대화 관리 시트. 대사, 화자, 선택지, 조건을 관리하고, 노드 간 연결 정보는 Links 시트에서 관리합니다.</figcaption>
   </figure>
@@ -121,7 +121,7 @@ features:
   </div>
   <div class="bfx-notification-media">
     <figure class="story-media">
-      <img src="/images/projects/bfx/radio.gif" alt="Project BFX에서 화자 이름과 대사가 순서대로 표시되는 Radio 알림 예시" loading="lazy" />
+      <img src="/images/projects/bfx/radio.webp" alt="Project BFX에서 화자 이름과 대사가 순서대로 표시되는 Radio 알림 예시" loading="lazy" />
       <figcaption>Radio 알림 표시 예시</figcaption>
     </figure>
   </div>

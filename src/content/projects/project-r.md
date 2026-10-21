@@ -1,6 +1,6 @@
 ---
 title: "Project R"
-summary: "나만의 아바타를 만들어 다양한 미니게임을 즐기며 친구를 사귀는 메타버스 소셜 게임"
+summary: "나만의 아바타를 만들어 다양한 미니게임을 즐기며 친구를 사귀는 메타버스 소셜 게임 (개발 중단)"
 cardContribution: "UI 및 인게임 콘텐츠 구현에 참여하고 게임 빌드 파이프라인과 Jenkins 자동화를 구현했습니다."
 description: "빌드 파이프라인, 네트워크 동기화, 데이터 반응형 UI 개발 등 클라이언트 개발 범위를 확장한 실무 프로젝트입니다."
 publishedAt: 2026-03-01
@@ -14,7 +14,7 @@ platform: ["PC", "Android", "iOS"]
 genres: ["Metaverse"]
 thumbnail: "/images/projects/project-r/cover.png"
 gallery:
-  - src: "/images/projects/project-r/build-pipeline.png"
+  - src: "/images/projects/project-r/build-pipeline.webp"
     alt: "Jenkins에서 Unity와 Addressables를 빌드하고 S3 배포와 Slack 알림으로 이어지는 파이프라인"
     caption: "Unity 빌드·배포 파이프라인 흐름"
   - src: "/images/projects/project-r/jenkins-build-parameters.png"
@@ -23,16 +23,16 @@ gallery:
   - src: "/images/projects/project-r/launcher.png"
     alt: "원격 버전 확인과 패치 실행 기능을 제공하는 WPF Game Launcher"
     caption: "WPF Launcher 테스트 화면"
-  - src: "/images/projects/project-r/shop.png"
+  - src: "/images/projects/project-r/shop.webp"
     alt: "Project R 상점 UI 구현 화면"
     caption: "무한 스크롤을 적용한 상점 UI"
-  - src: "/images/projects/project-r/group-emote.gif"
+  - src: "/images/projects/project-r/group-emote.webp"
     alt: "여러 캐릭터가 함께 감정표현을 실행하는 애니메이션"
     caption: "Group 이모트 참여 장면"
-  - src: "/images/projects/project-r/emote-preview.gif"
+  - src: "/images/projects/project-r/emote-preview.webp"
     alt: "캐릭터 감정표현 미리보기 애니메이션"
     caption: "캐릭터 설정의 이모트 미리보기"
-  - src: "/images/projects/project-r/emote-scene.gif"
+  - src: "/images/projects/project-r/emote-scene.webp"
     alt: "여러 플레이어가 있는 공간에서 이모트를 실행하는 애니메이션"
     caption: "다른 플레이어와 함께 있는 장면의 이모트"
 technologies:
@@ -85,7 +85,7 @@ Jenkins가 전달한 인자를 바탕으로 프로파일을 설정하고 빌드�
 Slack을 연동해 빌드 시작과 종료를 알리고, 배포된 파일의 다운로드 경로를 공유했습니다. QA팀을 비롯해 테스트가 필요한 동료들이 빌드 채널을 구독하고 결과물을 받을 수 있도록 구성했습니다. 매일 아침에는 정기 빌드를 실행해 전일 최종 버전의 정상 여부를 확인했습니다.
 
 <figure class="story-media">
-  <img src="/images/projects/project-r/build-pipeline.png" alt="Jenkins에서 Unity와 Addressables를 빌드하고 S3 배포와 Slack 알림으로 이어지는 파이프라인" loading="lazy" />
+  <img src="/images/projects/project-r/build-pipeline.webp" alt="Jenkins에서 Unity와 Addressables를 빌드하고 S3 배포와 Slack 알림으로 이어지는 파이프라인" loading="lazy" />
   <figcaption>Jenkins와 Unity를 연결한 빌드·배포 자동화 흐름</figcaption>
 </figure>
 
@@ -119,11 +119,11 @@ MMO 환경에서 다른 플레이어에게 이모트 재생 상태가 보이도�
 
 <div class="story-media-grid">
   <figure class="story-media">
-    <img src="/images/projects/project-r/group-emote.gif" alt="여러 캐릭터가 함께 감정표현을 실행하는 애니메이션" loading="lazy" />
+    <img src="/images/projects/project-r/group-emote.webp" alt="여러 캐릭터가 함께 감정표현을 실행하는 애니메이션" loading="lazy" />
     <figcaption>Group 이모트 참여 장면</figcaption>
   </figure>
   <figure class="story-media">
-    <img src="/images/projects/project-r/emote-scene.gif" alt="다른 플레이어와 함께 있는 공간에서 이모트를 실행하는 애니메이션" loading="lazy" />
+    <img src="/images/projects/project-r/emote-scene.webp" alt="다른 플레이어와 함께 있는 공간에서 이모트를 실행하는 애니메이션" loading="lazy" />
     <figcaption>다른 플레이어와 함께 사용하는 이모트</figcaption>
   </figure>
 </div>
@@ -133,7 +133,7 @@ MMO 환경에서 다른 플레이어에게 이모트 재생 상태가 보이도�
 캐릭터 설정창에 보유한 이모트와 해금 상태를 표시하고, 선택한 이모트의 캐릭터 애니메이션을 미리볼 수 있게 했습니다. 이모트 퀵슬롯 장착·교체 기능을 구현하고, 퀵슬롯에 등록한 이모트를 인게임 실행 기능과 연동했습니다.
 
 <figure class="story-media">
-  <img src="/images/projects/project-r/emote-preview.gif" alt="캐릭터 설정창에서 이모트 애니메이션을 미리보는 장면" loading="lazy" />
+  <img src="/images/projects/project-r/emote-preview.webp" alt="캐릭터 설정창에서 이모트 애니메이션을 미리보는 장면" loading="lazy" />
   <figcaption>캐릭터 설정창의 이모트 미리보기</figcaption>
 </figure>
 
@@ -146,6 +146,6 @@ MMO 환경에서 다른 플레이어에게 이모트 재생 상태가 보이도�
 무한 스크롤 적용 방법은 기술 문서와 가이드로 정리해 팀에서 재사용할 수 있도록 공유했습니다.
 
 <figure class="story-media">
-  <img src="/images/projects/project-r/shop.png" alt="Project R 상점 UI 구현 화면" loading="lazy" />
+  <img src="/images/projects/project-r/shop.webp" alt="Project R 상점 UI 구현 화면" loading="lazy" />
   <figcaption>무한 스크롤과 데이터 반응형 갱신을 적용한 상점 UI</figcaption>
 </figure>

@@ -23,7 +23,7 @@ const isPersonalResearch = project.id === 'crowd-formation-control' || project.i
 const usesCaseStudyLayout = isProjectR || isInspixWorld || isHiddenCheerSquad || isBfx || isPersonalResearch || isPortfolio;
 const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || isPersonalResearch;
 ---
-<BaseLayout title={data.title} description={data.summary}>
+<BaseLayout title={`${data.title} — Son Junhyuck`} description={data.summary}>
   <article class:list={["project-detail", "container", { "case-study-detail": usesCaseStudyLayout, "inspix-world-detail": isInspixWorld, "bfx-detail": isBfx, "portfolio-detail": isPortfolio }]}>
     <a class="back-link" href="/projects/">← 돌아가기</a>
     <header><p class="eyebrow">{data.category === 'game' ? 'GAME' : data.category === 'graphics' ? 'GRAPHICS' : 'AI 활용'} PROJECT {data.isExample && '· EXAMPLE'}</p><h1>{data.title}</h1><p class="lead">{isBfx && data.description.startsWith(bfxLeadHighlight) ? <><span class="lead-highlight">{bfxLeadHighlight}</span>{data.description.slice(bfxLeadHighlight.length)}</> : data.description}</p></header>

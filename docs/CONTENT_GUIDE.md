@@ -16,4 +16,4 @@ OpenGL 튜토리얼이나 렌더링 학습은 `category: graphics`, `workTypes: 
 
 ## DevLog
 
-DevLog는 사이트 안에 글이나 목록을 복제하지 않고 상단 메뉴에서 공개 Notion DevLog로 바로 연결합니다. 기존 `/devlog/`, `/devlog/welcome/`, `/posts/`와 과거 글 경로는 같은 Notion DevLog로 안내합니다. 링크 대상이 바뀌면 `src/config/links.ts`의 주소를 수정합니다.
+DevLog는 사이트 안에 글이나 목록을 복제하지 않고 상단 메뉴에서 공개 Notion DevLog로 바로 연결합니다. 기존 `/devlog/`, `/devlog/welcome/`, `/posts/`와 과거 글 경로는 외부 공유 이력이 없어 안내 페이지 없이 삭제했습니다(예외 처리, 2026-10-21). 외부에는 루트 주소만 공유합니다. 링크 대상이 바뀌면 `src/config/links.ts`의 주소를 수정합니다.
