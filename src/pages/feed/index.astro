@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FeedCard from '../../components/FeedCard.astro';
+import { FEED_PAGE_SIZE, getFeedIndex } from '../../lib/feed';
+import '../../styles/feed.css';
+
+const { entries, groups } = await getFeedIndex();
+const firstPage = entries.slice(0, FEED_PAGE_SIZE);
+---
+
+<BaseLayout title="피드 — Son Junhyuck" description="짧은 생각과 작업 기록을 모은 피드입니다.">
+  <div class="feed-page">
+    <h1 class="visually-hidden">피드</h1>
+    <section class="container feed-section" aria-label="피드 목록">
+      <div class="feed-column">
+        <div class="feed-filters" role="group" aria-label="태그 필터">
+          {groups.map((group) => <button type="button" data-feed-filter={group.key} aria-pressed={group.key === 'all' ? 'true' : 'false'} disabled>{group.tag ?? '전체'}</button>)}
+        </div>
+        <div id="feed-list" data-page-size={FEED_PAGE_SIZE}>{firstPage.map((entry) => <FeedCard {entry} />)}</div>
+        <p id="feed-empty" class="feed-empty" hidden={entries.length > 0}>아직 공개된 피드가 없습니다.</p>
+        <div class="feed-pagination">
+          <p id="feed-status" role="status" aria-live="polite">{entries.length > 0 && entries.length <= FEED_PAGE_SIZE ? '모든 피드를 확인했습니다.' : ''}</p>
+          <button id="feed-more" type="button" hidden>이전 피드 불러오기</button>
+          <span id="feed-sentinel" aria-hidden="true"></span>
+        </div>
+        {entries.length > FEED_PAGE_SIZE && <noscript><p>추가 피드를 보려면 JavaScript를 켜 주세요.</p></noscript>}
+      </div>
+    </section>
+    <dialog id="feed-photo-dialog" aria-labelledby="feed-photo-heading">
+      <div class="feed-dialog-toolbar">
+        <h2 id="feed-photo-heading">사진 확대 보기</h2>
+        <button type="button" id="feed-photo-close" autofocus>닫기</button>
+      </div>
+      <img id="feed-photo-full" alt="" />
+    </dialog>
+    <script id="feed-index" type="application/json" is:inline set:html={JSON.stringify(groups).replaceAll('<', '\\u003c')} />
+  </div>
+</BaseLayout>
+
+<script>
+  import '../../scripts/feed';
+</script>

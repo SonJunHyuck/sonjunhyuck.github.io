@@ -58,4 +58,26 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { projects };
+const feed = defineCollection({
+  loader: glob({
+    base: './src/content/feed',
+    // Exclude development fixtures before Astro imports their image assets.
+    pattern: import.meta.env.DEV ? '**/*.md' : ['**/*.md', '!_examples/**'],
+    generateId: ({ entry }) => entry.replace(/^_examples\//, '').replace(/\.md$/, ''),
+  }),
+  schema: ({ image }) => z.object({
+    title: z.string().trim().min(1),
+    date: z.coerce.date(),
+    notionUrl: z.string().url(),
+    tags: z.array(z.string().trim().min(1)).default([]),
+    image: image().optional(),
+    imageAlt: z.string().trim().min(1).optional(),
+    draft: z.boolean().default(false),
+  }).superRefine((data, context) => {
+    if (data.image && !data.imageAlt) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ['imageAlt'], message: '사진의 대체 텍스트가 필요합니다.' });
+    }
+  }),
+});
+
+export const collections = { projects, feed };

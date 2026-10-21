@@ -35,6 +35,7 @@ const isCurrent = (section?: string) => {
               ))}
             </ul>
           </li>
+          <li><a href="/feed/" aria-current={currentPath === '/feed/' ? 'page' : undefined}><span class="nav-label">피드</span></a></li>
           <li><a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="개발일지를 Notion에서 새 탭으로 열기"><span class="nav-label">개발일지 ↗</span></a></li>
         </ul>
       </nav>
