@@ -1,30 +1,31 @@
 .feed-section { padding-top: 48px; padding-bottom: 100px; }
-.feed-column { width: 100%; max-width: 470px; margin-inline: auto; }
+.feed-column { width: 100%; max-width: var(--feed-column-width); margin-inline: auto; }
 .feed-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px; }
 .feed-filters button, #feed-more, #feed-photo-close { min-height: 44px; padding: 10px 12px; border: 1px solid var(--interactive-line); border-radius: 4px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
 .feed-filters button:hover, #feed-more:hover, #feed-photo-close:hover { border-color: var(--accent); color: var(--accent); }
 .feed-filters button[aria-pressed='true'] { border-color: var(--button-bg); background: var(--button-bg); color: var(--button-text); }
 .feed-filters button:disabled, #feed-more:disabled { cursor: default; }
-.feed-card { min-width: 0; padding-bottom: 32px; margin-bottom: 32px; border-bottom: 1px solid var(--line); scroll-margin-top: 140px; }
+.feed-card { --feed-card-padding: 24px; min-width: 0; padding: var(--feed-card-padding); margin-bottom: 24px; border: 1px solid var(--card-line); border-radius: 24px; background: var(--surface); scroll-margin-top: 140px; }
 .feed-author { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
 .feed-avatar { flex: 0 0 40px; width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; object-fit: contain; background: var(--image-frame); }
 .feed-author > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; min-width: 0; }
 .feed-author-name { font-size: 13px; font-weight: 800; }
 .feed-permalink { color: var(--muted); font: 11px var(--mono); white-space: nowrap; }
 .feed-permalink:hover { color: var(--accent); text-decoration: underline; }
-.feed-card h2 { margin-bottom: 16px; font-size: 22px; line-height: 1.4; letter-spacing: -.035em; }
+.feed-card h2 { margin-bottom: 16px; font-size: 20px; line-height: 1.4; letter-spacing: -.035em; }
 .feed-body { color: var(--body-copy); line-height: 1.8; overflow-wrap: anywhere; }
 .feed-body p, .feed-body li { white-space: pre-line; }
 .feed-body p { margin-bottom: 16px; }
 .feed-body a, .feed-notion-link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .feed-body img { max-width: 100%; height: auto; }
 .feed-body pre { overflow-x: auto; }
-.feed-photo { display: flex; align-items: center; justify-content: center; width: 100%; aspect-ratio: 1; padding: 0; margin: 24px 0; border: 0; overflow: hidden; cursor: zoom-in; }
+.feed-photo { display: flex; align-items: center; justify-content: center; width: calc(100% + var(--feed-card-padding) * 2); aspect-ratio: var(--feed-photo-ratio); padding: 0; margin: 24px calc(-1 * var(--feed-card-padding)); border: 0; overflow: hidden; cursor: zoom-in; }
 .feed-photo--cover { background: var(--image-frame); }
 .feed-photo--cover img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
 .feed-photo--contain { background: #000; }
 .feed-photo--contain img { display: block; width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
-.feed-tags { display: flex; flex-wrap: wrap; gap: 8px 12px; margin: 20px 0 16px; padding: 0; list-style: none; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+.feed-tags { margin: 20px 0; overflow-wrap: anywhere; }
+.feed-card-footer { padding-top: 16px; border-top: 1px solid var(--line); }
 .feed-notion-link { display: inline-block; padding-block: 5px; font-size: 13px; font-weight: 700; }
 .feed-empty, .feed-pagination { color: var(--muted); line-height: 1.7; }
 .feed-pagination { text-align: center; }
@@ -35,5 +36,5 @@
 .feed-dialog-toolbar h2 { margin: 0; font-size: 16px; }
 #feed-photo-full { display: block; width: auto; height: auto; max-width: 100%; max-height: calc(100dvh - 132px); object-fit: contain; margin-inline: auto; }
 .feed-page [hidden] { display: none !important; }
-@media (max-width: 680px) { .feed-section { padding-top: 32px; } }
+@media (max-width: 680px) { .feed-section { padding-top: 32px; } .feed-card { --feed-card-padding: 18px; border-radius: 18px; } }
 @media (prefers-reduced-motion: reduce) { .feed-card { scroll-behavior: auto; } }

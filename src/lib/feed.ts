@@ -1,7 +1,20 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export const FEED_PAGE_SIZE = 10;
-export const FEED_IMAGE_SIZE = 470;
+export const FEED_COLUMN_WIDTH = 600;
+const FEED_IMAGE_MIN_RATIO = 4 / 5;
+const FEED_IMAGE_MAX_RATIO = 1.91;
+
+export function getFeedImageLayout(image: { width: number; height: number }) {
+  const originalRatio = image.width / image.height;
+  const ratio = Math.min(FEED_IMAGE_MAX_RATIO, Math.max(FEED_IMAGE_MIN_RATIO, originalRatio));
+  return {
+    ratio,
+    coversFrame: image.width >= FEED_COLUMN_WIDTH,
+    cropsImage: ratio !== originalRatio,
+    thumbnailWidth: Math.min(image.width, FEED_COLUMN_WIDTH * 2),
+  };
+}
 
 export interface FeedGroup {
   key: string;

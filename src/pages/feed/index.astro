@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FeedCard from '../../components/FeedCard.astro';
-import { FEED_PAGE_SIZE, getFeedIndex } from '../../lib/feed';
+import { FEED_COLUMN_WIDTH, FEED_PAGE_SIZE, getFeedIndex } from '../../lib/feed';
 import '../../styles/feed.css';
 
 const { entries, groups } = await getFeedIndex();
@@ -12,7 +12,7 @@ const firstPage = entries.slice(0, FEED_PAGE_SIZE);
   <div class="feed-page">
     <h1 class="visually-hidden">피드</h1>
     <section class="container feed-section" aria-label="피드 목록">
-      <div class="feed-column">
+      <div class="feed-column" style={{ '--feed-column-width': `${FEED_COLUMN_WIDTH}px` }}>
         <div class="feed-filters" role="group" aria-label="태그 필터">
           {groups.map((group) => <button type="button" data-feed-filter={group.key} aria-pressed={group.key === 'all' ? 'true' : 'false'} disabled>{group.tag ?? '전체'}</button>)}
         </div>

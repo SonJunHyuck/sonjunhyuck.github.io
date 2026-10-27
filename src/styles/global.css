@@ -78,7 +78,7 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 .profile-details dd span { color: var(--muted); font-size: 13px; font-weight: 600; }
 .profile-stack { grid-column: 2; padding-top: 24px; border-top: 1px solid var(--line); }
 .profile-stack > p { margin-bottom: 13px; }
-.profile-stack .tag-list li { border-color: var(--card-line); border-radius: 999px; background: var(--surface-muted); color: var(--accent-ink); }
+.profile-stack .tag-list li, .feed-tags.tag-list li { border-color: var(--card-line); border-radius: 999px; background: var(--surface-muted); color: var(--accent-ink); }
 .content-notice { display: inline-block; margin: 26px 0 0; padding: 10px 13px; border-left: 3px solid var(--sun); background: var(--surface-note); color: var(--muted); font-size: 12px; }
 .resume { padding-bottom: 120px; }
 .resume-content { width: min(var(--content-width), 100%); margin: 0 auto; }

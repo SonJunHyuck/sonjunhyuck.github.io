@@ -1,7 +1,7 @@
 ---
 import { getImage } from 'astro:assets';
 import { render, type CollectionEntry } from 'astro:content';
-import { FEED_IMAGE_SIZE } from '../lib/feed';
+import { getFeedImageLayout } from '../lib/feed';
 
 interface Props { entry: CollectionEntry<'feed'>; }
 const { entry } = Astro.props;
@@ -9,12 +9,14 @@ const { data } = entry;
 const { Content } = await render(entry);
 const date = data.date.toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' }).replaceAll('-', '.');
 const image = data.image;
-const coversFrame = image && image.width >= FEED_IMAGE_SIZE && image.height >= FEED_IMAGE_SIZE;
-const edge = image ? Math.min(FEED_IMAGE_SIZE * 2, image.width, image.height) : 0;
-const thumbnail = image ? await getImage({
+const imageLayout = image ? getFeedImageLayout(image) : undefined;
+const thumbnail = image && imageLayout ? await getImage({
   src: image,
   format: 'webp',
-  ...(coversFrame ? { width: edge, height: edge, fit: 'cover', position: 'center' } : { width: Math.min(image.width, FEED_IMAGE_SIZE * 2) }),
+  width: imageLayout.thumbnailWidth,
+  ...(imageLayout.coversFrame && imageLayout.cropsImage ? {
+    height: Math.round(imageLayout.thumbnailWidth / imageLayout.ratio), fit: 'cover', position: 'center',
+  } : {}),
 }) : undefined;
 const fullImage = image ? await getImage({ src: image, width: Math.min(image.width, 1880), format: 'webp' }) : undefined;
 ---
@@ -29,9 +31,10 @@ const fullImage = image ? await getImage({ src: image, width: Math.min(image.wid
   </header>
   <h2 id={`title-${entry.id}`}>{data.title}</h2>
   <div class="feed-body"><Content /></div>
-  {image && thumbnail && fullImage && (
+  {image && imageLayout && thumbnail && fullImage && (
     <button
-      class:list={['feed-photo', coversFrame ? 'feed-photo--cover' : 'feed-photo--contain']}
+      class:list={['feed-photo', imageLayout.coversFrame ? 'feed-photo--cover' : 'feed-photo--contain']}
+      style={{ '--feed-photo-ratio': imageLayout.ratio }}
       type="button"
       aria-label={`사진 확대: ${data.imageAlt}`}
       aria-haspopup="dialog"
@@ -45,6 +48,8 @@ const fullImage = image ? await getImage({ src: image, width: Math.min(image.wid
       <img {...thumbnail.attributes} src={thumbnail.src} alt={data.imageAlt} loading="lazy" decoding="async" />
     </button>
   )}
-  {data.tags.length > 0 && <ul class="feed-tags" aria-label="태그">{data.tags.map((tag) => <li>#{tag}</li>)}</ul>}
-  <a class="feed-notion-link" href={data.notionUrl} target="_blank" rel="noopener noreferrer">Notion에서 자세히 보기 ↗</a>
+  {data.tags.length > 0 && <ul class="feed-tags tag-list" aria-label="태그">{data.tags.map((tag) => <li>#{tag}</li>)}</ul>}
+  <footer class="feed-card-footer">
+    <a class="feed-notion-link" href={data.notionUrl} target="_blank" rel="noopener noreferrer">Notion에서 자세히 보기 ↗</a>
+  </footer>
 </article>
