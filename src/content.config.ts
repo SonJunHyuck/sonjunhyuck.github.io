@@ -61,9 +61,7 @@ const projects = defineCollection({
 const feed = defineCollection({
   loader: glob({
     base: './src/content/feed',
-    // Exclude development fixtures before Astro imports their image assets.
-    pattern: import.meta.env.DEV ? '**/*.md' : ['**/*.md', '!_examples/**'],
-    generateId: ({ entry }) => entry.replace(/^_examples\//, '').replace(/\.md$/, ''),
+    pattern: '**/*.md',
   }),
   schema: ({ image }) => z.object({
     title: z.string().trim().min(1),
