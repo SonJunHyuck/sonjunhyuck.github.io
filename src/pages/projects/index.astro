@@ -8,9 +8,8 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
 ---
 <BaseLayout title="Projects — Son Junhyuck" description="업무와 개인 프로젝트를 소개합니다.">
   <section class="page-intro container project-hub-intro">
+    <h1 class="visually-hidden">프로젝트</h1>
     <ProjectGroupNav />
-    <p class="eyebrow">PROJECTS</p>
-    <h1>업무와 개인 <em>프로젝트</em>를 소개합니다.</h1>
   </section>
   <section class="container projects-section project-carousel" aria-labelledby="project-list-heading">
     <h2 id="project-list-heading" class="visually-hidden">전체 프로젝트 목록</h2>

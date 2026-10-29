@@ -143,7 +143,6 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 .project-group-nav button[aria-pressed='true'] { border-color: var(--button-bg); background: var(--button-bg); color: var(--button-text); }
 .project-group-nav button[aria-pressed='true']:hover { border-color: var(--accent); background: var(--accent); }
 .project-group-nav button:focus-visible, .project-detail > .back-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
-.project-list-intro, .project-hub-intro { padding-bottom: 64px; }
 .project-group-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .project-group-card { display: flex; min-width: 0; flex-direction: column; padding: 28px; border: 1px solid var(--line); }
 .project-group-card h3 { margin: 12px 0 12px; font-size: clamp(27px, 3vw, 38px); letter-spacing: -.055em; }
@@ -305,8 +304,8 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 #dialogue-importer .bfx-sheet-media img { height:auto; max-height:none; cursor:zoom-in; }
 
 /* The overview presents every project in one horizontally scrollable list. */
-.project-hub-intro { padding-top: 36px; }
-.project-hub-intro h1 { word-break: keep-all; }
+.project-hub-intro { padding: 48px 0 36px; }
+.project-hub-intro .project-group-nav { margin-bottom: 0; }
 .project-carousel-track { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 40px) / 2.18); gap: 20px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scrollbar-color: var(--interactive-line) var(--surface); padding: 4px 4px 20px; scroll-padding: 4px; }
 .project-carousel-track::-webkit-scrollbar { height: 10px; }
 .project-carousel-track::-webkit-scrollbar-track { background: var(--surface); border-radius: 999px; }
@@ -332,7 +331,7 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 .project-card .project-card-contribution { margin-bottom: 18px; }
 .project-card .tag-list { margin-top: auto; }
 @media (max-width: 680px) {
-  .project-hub-intro { padding-top: 24px; }
+  .project-hub-intro { padding-top: 32px; }
   .project-list-surface { padding: 16px; }
   .project-carousel-track.project-list-surface { scroll-padding: 16px; }
   .project-carousel-track { grid-auto-columns: calc((100% - 20px) / 1.18); }
