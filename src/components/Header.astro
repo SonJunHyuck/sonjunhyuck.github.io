@@ -26,7 +26,7 @@ const isCurrent = (section?: string) => {
         <ul>
           <li><a href="/" aria-current={isCurrent('profile') ? 'page' : undefined}><span class="nav-label">프로필</span></a></li>
           <li class="project-navigation">
-            <a href="/projects/" class:list={['project-toggle', { 'is-current': currentPath.startsWith('/projects/') }]} aria-current={currentPath === '/projects/' ? 'page' : undefined} aria-expanded="false" aria-controls="project-navigation-links">
+            <a href="/projects/" class:list={['project-toggle', { 'is-current': currentPath.startsWith('/projects/') }]} aria-current={currentPath === '/projects/' ? 'page' : undefined}>
               <span class="nav-label">프로젝트</span>
             </a>
             <ul id="project-navigation-links" class="project-dropdown" hidden>
@@ -96,8 +96,7 @@ const isCurrent = (section?: string) => {
     .header-actions nav .project-dropdown { gap: 14px; padding: 10px 12px; }
   }
   @media (hover: none) {
-    nav > ul { margin-bottom: 48px; }
-    .project-dropdown { top: 100%; }
+    .project-dropdown { display: none; }
   }
 </style>
 
@@ -109,8 +108,14 @@ const isCurrent = (section?: string) => {
     if (!navigation || !toggle || !dropdown) return;
     const touch = window.matchMedia('(hover: none)');
     const setOpen = (open) => {
-      const expanded = touch.matches || open;
-      toggle.setAttribute('aria-expanded', String(expanded));
+      const expanded = !touch.matches && open;
+      if (touch.matches) {
+        toggle.removeAttribute('aria-expanded');
+        toggle.removeAttribute('aria-controls');
+      } else {
+        toggle.setAttribute('aria-expanded', String(expanded));
+        toggle.setAttribute('aria-controls', dropdown.id);
+      }
       dropdown.hidden = !expanded;
     };
     navigation.addEventListener('mouseenter', () => setOpen(true));
