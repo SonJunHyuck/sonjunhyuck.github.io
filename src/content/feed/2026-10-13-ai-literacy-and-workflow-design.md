@@ -2,7 +2,7 @@
 title: "AI 활용 역량과 주도적인 문제 설계"
 date: 2026-10-13
 notionUrl: "https://sonnysmile.notion.site/3f8ed1cbaf6c80429620eb5e054ed7e0"
-tags: ["AI 활용","학습 기록"]
+tags: ["AI 활용", "학습 기록"]
 draft: false
 ---
 

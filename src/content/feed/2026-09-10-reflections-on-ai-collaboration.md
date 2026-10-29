@@ -2,7 +2,7 @@
 title: "AI 협업에서 사람의 역할에 대한 고찰"
 date: 2026-09-10
 notionUrl: "https://sonnysmile.notion.site/3d7ed1cbaf6c80cd943df695a1760a7a"
-tags: ["AI 활용","개발 회고"]
+tags: ["AI 활용", "회고"]
 draft: false
 ---
 

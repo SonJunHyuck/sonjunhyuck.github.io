@@ -1,6 +1,14 @@
 .feed-section { padding-top: 48px; padding-bottom: 100px; }
 .feed-column { width: 100%; max-width: var(--feed-column-width); margin-inline: auto; }
-.feed-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px; }
+.feed-filter-bar { --feed-filter-fade-width: 24px; display: flow-root; position: relative; margin-bottom: 36px; }
+.feed-filters { display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; scrollbar-width: none; scroll-padding-inline: calc(var(--feed-filter-fade-width) + 4px); padding: 4px; margin: -4px; }
+.feed-filters::-webkit-scrollbar { display: none; }
+.feed-filters button { flex: 0 0 auto; white-space: nowrap; }
+.feed-filters button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.feed-filter-bar::before, .feed-filter-bar::after { content: ''; position: absolute; z-index: 1; top: -4px; bottom: -4px; width: var(--feed-filter-fade-width); opacity: 0; pointer-events: none; }
+.feed-filter-bar::before { left: -4px; background: linear-gradient(to right, var(--paper), transparent); }
+.feed-filter-bar::after { right: -4px; background: linear-gradient(to left, var(--paper), transparent); }
+.feed-filter-bar[data-overflow-start]::before, .feed-filter-bar[data-overflow-end]::after { opacity: 1; }
 .feed-filters button, #feed-more, #feed-photo-close { min-height: 44px; padding: 10px 12px; border: 1px solid var(--interactive-line); border-radius: 4px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
 .feed-filters button:hover, #feed-more:hover, #feed-photo-close:hover { border-color: var(--accent); color: var(--accent); }
 .feed-filters button[aria-pressed='true'] { border-color: var(--button-bg); background: var(--button-bg); color: var(--button-text); }

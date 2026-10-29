@@ -2,7 +2,7 @@
 title: "당근 밋업: 매장용 주문 관리 앱 개발 과정"
 date: 2026-10-09
 notionUrl: "https://sonnysmile.notion.site/3f4ed1cbaf6c80218666d86c8721eba7"
-tags: ["AI 활용","개발 사례"]
+tags: ["AI 활용", "학습 기록"]
 draft: false
 ---
 

@@ -2,7 +2,7 @@
 title: "당근 밋업: 사업개발 팀의 AI 활용"
 date: 2026-10-08
 notionUrl: "https://sonnysmile.notion.site/3f3ed1cbaf6c80aaa44bd7463d4d14ca"
-tags: ["AI 활용","개발 사례"]
+tags: ["AI 활용", "학습 기록"]
 draft: false
 ---
 

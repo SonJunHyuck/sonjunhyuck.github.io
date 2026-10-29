@@ -2,7 +2,7 @@
 title: "\"AI가 코딩 다 하는데 왜 배워요?\""
 date: 2026-10-09
 notionUrl: "https://sonnysmile.notion.site/3f4ed1cbaf6c80989c29c466e903a0da"
-tags: ["AI 활용","학습 기록"]
+tags: ["AI 활용", "학습 기록"]
 image: "../../assets/feed/why-learn-programming-with-ai.png"
 imageAlt: "128부터 1까지의 자릿값과 8개의 비트로 1바이트를 설명하는 강연 슬라이드"
 draft: false

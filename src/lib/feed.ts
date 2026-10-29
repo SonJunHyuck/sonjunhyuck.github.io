@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { feedTags, type FeedTag } from '../config/feedTags';
 
 export const FEED_PAGE_SIZE = 10;
 export const FEED_COLUMN_WIDTH = 600;
@@ -18,7 +19,7 @@ export function getFeedImageLayout(image: { width: number; height: number }) {
 
 export interface FeedGroup {
   key: string;
-  tag: string | null;
+  tag: FeedTag | null;
   ids: string[];
 }
 
@@ -31,14 +32,15 @@ export interface FeedPageData {
 export async function getFeedIndex() {
   const entries = (await getCollection('feed', ({ data }) => import.meta.env.DEV || !data.draft))
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf() || a.id.localeCompare(b.id));
-  const tags = [...new Set(entries.flatMap(({ data }) => data.tags))].sort((a, b) => a.localeCompare(b, 'ko'));
+  const tagGroups = feedTags.map((tag, index) => ({
+    key: `tag-${index}`,
+    tag,
+    ids: entries.filter(({ data }) => data.tags.includes(tag)).map(({ id }) => id),
+  })).filter(({ ids }) => ids.length > 0)
+    .sort((a, b) => b.ids.length - a.ids.length || feedTags.indexOf(a.tag) - feedTags.indexOf(b.tag));
   const groups: FeedGroup[] = [
     { key: 'all', tag: null, ids: entries.map(({ id }) => id) },
-    ...tags.map((tag, index) => ({
-      key: `tag-${index}`,
-      tag,
-      ids: entries.filter(({ data }) => data.tags.includes(tag)).map(({ id }) => id),
-    })),
+    ...tagGroups,
   ];
   return { entries, groups };
 }

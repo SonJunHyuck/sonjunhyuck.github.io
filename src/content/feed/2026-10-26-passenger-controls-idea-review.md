@@ -2,7 +2,7 @@
 title: "동승자 차량 제어 아이디어를 채택하지 않은 이유"
 date: 2026-10-26
 notionUrl: "https://sonnysmile.notion.site/401ed1cbaf6c810792e1f49f49a350cb"
-tags: ["아이디어","차량용 앱"]
+tags: ["공모전", "아이디어"]
 draft: false
 ---
 

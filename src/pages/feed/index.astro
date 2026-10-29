@@ -13,8 +13,10 @@ const firstPage = entries.slice(0, FEED_PAGE_SIZE);
     <h1 class="visually-hidden">피드</h1>
     <section class="container feed-section" aria-label="피드 목록">
       <div class="feed-column" style={{ '--feed-column-width': `${FEED_COLUMN_WIDTH}px` }}>
-        <div class="feed-filters" role="group" aria-label="태그 필터">
-          {groups.map((group) => <button type="button" data-feed-filter={group.key} aria-pressed={group.key === 'all' ? 'true' : 'false'} disabled>{group.tag ?? '전체'}</button>)}
+        <div class="feed-filter-bar">
+          <div class="feed-filters" role="group" aria-label="태그 필터">
+            {groups.map((group) => <button type="button" data-feed-filter={group.key} aria-pressed={group.key === 'all' ? 'true' : 'false'} disabled>{group.tag ?? '전체'}</button>)}
+          </div>
         </div>
         <div id="feed-list" data-page-size={FEED_PAGE_SIZE}>{firstPage.map((entry) => <FeedCard {entry} />)}</div>
         <p id="feed-empty" class="feed-empty" hidden={entries.length > 0}>아직 공개된 피드가 없습니다.</p>

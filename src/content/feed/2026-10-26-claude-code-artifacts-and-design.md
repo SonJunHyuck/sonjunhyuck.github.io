@@ -2,7 +2,7 @@
 title: "Claude Code의 아티팩트와 디자인"
 date: 2026-10-26
 notionUrl: "https://sonnysmile.notion.site/405ed1cbaf6c8012b336e0743ffd1fff"
-tags: ["AI 활용","디자인"]
+tags: ["AI 활용", "학습 기록"]
 image: "../../assets/feed/claude-code-artifacts-and-design.png"
 imageAlt: "AI에 전달할 디자인 기준과 DESIGN.md 활용 방식을 정리한 강의 슬라이드"
 draft: false

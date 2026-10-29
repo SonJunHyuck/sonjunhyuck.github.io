@@ -2,7 +2,7 @@
 title: "macOS에서 AI 에이전트 간 메시징 환경 구성"
 date: 2026-10-21
 notionUrl: "https://sonnysmile.notion.site/400ed1cbaf6c807996bcc69a4e35c021"
-tags: ["AI 활용","개발 환경"]
+tags: ["AI 활용", "개발 환경"]
 image: "../../assets/feed/macos-agent-messaging.png"
 imageAlt: "Ghostty와 Herdr로 분할한 터미널에서 Claude Code와 Codex를 각 패널에 실행한 화면"
 draft: false

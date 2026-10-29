@@ -7,6 +7,37 @@ const status = document.querySelector<HTMLElement>('#feed-status');
 const empty = document.querySelector<HTMLElement>('#feed-empty');
 const sentinel = document.querySelector<HTMLElement>('#feed-sentinel');
 const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-feed-filter]')];
+const filterBar = document.querySelector<HTMLElement>('.feed-filter-bar');
+const filterScroller = document.querySelector<HTMLElement>('.feed-filters');
+
+const updateFilterOverflow = () => {
+  if (!filterBar || !filterScroller) return;
+  const remaining = filterScroller.scrollWidth - filterScroller.clientWidth - filterScroller.scrollLeft;
+  filterBar.toggleAttribute('data-overflow-start', filterScroller.scrollLeft > 1);
+  filterBar.toggleAttribute('data-overflow-end', remaining > 1);
+};
+const revealFilter = (button?: HTMLButtonElement) => {
+  if (!filterScroller || !button) return;
+  const frame = filterScroller.getBoundingClientRect();
+  const target = button.getBoundingClientRect();
+  const inset = parseFloat(getComputedStyle(filterScroller).scrollPaddingLeft) || 0;
+  if (target.left < frame.left + inset) filterScroller.scrollLeft -= frame.left + inset - target.left;
+  else if (target.right > frame.right - inset) filterScroller.scrollLeft += target.right - frame.right + inset;
+  updateFilterOverflow();
+};
+const refreshFilters = () => {
+  revealFilter(buttons.find((button) => button.getAttribute('aria-pressed') === 'true'));
+  updateFilterOverflow();
+};
+if (filterScroller) {
+  filterScroller.addEventListener('scroll', updateFilterOverflow, { passive: true });
+  filterScroller.addEventListener('focusin', (event) => {
+    if (event.target instanceof HTMLButtonElement) revealFilter(event.target);
+  });
+  new ResizeObserver(refreshFilters).observe(filterScroller);
+  void document.fonts.ready.then(refreshFilters);
+  updateFilterOverflow();
+}
 
 if (list && index && more && status && empty && sentinel) {
   const groups: FeedGroup[] = JSON.parse(index.textContent || '[]');
@@ -93,6 +124,7 @@ if (list && index && more && status && empty && sentinel) {
   const applyLocation = async () => {
     const tag = new URL(location.href).searchParams.get('tag');
     const next = groups.find((candidate) => candidate.tag === tag) ?? groups[0];
+    revealFilter(buttons.find((button) => button.dataset.feedFilter === next.key));
     if (next.key !== group.key) {
       epoch++;
       controller?.abort();

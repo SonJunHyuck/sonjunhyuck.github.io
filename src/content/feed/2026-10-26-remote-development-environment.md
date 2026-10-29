@@ -2,7 +2,7 @@
 title: "원격 개발 환경 구성 검토"
 date: 2026-10-26
 notionUrl: "https://sonnysmile.notion.site/405ed1cbaf6c802a99a5ddb95d7270a2"
-tags: ["개발 환경","원격 접속"]
+tags: ["개발 환경"]
 image: "../../assets/feed/remote-development-environment.png"
 imageAlt: "Mac Studio와 MacBook Air를 Tailscale과 SSH로 연결하는 원격 개발 환경 도식"
 draft: false

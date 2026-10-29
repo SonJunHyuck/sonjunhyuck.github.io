@@ -2,7 +2,7 @@
 title: "동승자가 길 안내를 맡는 코파일럿 모드 구상"
 date: 2026-10-26
 notionUrl: "https://sonnysmile.notion.site/405ed1cbaf6c8156ba5df62d1c397da5"
-tags: ["아이디어","차량용 앱"]
+tags: ["공모전", "아이디어"]
 draft: false
 ---
 

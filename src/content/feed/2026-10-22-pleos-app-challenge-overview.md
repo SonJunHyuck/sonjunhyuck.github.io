@@ -2,7 +2,7 @@
 title: "Pleos 차량용 앱 개발 공모전 개요"
 date: 2026-10-22
 notionUrl: "https://sonnysmile.notion.site/401ed1cbaf6c8193b14dc6d4af90f3eb"
-tags: ["공모전","차량용 앱"]
+tags: ["공모전"]
 draft: false
 ---
 

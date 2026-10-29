@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { feedTags } from './config/feedTags';
 
 const projects = defineCollection({
   loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
@@ -7,8 +8,8 @@ const projects = defineCollection({
     title: z.string(),
     summary: z.string(),
     cardContribution: z.string().optional(),
-    description: z.string(),
     aiCollaboration: z.boolean().default(false),
+    description: z.string(),
     publishedAt: z.coerce.date(),
     category: z.enum(['game', 'graphics', 'ai']),
     projectGroup: z.enum(['work', 'games', 'research', 'ai']),
@@ -68,7 +69,7 @@ const feed = defineCollection({
     title: z.string().trim().min(1),
     date: z.coerce.date(),
     notionUrl: z.string().url(),
-    tags: z.array(z.string().trim().min(1)).default([]),
+    tags: z.array(z.enum(feedTags)).max(2).default([]),
     image: image().optional(),
     imageAlt: z.string().trim().min(1).optional(),
     draft: z.boolean().default(false),
