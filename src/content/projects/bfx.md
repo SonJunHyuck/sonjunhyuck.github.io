@@ -6,6 +6,7 @@ description: "The Division에서 모티브를 얻은 PvE 중심 FPS입니다. �
 publishedAt: 2026-10-08
 category: "game"
 projectGroup: "games"
+aiCollaboration: true
 workTypes: ["team"]
 status: "prototype"
 role: "게임 클라이언트 개발"

@@ -8,6 +8,7 @@ const projects = defineCollection({
     summary: z.string(),
     cardContribution: z.string().optional(),
     description: z.string(),
+    aiCollaboration: z.boolean().default(false),
     publishedAt: z.coerce.date(),
     category: z.enum(['game', 'graphics', 'ai']),
     projectGroup: z.enum(['work', 'games', 'research', 'ai']),

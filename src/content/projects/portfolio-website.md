@@ -6,6 +6,7 @@ description: "익숙하지 않은 웹 프런트엔드에 도전하며, 방문자
 publishedAt: 2026-10-13
 category: "ai"
 projectGroup: "ai"
+aiCollaboration: true
 workTypes: ["personal", "experiment"]
 status: "in-progress"
 draft: false
