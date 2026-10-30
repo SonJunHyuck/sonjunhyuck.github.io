@@ -10,4 +10,4 @@ description: Notion 원문으로 피드(/feed/) 글을 고르고 작성·수정�
 - 글 선별·요약·어조·날짜·사진: [writing.md](references/writing.md)
 - 데이터 형식·카드 구성·사진 표시 규칙: [피드 사양](../../../docs/drafts/feed-page-spec.md)
 
-원본은 사용자가 지정한 Notion 상위 페이지의 하위 페이지이며, 하위 페이지 하나가 피드 글 하나다. Notion 원본은 읽기만 한다.
+원본은 Notion의 '개발 피드' 영역에 연결된 노트이며, 노트 하나가 피드 글 하나다. Notion 원본은 읽기만 한다.
