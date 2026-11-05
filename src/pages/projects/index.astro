@@ -3,24 +3,28 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectGroupNav from '../../components/ProjectGroupNav.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import IntroHex from '../../components/IntroHex.astro';
+import ProfileCharacter from '../../components/ProfileCharacter.astro';
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 ---
 <BaseLayout title="Projects — Son Junhyuck" description="업무와 개인 프로젝트를 소개합니다.">
+  <h1 class="visually-hidden">프로젝트</h1>
+  <section class="container project-work-style" aria-labelledby="work-style-heading">
+    <h2 id="work-style-heading" class="visually-hidden">이렇게 일합니다</h2>
+    <div class="project-work-style-layout">
+      <IntroHex instanceId="work-style">
+        <ProfileCharacter eager />
+      </IntroHex>
+    </div>
+  </section>
   <section class="page-intro container project-hub-intro">
-    <h1 class="visually-hidden">프로젝트</h1>
     <ProjectGroupNav />
   </section>
-  <section class="container projects-section project-carousel" aria-labelledby="project-list-heading">
+  <section class="container projects-section project-list-section" aria-labelledby="project-list-heading">
     <h2 id="project-list-heading" class="visually-hidden">전체 프로젝트 목록</h2>
-    <div id="all-projects" class="project-carousel-track project-list-surface" tabindex="0" role="region" aria-label="전체 프로젝트 가로 목록">
+    <div id="all-projects" class="project-list-grid project-list-surface" role="region" aria-label="전체 프로젝트 목록">
       {projects.map((project) => <ProjectCard {project} />)}
-      <article class="project-card project-next-card" data-project-next>
-        <div>
-          <h2>...</h2>
-          <p>NEXT PROJECT</p>
-        </div>
-      </article>
     </div>
     <p id="project-filter-status" class="visually-hidden" role="status" aria-live="polite"></p>
     <p id="project-filter-empty" class="empty-state" hidden>이 분류의 프로젝트를 준비하고 있습니다.</p>
@@ -30,10 +34,9 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
 <script>
   import { projectGroups } from '../../config/projectGroups';
 
-  const track = document.querySelector<HTMLElement>('#all-projects');
+  const list = document.querySelector<HTMLElement>('#all-projects');
   const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-project-filter]')];
   const cards = [...document.querySelectorAll<HTMLElement>('#all-projects [data-project-groups]')];
-  const nextCard = document.querySelector<HTMLElement>('[data-project-next]');
   const status = document.querySelector<HTMLElement>('#project-filter-status');
   const empty = document.querySelector<HTMLElement>('#project-filter-empty');
   const validFilters: string[] = ['all', ...projectGroups.map((group) => group.id)];
@@ -45,13 +48,11 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
       card.hidden = filter !== 'all' && !card.dataset.projectGroups?.split(' ').includes(filter);
       if (!card.hidden) count++;
     });
-    if (nextCard) nextCard.hidden = filter !== 'all';
     buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.projectFilter === filter)));
     const label = buttons.find((button) => button.dataset.projectFilter === filter)?.textContent?.trim() || '전체';
-    if (track) {
-      track.scrollLeft = 0;
-      track.setAttribute('aria-label', `${label} 프로젝트 가로 목록`);
-      track.hidden = count === 0;
+    if (list) {
+      list.setAttribute('aria-label', `${label} 프로젝트 목록`);
+      list.hidden = count === 0;
     }
     if (empty) empty.hidden = count > 0;
     if (status) status.textContent = `${label} 프로젝트 ${count}개`;

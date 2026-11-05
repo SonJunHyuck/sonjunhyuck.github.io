@@ -22,9 +22,10 @@ const attitudes = [
   { label: '협력하는 자세', category: '협력', href: '/reflections/voyager/#onboarding-guide', image: '/images/reflections/voyager/onboarding-message-redacted.webp', alt: '이름과 사진을 가린 동료의 감사 메시지', text: '신입 동료의 멘토를 맡고, 반복해서 필요한 설명을 온보딩 가이드로 남겼습니다.' },
   { label: '배우며 성장하는 자세', category: '배움과 성장', href: '/projects/portfolio-website/', image: '/images/projects/portfolio-website/cover.png', alt: 'AI 협업 포트폴리오 화면', text: '익숙하지 않은 웹 프런트엔드에 AI 협업으로 도전하며, 결과를 검토하고 작업 기준을 다듬고 있습니다.' },
 ];
+const shortLabels = ['책임감', '시야', '개선과 실행', '소통', '협력', '성장'];
 ---
 <div class="intro-hex" data-intro-hex>
-  <h1 id={`${instanceId}-title`} class="visually-hidden">손준혁의 개발 경험과 태도</h1>
+  <h3 id={`${instanceId}-title`} class="visually-hidden">손준혁의 개발 경험과 태도</h3>
   <slot />
   <div class="hex-stage">
     <svg class="hex-sectors" viewBox="0 0 600 650" aria-labelledby={`${instanceId}-hex-title`}>
@@ -33,7 +34,8 @@ const attitudes = [
       {attitudes.map((attitude, index) => (
         <a class="hex-sector" href={attitude.href} data-node={index} aria-label={attitude.label} aria-controls={`${instanceId}-preview-${index}`} aria-expanded="false">
           <path class="sector-face" d={sectorPaths[index]} />
-          <svg class="sector-icon" x={iconCenters[index][0] - 24} y={iconCenters[index][1] - 24} width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g set:html={icons[index]} /></svg>
+          <svg class="sector-icon" x={iconCenters[index][0] - 24} y={iconCenters[index][1] - 40} width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g set:html={icons[index]} /></svg>
+          <text class="sector-label" x={iconCenters[index][0]} y={iconCenters[index][1] + 48} text-anchor="middle" aria-hidden="true">{shortLabels[index]}</text>
         </a>
       ))}
       <g class="wheel-identity" data-wheel-identity aria-hidden="true">
@@ -47,6 +49,14 @@ const attitudes = [
     </svg>
     <p class="wheel-caption" data-wheel-caption aria-live="polite" aria-atomic="true"></p>
   </div>
+  <ul class="hex-chips" aria-label="개발 경험으로 이어지는 여섯 가지 태도">
+    {attitudes.map((attitude, index) => (
+      <li><button class="hex-chip" type="button" data-chip={index} aria-label={attitude.label} aria-controls={`${instanceId}-preview-${index}`} aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g set:html={icons[index]} /></svg>
+        <span>{shortLabels[index]}</span>
+      </button></li>
+    ))}
+  </ul>
   <div class="hex-previews">
     {attitudes.map((attitude, index) => (
       <section id={`${instanceId}-preview-${index}`} class="hex-preview" hidden aria-label={attitude.label}>
@@ -67,10 +77,15 @@ const attitudes = [
     const identity = root.querySelector<SVGGElement>('[data-wheel-identity]')!;
     const centerIcons = [...root.querySelectorAll<SVGElement>('[data-wheel-icon]')];
     const caption = root.querySelector<HTMLElement>('[data-wheel-caption]')!;
+    const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-chip]')];
+    // The opener returns focus to whichever control (wheel sector or mobile chip) opened the preview.
+    let opener: HTMLElement | SVGElement | undefined;
+    const focusOpener = () => { (opener ?? nodes[active])?.focus(); };
     const showSelection = (index: number) => {
       nodes.forEach((trigger) => {
         trigger.toggleAttribute('data-selected', Number(trigger.dataset.node) === index);
       });
+      chips.forEach((chip, i) => chip.toggleAttribute('data-selected', i === index));
       identity.style.display = index < 0 ? '' : 'none';
       centerIcons.forEach((icon, i) => { icon.style.display = i === index ? 'block' : 'none'; });
       caption.textContent = index < 0 ? '' : nodes[index].getAttribute('aria-label');
@@ -82,7 +97,9 @@ const attitudes = [
       clearTimeout(dismissTimer);
       previews.forEach((preview) => { preview.hidden = true; });
       nodes.forEach((node) => node.setAttribute('aria-expanded', 'false'));
+      chips.forEach((chip) => chip.setAttribute('aria-expanded', 'false'));
       active = -1;
+      opener = undefined;
       showSelection(-1);
     };
     closePreviews.add(close);
@@ -90,6 +107,7 @@ const attitudes = [
       closePreviews.forEach((dismiss) => dismiss());
       previews[index].hidden = false;
       nodes[index].setAttribute('aria-expanded', 'true');
+      chips[index]?.setAttribute('aria-expanded', 'true');
       active = index;
       showSelection(index);
     };
@@ -101,8 +119,13 @@ const attitudes = [
         if (!coarse.matches) leaveHover();
       });
       node.addEventListener('keydown', (event) => {
+        opener = node;
         const keyEvent = event as KeyboardEvent;
-        if (keyEvent.key === 'ArrowDown' || (keyEvent.key === 'Tab' && !keyEvent.shiftKey && active === index)) {
+        if (keyEvent.key === 'ArrowLeft' || keyEvent.key === 'ArrowRight') {
+          event.preventDefault();
+          nodes[(index + (keyEvent.key === 'ArrowRight' ? 1 : -1) + nodes.length) % nodes.length].focus();
+        }
+        if (keyEvent.key === 'ArrowDown') {
           event.preventDefault();
           open(index);
           previews[index].querySelector<HTMLAnchorElement>('.preview-link')?.focus();
@@ -110,6 +133,26 @@ const attitudes = [
       });
       node.addEventListener('click', (event) => {
         if (coarse.matches) { event.preventDefault(); open(index); }
+      });
+    });
+    chips.forEach((chip, index) => {
+      chip.addEventListener('click', () => {
+        if (active === index) { close(); return; }
+        open(index);
+        opener = chip;
+      });
+      chip.addEventListener('keydown', (event) => {
+        const keys: Record<string, number> = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1 };
+        if (event.key in keys) {
+          event.preventDefault();
+          chips[(index + keys[event.key] + chips.length) % chips.length].focus();
+        }
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          open(index);
+          opener = chip;
+          previews[index].querySelector<HTMLAnchorElement>('.preview-link')?.focus();
+        }
       });
     });
     const hasKeyboardFocus = () => nodes.some((trigger) => trigger.matches(':focus-visible')) ||
@@ -137,12 +180,11 @@ const attitudes = [
       if (!root.contains(event.relatedTarget as Node)) close();
     });
     root.querySelectorAll('.preview-close').forEach((button) => button.addEventListener('click', () => {
-      const previous = active;
-      if (previous >= 0) nodes[previous].focus();
+      if (active >= 0) focusOpener();
       close();
     }));
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && active >= 0) { nodes[active].focus(); close(); }
+      if (event.key === 'Escape' && active >= 0) { focusOpener(); close(); }
     });
     document.addEventListener('pointerdown', (event) => { if (!root.contains(event.target as Node)) close(); });
   });
@@ -155,6 +197,7 @@ const attitudes = [
   .hex-sector { color: var(--muted); text-decoration: none; outline: none; }
   .sector-face { fill: var(--surface); stroke: var(--paper); stroke-width: 8; stroke-linejoin: round; transition: fill .16s ease; }
   .sector-icon { pointer-events: none; }
+  .sector-label { fill: currentColor; font: 700 24px var(--sans); pointer-events: none; }
   .hex-sector:hover, .hex-sector[data-selected] { color: var(--button-text); }
   .hex-sector:hover .sector-face, .hex-sector[data-selected] .sector-face { fill: var(--button-bg); }
   .hex-sector:focus-visible .sector-face { stroke: var(--focus); stroke-width: 6; }
@@ -174,8 +217,15 @@ const attitudes = [
   .preview-link:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
   @media (max-width: 680px) { .hex-preview { width: calc(min(var(--content-width), 100vw - 32px) - 40px); display: block; padding: 12px 16px max(20px, env(safe-area-inset-bottom)); } .hex-preview img { height: clamp(100px, 18dvh, 180px); } .preview-copy { padding-right: 0; } .preview-close { margin-right: -4px; } }
   .hex-previews { display: contents; }
+  .hex-chips { display: none; }
   @media (max-width: 680px) {
-    .hex-stage { grid-column: 1; width: 100%; max-width: 440px; justify-self: center; }
+    .hex-stage { display: none; }
+    .hex-chips { grid-column: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 8px 0 0; padding: 0; list-style: none; }
+    .hex-chip { display: flex; width: 100%; min-height: 44px; align-items: center; justify-content: center; gap: 6px; padding: 8px 6px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: 700 13px var(--sans); white-space: nowrap; cursor: pointer; }
+    .hex-chip svg { flex: none; color: var(--muted); }
+    .hex-chip[data-selected] { border-color: var(--button-bg); background: var(--button-bg); color: var(--button-text); }
+    .hex-chip[data-selected] svg { color: currentColor; }
+    .hex-chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
   }
   @media (prefers-reduced-motion: reduce) { .hex-preview { animation: none; } .sector-face { transition: none; } }
 </style>

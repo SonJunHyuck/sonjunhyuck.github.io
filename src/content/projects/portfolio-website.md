@@ -1,6 +1,7 @@
 ---
 title: "AI 협업으로 구축한 포트폴리오"
 summary: "익숙하지 않은 웹 프런트엔드에 자연어 AI 협업으로 도전하고, 공통 규격과 작업 방식을 다듬은 개인 프로젝트입니다."
+cardLabel: "AI 협업으로 만든 개인 포트폴리오 웹사이트"
 cardContribution: "페이지 구성과 디자인 방향을 정하고, 통합 결과를 검토하며 공통 규격과 AI 작업 범위를 조정했습니다."
 description: "익숙하지 않은 웹 프런트엔드에 도전하며, 방문자가 이력과 개발 역량, 프로젝트별 기여를 확인할 포트폴리오를 자연어로 AI와 협업하며 만들었습니다. 필요한 페이지와 디자인 방향을 정하고 결과를 검토했으며, AI는 기술 선택 논의와 구현·기술적 확인을 맡았습니다."
 publishedAt: 2026-10-13
@@ -12,7 +13,7 @@ status: "in-progress"
 draft: false
 role: "페이지 구성·디자인 방향 결정, 결과 검토, 협업 기준 정리"
 platform: ["Web"]
-thumbnail: "/images/projects/portfolio-website/cover.png"
+thumbnail: "/images/projects/portfolio-website/card.webp"
 technologies:
   - name: "Astro · TypeScript"
     purpose: "프로젝트 콘텐츠와 공통 페이지 구성"
@@ -20,8 +21,6 @@ technologies:
     purpose: "반응형 레이아웃과 Light·Dark 테마"
   - name: "GitHub Pages"
     purpose: "정보 제공 중심의 정적 사이트 배포"
-  - name: "Codex"
-    purpose: "기술 선택 논의, 글 초안, 코드 구현과 기술적 확인"
 features: []
 videos: []
 gallery: []

@@ -1,6 +1,7 @@
 ---
 title: "Project R"
 summary: "나만의 아바타를 만들어 다양한 미니게임을 즐기며 친구를 사귀는 메타버스 소셜 게임 (개발 중단)"
+cardLabel: "Unity 기반 메타버스 소셜 게임 (개발 중단)"
 cardContribution: "UI 및 인게임 콘텐츠 구현에 참여하고 게임 빌드 파이프라인과 Jenkins 자동화를 구현했습니다."
 description: "빌드 파이프라인, 네트워크 동기화, 데이터 반응형 UI 개발 등 클라이언트 개발 범위를 확장한 실무 프로젝트입니다."
 publishedAt: 2026-03-01

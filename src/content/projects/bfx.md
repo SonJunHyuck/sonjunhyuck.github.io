@@ -1,6 +1,7 @@
 ---
 title: "Project BFX"
 summary: "The Division에서 모티브를 얻어 전투와 NPC 상호작용이 포함된 미션을 수행하는 PvE FPS입니다."
+cardLabel: "Unity 기반 PvE FPS 게임"
 cardContribution: "퀘스트 시스템 구현·대화 연동, 테이블 기반 대화 제작 도구, 알림 UI를 담당했습니다."
 description: "The Division에서 모티브를 얻은 PvE 중심 FPS입니다. 미션을 수행하며 챕터를 이어가는 게임의 클라이언트 개발에 참여했습니다."
 publishedAt: 2026-10-08
@@ -25,10 +26,6 @@ gallery:
 technologies:
   - name: "Unity · C#"
     purpose: "게임 클라이언트 기능과 UI 구현"
-  - name: "Pixel Crushers Dialogue System"
-    purpose: "대화 데이터 임포트와 런타임 연동 확장"
-  - name: "Spreadsheet workflow"
-    purpose: "Conversation 단위 대화 콘텐츠 제작"
 features:
   - title: "외부 대화 도구의 반복 편집 개선"
     description: "캐릭터 간 대화를 테이블화하여 유지보수 편의성을 높였습니다."
