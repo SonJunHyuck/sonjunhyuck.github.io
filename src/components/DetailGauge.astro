@@ -3,19 +3,19 @@
 // rendered headings, so the gauge stays hidden without JavaScript.
 ---
 <span class="gauge-anchor" data-gauge-anchor aria-hidden="true"></span>
-<nav class="detail-gauge" data-detail-gauge aria-label="읽기 진행과 목차" hidden>
+<nav class="detail-gauge" data-detail-gauge aria-label="읽기 진행과 섹션 이동" hidden>
   <div class="gauge-bar">
     <div class="gauge-track-area" data-gauge-area>
-      <div class="gauge-track" role="progressbar" aria-label="읽기 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <span class="gauge-fill" data-gauge-fill></span>
-        <span class="gauge-ticks" data-gauge-ticks aria-hidden="true"></span>
+      <div class="gauge-track" data-gauge-track>
+        <span class="gauge-rail" role="progressbar" aria-label="읽기 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="gauge-fill" data-gauge-fill></span></span>
+        <span class="gauge-marks" data-gauge-marks></span>
         <span class="gauge-runner" data-gauge-runner aria-hidden="true"><img src="/favicon2.png" alt="" width="30" height="30" /></span>
       </div>
     </div>
-    <button class="gauge-toggle" type="button" data-gauge-toggle aria-expanded="false" aria-controls="detail-gauge-toc" hidden>
-      <span data-gauge-current>목차</span><span class="gauge-chevron" aria-hidden="true">▾</span>
-    </button>
   </div>
+  <button class="gauge-current" type="button" data-gauge-toggle aria-expanded="false" aria-controls="detail-gauge-toc" hidden>
+    <span data-gauge-current>섹션 목록</span><span class="gauge-chevron" aria-hidden="true">▾</span>
+  </button>
   <ol id="detail-gauge-toc" class="gauge-toc" data-gauge-toc hidden></ol>
 </nav>
 <script>
@@ -25,8 +25,9 @@
     const header = document.querySelector<HTMLElement>('.site-header');
     const fill = gauge.querySelector<HTMLElement>('[data-gauge-fill]')!;
     const runner = gauge.querySelector<HTMLElement>('[data-gauge-runner]')!;
-    const track = gauge.querySelector<HTMLElement>('[role="progressbar"]')!;
-    const ticksBox = gauge.querySelector<HTMLElement>('[data-gauge-ticks]')!;
+    const rail = gauge.querySelector<HTMLElement>('[role="progressbar"]')!;
+    const track = gauge.querySelector<HTMLElement>('[data-gauge-track]')!;
+    const marksBox = gauge.querySelector<HTMLElement>('[data-gauge-marks]')!;
     const toggle = gauge.querySelector<HTMLButtonElement>('[data-gauge-toggle]')!;
     const current = gauge.querySelector<HTMLElement>('[data-gauge-current]')!;
     const toc = gauge.querySelector<HTMLOListElement>('[data-gauge-toc]')!;
@@ -34,9 +35,11 @@
     const end = article.querySelector<HTMLElement>('.detail-pager') ?? article;
     const anchor = document.querySelector<HTMLElement>('[data-gauge-anchor]')!;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // Desktop shows every section title under the gauge; narrow screens show the current one and a list.
+    const compact = window.matchMedia('(max-width: 680px)');
 
     // Every visible h2 after the gauge is a section of the body. Details with fewer than three
-    // h2s (e.g. case-study bodies written in HTML) also list the body's h3 cases, indented.
+    // h2s (e.g. case-study bodies written in HTML) also list the body's h3 cases.
     const visibleAfterGauge = (heading: HTMLElement) =>
       Boolean(gauge.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING) && !heading.closest('.visually-hidden, [hidden]') && heading.offsetParent !== null;
     const sectionHeadings = [...article.querySelectorAll<HTMLElement>('h2')].filter(visibleAfterGauge);
@@ -45,26 +48,66 @@
       // Only h3s that head a block (header/section/article), not labels inside diagrams.
       : [...article.querySelectorAll<HTMLElement>('h2, .story :is(header, section, article) > h3, .story > h3')].filter(visibleAfterGauge);
     headings.forEach((heading, index) => { if (!heading.id) heading.id = `detail-section-${index + 1}`; });
-    const hasToc = headings.length >= 2;
-    const links = headings.map((heading) => {
+    const titles = headings.map((heading) => heading.textContent?.trim() ?? '');
+    const hrefs = headings.map((heading) => `#${encodeURIComponent(heading.id)}`);
+    const hasSections = headings.length >= 2;
+
+    const marks = hasSections ? headings.map((heading, index) => {
+      const mark = document.createElement('a');
+      mark.className = 'gauge-mark';
+      mark.href = hrefs[index];
+      mark.dataset.level = heading.tagName === 'H3' ? '3' : '2';
+      mark.setAttribute('aria-label', titles[index]);
+      mark.title = titles[index];
+      mark.innerHTML = '<span class="gauge-dot" aria-hidden="true"></span><span class="gauge-label" aria-hidden="true"></span>';
+      mark.querySelector('.gauge-label')!.textContent = titles[index];
+      return marksBox.appendChild(mark);
+    }) : [];
+    const links = hasSections ? headings.map((heading, index) => {
       const item = document.createElement('li');
       item.dataset.level = heading.tagName === 'H3' ? '3' : '2';
       const link = document.createElement('a');
-      link.href = `#${encodeURIComponent(heading.id)}`;
-      link.textContent = heading.textContent?.trim() ?? '';
+      link.href = hrefs[index];
+      link.textContent = titles[index];
       item.append(link);
       toc.append(item);
       return link;
-    });
-    const ticks = headings.map(() => ticksBox.appendChild(document.createElement('span')));
+    }) : [];
     gauge.hidden = false;
-    toggle.hidden = !hasToc;
-    gauge.toggleAttribute('data-has-toc', hasToc);
+    toggle.hidden = !hasSections;
+    gauge.toggleAttribute('data-has-sections', hasSections);
 
     let offset = 0;
     let start = 0;
     let span = 1;
     const docTop = (element: Element) => element.getBoundingClientRect().top + scrollY;
+    // Labels sit to the right of their dot and may use the space up to the next dot; the last label
+    // ends at its dot instead when there is no room on the right. Labels narrower than 48px hide.
+    const layoutLabels = () => {
+      const width = track.clientWidth;
+      const xs = marks.map((mark) => Number(mark.dataset.at) * width);
+      const gap = 8;
+      const room = xs.map((x, index) => (index < xs.length - 1 ? xs[index + 1] : width) - x - gap);
+      const sides = marks.map(() => 'right');
+      const last = marks.length - 1;
+      if (last > 0 && room[last] < 48) {
+        const shared = (xs[last] - xs[last - 1]) / 2 - gap;
+        sides[last] = 'left';
+        room[last] = shared;
+        room[last - 1] = Math.min(room[last - 1], shared);
+      }
+      marks.forEach((mark, index) => {
+        const label = mark.querySelector<HTMLElement>('.gauge-label')!;
+        mark.dataset.side = sides[index];
+        label.style.maxWidth = `${Math.max(0, room[index])}px`;
+        mark.toggleAttribute('data-label-hidden', room[index] < 48);
+      });
+    };
+    const syncCompact = () => {
+      // In compact mode the dots are too small to tap; the list below the gauge is the way to move.
+      marks.forEach((mark) => { if (compact.matches) mark.setAttribute('tabindex', '-1'); else mark.removeAttribute('tabindex'); });
+      if (!compact.matches) setOpen(false);
+    };
     const measure = () => {
       const headerHeight = header?.offsetHeight ?? 0;
       document.documentElement.style.setProperty('--detail-header-height', `${headerHeight}px`);
@@ -74,11 +117,12 @@
       // The anchor stays in flow while the gauge sticks, so it marks where the body starts.
       start = docTop(anchor) - headerHeight;
       span = Math.max(1, docTop(end) - innerHeight - start);
-      headings.forEach((heading, index) => {
-        const at = Math.min(1, Math.max(0, (docTop(heading) - offset - start) / span));
-        ticks[index].style.left = `${at * 100}%`;
-        ticks[index].dataset.at = String(at);
+      marks.forEach((mark, index) => {
+        const at = Math.min(1, Math.max(0, (docTop(headings[index]) - offset - start) / span));
+        mark.style.left = `${at * 100}%`;
+        mark.dataset.at = String(at);
       });
+      layoutLabels();
       update();
     };
 
@@ -89,16 +133,20 @@
       const percent = Math.round(progress * 100);
       fill.style.width = `${progress * 100}%`;
       runner.style.left = `${progress * 100}%`;
-      track.setAttribute('aria-valuenow', String(percent));
-      ticks.forEach((tick) => tick.toggleAttribute('data-passed', Number(tick.dataset.at) <= progress + 0.001));
+      rail.setAttribute('aria-valuenow', String(percent));
       gauge.toggleAttribute('data-stuck', gauge.getBoundingClientRect().top <= (header?.offsetHeight ?? 0) + 1);
       let active = -1;
       headings.forEach((heading, index) => { if (heading.getBoundingClientRect().top <= offset + 24) active = index; });
+      marks.forEach((mark, index) => {
+        mark.toggleAttribute('data-passed', index <= active);
+        if (index === active) mark.setAttribute('aria-current', 'location');
+        else mark.removeAttribute('aria-current');
+      });
       links.forEach((link, index) => {
         if (index === active) link.setAttribute('aria-current', 'location');
         else link.removeAttribute('aria-current');
       });
-      if (hasToc) current.textContent = active >= 0 ? headings[active].textContent!.trim() : '목차';
+      if (hasSections) current.textContent = active >= 0 ? titles[active] : '섹션 목록';
       if (percent !== last && last >= 0 && !reduced.matches) {
         runner.classList.add('is-hopping');
         clearTimeout(hopTimer);
@@ -107,18 +155,21 @@
       last = percent;
     };
 
-    const setOpen = (open: boolean, returnFocus = false) => {
-      if (!hasToc) return;
-      toc.hidden = !open;
-      toggle.setAttribute('aria-expanded', String(open));
-      if (!open && returnFocus) toggle.focus();
-    };
+    function setOpen(open: boolean, returnFocus = false) {
+      if (!hasSections) return;
+      const next = open && compact.matches;
+      toc.hidden = !next;
+      toggle.setAttribute('aria-expanded', String(next));
+      if (!next && returnFocus) toggle.focus();
+    }
     toggle.addEventListener('click', () => setOpen(toc.hidden));
-    area.addEventListener('click', () => setOpen(toc.hidden));
+    area.addEventListener('click', (event) => { if (compact.matches && !(event.target as Element).closest('.gauge-mark')) setOpen(toc.hidden); });
     links.forEach((link) => link.addEventListener('click', () => setOpen(false)));
     gauge.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !toc.hidden) { event.stopPropagation(); setOpen(false, true); } });
     document.addEventListener('pointerdown', (event) => { if (!gauge.contains(event.target as Node)) setOpen(false); });
     gauge.addEventListener('focusout', (event) => { if (!gauge.contains(event.relatedTarget as Node)) setOpen(false); });
+    compact.addEventListener('change', syncCompact);
+    syncCompact();
 
     let frame = 0;
     const schedule = (remeasure: boolean) => {
@@ -133,38 +184,56 @@
   }
 </script>
 <style>
-  /* Ticks and contents links are created by the script, so they need :global() to receive scoped styles. */
+  /* Marks and list links are created by the script, so they need :global() to receive scoped styles. */
   .gauge-anchor { display: block; height: 0; }
-  .detail-gauge { position: sticky; z-index: 15; top: var(--detail-header-height, 0px); margin: 0 0 8px; background: var(--paper); }
+  /* The border is always reserved so sticking changes only its colour, never the layout. */
+  .detail-gauge { position: sticky; z-index: 15; top: var(--detail-header-height, 0px); margin: 0 0 8px; border-bottom: 1px solid transparent; background: var(--paper); }
   .detail-gauge[hidden] { display: none; }
-  .detail-gauge[data-stuck] { box-shadow: 0 1px 0 var(--line); }
-  .gauge-bar { display: flex; align-items: center; gap: 16px; height: 52px; }
-  .gauge-track-area { flex: 1; min-width: 0; display: flex; align-items: center; height: 100%; padding: 0 16px; }
-  .detail-gauge[data-has-toc] .gauge-track-area { cursor: pointer; }
-  .gauge-track { position: relative; flex: 1; height: 6px; border-radius: 999px; background: var(--line); }
-  .gauge-fill { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: inherit; background: var(--accent); }
-  .gauge-ticks :global(span) { position: absolute; top: 50%; width: 8px; height: 8px; border: 2px solid var(--paper); border-radius: 50%; background: var(--interactive-line); transform: translate(-50%, -50%); box-sizing: content-box; }
-  .gauge-ticks :global(span[data-passed]) { background: var(--accent); }
-  .gauge-runner { position: absolute; z-index: 1; top: 50%; left: 0; width: 30px; height: 30px; transform: translate(-50%, -50%); }
+  .detail-gauge[data-stuck] { border-bottom-color: var(--line); }
+  .gauge-bar { height: 44px; }
+  .detail-gauge[data-has-sections] .gauge-bar { height: 66px; }
+  /* Fixed full-width track: nothing beside it changes size while scrolling. */
+  .gauge-track-area { height: 100%; padding: 0 16px; }
+  .gauge-track { position: relative; height: 100%; }
+  .gauge-rail { position: absolute; top: 22px; right: 0; left: 0; height: 6px; margin-top: -3px; border-radius: 999px; background: var(--line); overflow: hidden; }
+  .gauge-fill { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); }
+  .gauge-runner { position: absolute; z-index: 2; top: 22px; left: 0; width: 30px; height: 30px; transform: translate(-50%, -50%); pointer-events: none; }
   .gauge-runner img { display: block; width: 100%; height: 100%; border: 2px solid var(--accent); border-radius: 50%; background: var(--surface); object-fit: cover; }
   .gauge-runner.is-hopping img { animation: gauge-hop .36s ease-out; }
   @keyframes gauge-hop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-5px); } 70% { transform: translateY(1px); } }
-  .gauge-toggle { flex: none; display: inline-flex; align-items: center; gap: 8px; max-width: 40%; min-height: 40px; padding: 8px 12px; border: 1px solid var(--interactive-line); border-radius: 8px; background: var(--surface); color: var(--ink); font: 700 13px var(--sans); cursor: pointer; }
-  .gauge-toggle[hidden] { display: none; }
-  .gauge-toggle > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .gauge-toggle:hover { border-color: var(--accent); }
-  .gauge-toggle[aria-expanded='true'] .gauge-chevron { transform: rotate(180deg); }
-  .gauge-toggle:focus-visible, .gauge-toc :global(a:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
-  .gauge-toc { position: absolute; top: 100%; right: 0; left: 0; max-height: min(60vh, 420px); overflow-y: auto; margin: 0; padding: 8px; list-style: none; border: 1px solid var(--line); border-radius: 0 0 12px 12px; background: var(--surface); box-shadow: 0 12px 28px var(--shadow); }
-  .gauge-toc[hidden] { display: none; }
-  .gauge-toc :global(li[data-level='3'] a) { padding-left: 28px; font-size: 13px; }
-  .gauge-toc :global(a) { display: block; padding: 10px 12px; border-radius: 6px; color: var(--body-copy); font-size: 14px; line-height: 1.5; text-decoration: none; }
-  .gauge-toc :global(a:hover) { background: var(--surface-muted); color: var(--ink); }
-  .gauge-toc :global(a[aria-current]) { background: var(--accent-soft); color: var(--accent-ink); font-weight: 800; }
+  .gauge-marks :global(.gauge-mark) { position: absolute; z-index: 1; top: 22px; color: var(--muted); text-decoration: none; }
+  .gauge-marks :global(.gauge-dot) { position: absolute; top: 0; left: 0; width: 8px; height: 8px; border: 2px solid var(--paper); border-radius: 50%; background: var(--interactive-line); transform: translate(-50%, -50%); box-sizing: content-box; }
+  .gauge-marks :global(.gauge-mark[data-level='3'] .gauge-dot) { width: 6px; height: 6px; }
+  /* A larger invisible hit area around each dot. */
+  .gauge-marks :global(.gauge-dot)::after { content: ""; position: absolute; inset: -9px; border-radius: 50%; }
+  .gauge-marks :global(.gauge-mark[data-passed] .gauge-dot) { background: var(--accent); }
+  .gauge-marks :global(.gauge-label) { position: absolute; top: 17px; left: -4px; display: block; overflow: hidden; font-size: 12px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+  .gauge-marks :global(.gauge-mark[data-side='left'] .gauge-label) { right: -4px; left: auto; text-align: right; }
+  .gauge-marks :global(.gauge-mark[data-label-hidden] .gauge-label) { display: none; }
+  .gauge-marks :global(.gauge-mark[data-passed]) { color: var(--body-copy); }
+  .gauge-marks :global(.gauge-mark[aria-current]) { color: var(--ink); font-weight: 800; }
+  .gauge-marks :global(.gauge-mark:hover) { color: var(--accent-ink); }
+  .gauge-marks :global(.gauge-mark:focus-visible) { outline: none; }
+  .gauge-marks :global(.gauge-mark:focus-visible .gauge-dot) { outline: 2px solid var(--focus); outline-offset: 3px; }
+  .gauge-marks :global(.gauge-mark:focus-visible .gauge-label) { text-decoration: underline; text-underline-offset: 3px; }
+  .gauge-current { display: none; }
+  .gauge-toc { display: none; }
   @media (max-width: 680px) {
-    .gauge-bar { gap: 8px; height: 48px; }
+    .gauge-bar, .detail-gauge[data-has-sections] .gauge-bar { height: 44px; }
     .gauge-track-area { padding: 0 14px; }
-    .gauge-toggle { max-width: 45%; min-height: 36px; padding: 6px 10px; font-size: 12px; }
+    .detail-gauge[data-has-sections] .gauge-track-area { cursor: pointer; }
+    .gauge-marks :global(.gauge-mark) { pointer-events: none; }
+    .gauge-marks :global(.gauge-label) { display: none; }
+    .gauge-current:not([hidden]) { display: flex; align-items: center; gap: 6px; width: 100%; min-height: 32px; margin: -6px 0 4px; padding: 4px 14px; border: 0; background: transparent; color: var(--ink); font: 700 13px var(--sans); text-align: left; cursor: pointer; }
+    .gauge-current > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .gauge-chevron { color: var(--muted); }
+    .gauge-current[aria-expanded='true'] .gauge-chevron { transform: rotate(180deg); }
+    .gauge-current:focus-visible, .gauge-toc :global(a:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .gauge-toc:not([hidden]) { position: absolute; top: 100%; right: 0; left: 0; display: block; max-height: min(60vh, 420px); overflow-y: auto; margin: 0; padding: 8px; list-style: none; border: 1px solid var(--line); border-radius: 0 0 12px 12px; background: var(--surface); box-shadow: 0 12px 28px var(--shadow); }
+    .gauge-toc :global(li[data-level='3'] a) { padding-left: 28px; font-size: 13px; }
+    .gauge-toc :global(a) { display: block; padding: 10px 12px; border-radius: 6px; color: var(--body-copy); font-size: 14px; line-height: 1.5; text-decoration: none; }
+    .gauge-toc :global(a:hover) { background: var(--surface-muted); color: var(--ink); }
+    .gauge-toc :global(a[aria-current]) { background: var(--accent-soft); color: var(--accent-ink); font-weight: 800; }
   }
-  @media (prefers-reduced-motion: reduce) { .gauge-runner.is-hopping img { animation: none; } .gauge-chevron { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .gauge-runner.is-hopping img { animation: none; } }
 </style>

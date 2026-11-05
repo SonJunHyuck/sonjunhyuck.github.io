@@ -70,7 +70,7 @@ const shortLabels = ['책임감', '시야', '개선과 실행', '소통', '협�
   </div>
 </div>
 <script>
-  const closePreviews = new Set<() => void>();
+  const closePreviews = new Set<(instant?: boolean) => void>();
   document.querySelectorAll<HTMLElement>('[data-intro-hex]').forEach((root) => {
     const nodes = [...root.querySelectorAll<SVGAElement>('[data-node]')];
     const previews = [...root.querySelectorAll<HTMLElement>('.hex-preview')];
@@ -90,12 +90,29 @@ const shortLabels = ['책임감', '시야', '개선과 실행', '소통', '협�
       centerIcons.forEach((icon, i) => { icon.style.display = i === index ? 'block' : 'none'; });
       caption.textContent = index < 0 ? '' : nodes[index].getAttribute('aria-label');
     };
-    const coarse = window.matchMedia('(hover: none), (pointer: coarse)');
     let active = -1;
-    let dismissTimer: ReturnType<typeof setTimeout>;
-    const close = () => {
-      clearTimeout(dismissTimer);
-      previews.forEach((preview) => { preview.hidden = true; });
+    // Previews open inline below the wheel and push the page down, so height changes are animated.
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const expand = (preview: HTMLElement) => {
+      preview.getAnimations().forEach((animation) => animation.cancel());
+      preview.hidden = false;
+      const reveal = () => {
+        const rect = preview.getBoundingClientRect();
+        if (rect.bottom > innerHeight || rect.top < 0) preview.scrollIntoView({ block: 'nearest', behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+      };
+      if (reducedMotion.matches) { reveal(); return; }
+      preview.animate([{ height: '0px', opacity: 0 }, { height: `${preview.scrollHeight}px`, opacity: 1 }], { duration: 220, easing: 'ease-out' }).finished.then(reveal, () => {});
+    };
+    const collapse = (preview: HTMLElement, instant: boolean) => {
+      if (preview.hidden) return;
+      preview.getAnimations().forEach((animation) => animation.cancel());
+      if (instant || reducedMotion.matches) { preview.hidden = true; return; }
+      preview.animate([{ height: `${preview.offsetHeight}px`, opacity: 1 }, { height: '0px', opacity: 0 }], { duration: 180, easing: 'ease-in' })
+        .finished.then(() => { preview.hidden = true; }, () => {});
+    };
+    // `instant` is used when another preview replaces this one, so only one height change is seen.
+    const close = (instant = false) => {
+      previews.forEach((preview) => collapse(preview, instant));
       nodes.forEach((node) => node.setAttribute('aria-expanded', 'false'));
       chips.forEach((chip) => chip.setAttribute('aria-expanded', 'false'));
       active = -1;
@@ -104,23 +121,30 @@ const shortLabels = ['책임감', '시야', '개선과 실행', '소통', '협�
     };
     closePreviews.add(close);
     const open = (index: number) => {
-      closePreviews.forEach((dismiss) => dismiss());
-      previews[index].hidden = false;
+      closePreviews.forEach((dismiss) => dismiss(true));
+      expand(previews[index]);
       nodes[index].setAttribute('aria-expanded', 'true');
       chips[index]?.setAttribute('aria-expanded', 'true');
       active = index;
       showSelection(index);
     };
+    const toggle = (index: number, trigger: HTMLElement | SVGElement) => {
+      if (active === index) { close(); return; }
+      open(index);
+      opener = trigger;
+    };
     nodes.forEach((node) => {
       const index = Number(node.dataset.node);
-      node.addEventListener('mouseenter', () => { if (!coarse.matches) open(index); });
-      node.addEventListener('focus', () => { if (node.matches(':focus-visible')) open(index); });
-      node.addEventListener('mouseleave', () => {
-        if (!coarse.matches) leaveHover();
-      });
+      // With JavaScript the sector acts as a disclosure button for its preview.
+      node.setAttribute('role', 'button');
+      // Hover only highlights a sector; a click, Enter or Space opens (or closes) its preview.
       node.addEventListener('keydown', (event) => {
         opener = node;
         const keyEvent = event as KeyboardEvent;
+        if (keyEvent.key === ' ') {
+          event.preventDefault();
+          toggle(index, node);
+        }
         if (keyEvent.key === 'ArrowLeft' || keyEvent.key === 'ArrowRight') {
           event.preventDefault();
           nodes[(index + (keyEvent.key === 'ArrowRight' ? 1 : -1) + nodes.length) % nodes.length].focus();
@@ -132,15 +156,13 @@ const shortLabels = ['책임감', '시야', '개선과 실행', '소통', '협�
         }
       });
       node.addEventListener('click', (event) => {
-        if (coarse.matches) { event.preventDefault(); open(index); }
+        // Without JavaScript the sector stays a plain link to the evidence page.
+        event.preventDefault();
+        toggle(index, node);
       });
     });
     chips.forEach((chip, index) => {
-      chip.addEventListener('click', () => {
-        if (active === index) { close(); return; }
-        open(index);
-        opener = chip;
-      });
+      chip.addEventListener('click', () => toggle(index, chip));
       chip.addEventListener('keydown', (event) => {
         const keys: Record<string, number> = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1 };
         if (event.key in keys) {
@@ -153,27 +175,6 @@ const shortLabels = ['책임감', '시야', '개선과 실행', '소통', '협�
           opener = chip;
           previews[index].querySelector<HTMLAnchorElement>('.preview-link')?.focus();
         }
-      });
-    });
-    const hasKeyboardFocus = () => nodes.some((trigger) => trigger.matches(':focus-visible')) ||
-      previews.some((preview) => preview.querySelector(':focus-visible') !== null);
-    const leaveHover = () => {
-      const focusedTrigger = nodes.find((trigger) => trigger.matches(':focus-visible'));
-      if (focusedTrigger) {
-        const index = Number(focusedTrigger.dataset.node);
-        if (active !== index) open(index);
-        return;
-      }
-      if (hasKeyboardFocus() || active < 0) return;
-      // Clear hover feedback immediately; keep only the panel briefly reachable.
-      showSelection(-1);
-      clearTimeout(dismissTimer);
-      dismissTimer = setTimeout(close, 400);
-    };
-    previews.forEach((preview) => {
-      preview.addEventListener('mouseenter', () => clearTimeout(dismissTimer));
-      preview.addEventListener('mouseleave', () => {
-        if (!coarse.matches && !hasKeyboardFocus()) close();
       });
     });
     root.addEventListener('focusout', (event) => {
@@ -205,17 +206,17 @@ const shortLabels = ['책임감', '시야', '개선과 실행', '소통', '협�
   [data-wheel-icon] { display: none; pointer-events: none; color: var(--accent-ink); }
   .wheel-caption { position: absolute; bottom: 0; left: 0; width: 100%; margin: 0; min-height: 1.6em; color: var(--ink); font-size: clamp(10px, 4cqw, 20px); line-height: 1.6; font-weight: 750; text-align: center; white-space: nowrap; }
   .preview-close:focus-visible, .preview-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
-  .hex-preview { position: fixed; z-index: 100; bottom: 0; left: 50%; width: calc(min(var(--content-width), 100vw - 48px) - 40px); max-height: min(45dvh, 400px); overflow-y: auto; overscroll-behavior: contain; transform: translateX(-50%); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 0 24px; border: 1px solid var(--line); border-radius: 18px 18px 0 0; padding: 12px 24px max(20px, env(safe-area-inset-bottom)); background: var(--paper); box-shadow: 0 -12px 36px color-mix(in srgb, var(--ink) 12%, transparent); animation: preview-rise .25s ease-out; }
-  @keyframes preview-rise { from { opacity: 0; translate: 0 24px; } to { opacity: 1; translate: 0 0; } }
+  /* Inline panel in the page flow: spans the work-style grid below the character and the wheel. */
+  .hex-preview { position: relative; grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 0 24px; overflow: hidden; margin-top: 8px; padding: 20px 56px 20px 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
   .hex-preview[hidden] { display: none; }
-  .hex-preview img { display: block; width: 100%; height: clamp(100px, 22dvh, 220px); object-fit: contain; background: var(--surface); border-radius: 8px; }
+  .hex-preview img { display: block; width: 100%; height: clamp(120px, 22vw, 220px); object-fit: contain; background: var(--surface-muted); border-radius: 8px; }
   .preview-copy { align-self: center; padding-right: 16px; }
-  .preview-close { position: sticky; z-index: 1; grid-column: 1 / -1; justify-self: end; top: 0; display: block; margin: 0 -12px 4px auto; width: 32px; height: 32px; flex-shrink: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); color: var(--ink); font-size: 22px; cursor: pointer; }
+  .preview-close { position: absolute; z-index: 1; top: 12px; right: 12px; display: block; width: 32px; height: 32px; flex-shrink: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); color: var(--ink); font-size: 22px; cursor: pointer; }
   .preview-category { margin: 10px 0 5px; font-size: 11px; font-weight: 700; color: var(--muted); }
   .preview-text { margin: 0 0 10px; font-size: 15px; line-height: 1.7; word-break: keep-all; }
   .preview-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 16px; border: 1px solid var(--button-bg); border-radius: 8px; background: var(--button-bg); color: var(--button-text); font-size: 13px; font-weight: 800; line-height: 1.5; text-decoration: none; }
   .preview-link:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
-  @media (max-width: 680px) { .hex-preview { width: calc(min(var(--content-width), 100vw - 32px) - 40px); display: block; padding: 12px 16px max(20px, env(safe-area-inset-bottom)); } .hex-preview img { height: clamp(100px, 18dvh, 180px); } .preview-copy { padding-right: 0; } .preview-close { margin-right: -4px; } }
+  @media (max-width: 680px) { .hex-preview { display: block; margin-top: 4px; padding: 52px 16px 16px; } .hex-preview img { height: clamp(100px, 40vw, 180px); } .preview-copy { padding-right: 0; } }
   .hex-previews { display: contents; }
   .hex-chips { display: none; }
   @media (max-width: 680px) {
@@ -227,5 +228,5 @@ const shortLabels = ['책임감', '시야', '개선과 실행', '소통', '협�
     .hex-chip[data-selected] svg { color: currentColor; }
     .hex-chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
   }
-  @media (prefers-reduced-motion: reduce) { .hex-preview { animation: none; } .sector-face { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .sector-face { transition: none; } }
 </style>
