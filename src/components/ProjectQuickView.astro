@@ -1,0 +1,158 @@
+---
+import { getHighlights, type Project } from '../lib/projects';
+
+interface Props { projects: Project[]; }
+const { projects } = Astro.props;
+const groupLabel = { work: '업무', games: '게임', research: '연구', ai: 'AI 활용' } as const;
+---
+<dialog class="quickview" data-quickview aria-modal="true">
+  <button class="quickview-close" type="button" data-quickview-close aria-label="미리보기 닫기">×</button>
+  {projects.map((project) => {
+    const { data } = project;
+    const tags = [...(data.aiCollaboration ? ['AI 협업'] : []), ...data.technologies.map(({ name }) => name)];
+    const highlights = getHighlights(project);
+    const facts = [
+      ['기간', data.period],
+      ['역할', data.role],
+      ['팀 규모', data.teamSize ?? data.team],
+      ['플랫폼', data.platform.join(' · ')],
+    ].filter(([, value]) => value);
+    const labels = (data.projectGroup === 'work' ? ['work', 'games'] : [data.projectGroup]) as (keyof typeof groupLabel)[];
+    return (
+      <article class="quickview-panel" data-quickview-panel={project.id} aria-labelledby={`quickview-title-${project.id}`} hidden>
+        <div class="quickview-media" data-category={data.category}>
+          {data.thumbnail ? <img src={data.thumbnail} alt={`${data.title} 대표 이미지`} loading="lazy" style={data.thumbnailPosition ? `object-position: ${data.thumbnailPosition}` : undefined} /> : <span aria-hidden="true">{data.title}</span>}
+        </div>
+        <div class="quickview-body">
+          <p class="quickview-groups">{labels.map((label) => <span>{groupLabel[label]}</span>)}</p>
+          <h2 id={`quickview-title-${project.id}`}>{data.title}</h2>
+          <p class="quickview-label">{data.cardLabel ?? data.summary}</p>
+          {facts.length > 0 && <dl class="quickview-facts">{facts.map(([term, value]) => <div><dt>{term}</dt><dd>{value}</dd></div>)}</dl>}
+          {data.cardLabel && <p class="quickview-summary">{data.summary}</p>}
+          {data.cardContribution && <section class="quickview-section"><h3>담당</h3><p>{data.cardContribution}</p></section>}
+          {highlights.length > 0 && <section class="quickview-section"><h3>주요 구현</h3><ul>{highlights.map((item) => <li>{item}</li>)}</ul></section>}
+          {tags.length > 0 && <ul class="tag-list quickview-tags" aria-label="기술 스택">{tags.map((tag, index) => <li class:list={{ 'project-ai-tag': data.aiCollaboration && index === 0 }}>{tag}</li>)}</ul>}
+          <div class="quickview-actions"><a class="button button-primary quickview-detail" href={`/projects/${project.id}/`}>상세 보기 <span aria-hidden="true">→</span></a></div>
+        </div>
+      </article>
+    );
+  })}
+</dialog>
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-quickview]');
+  if (dialog) {
+    const panels = new Map([...dialog.querySelectorAll<HTMLElement>('[data-quickview-panel]')].map((panel) => [panel.dataset.quickviewPanel!, panel]));
+    const cardLink = (id: string) => document.querySelector<HTMLAnchorElement>(`.project-card-link[data-project-id="${CSS.escape(id)}"]`);
+    let opener: HTMLElement | null = null;
+    // True when this page pushed the ?project= entry, so closing can step back instead of stacking history.
+    let pushed = false;
+
+    const show = (id: string) => {
+      const panel = panels.get(id);
+      if (!panel) return false;
+      panels.forEach((candidate) => { candidate.hidden = candidate !== panel; });
+      dialog.setAttribute('aria-labelledby', `quickview-title-${id}`);
+      if (!dialog.open) dialog.showModal();
+      dialog.scrollTop = 0;
+      panel.scrollTop = 0;
+      dialog.querySelector<HTMLElement>('[data-quickview-close]')?.focus();
+      document.documentElement.setAttribute('data-quickview-open', '');
+      document.dispatchEvent(new Event('next-up:update'));
+      return true;
+    };
+    const hide = () => {
+      if (dialog.open) dialog.close();
+    };
+    dialog.addEventListener('close', () => {
+      document.documentElement.removeAttribute('data-quickview-open');
+      document.dispatchEvent(new Event('next-up:update'));
+      const url = new URL(location.href);
+      const id = url.searchParams.get('project');
+      if (id) {
+        if (pushed) history.back();
+        else { url.searchParams.delete('project'); history.replaceState(history.state, '', url); }
+      }
+      pushed = false;
+      (opener ?? (id ? cardLink(id) : null))?.focus();
+      opener = null;
+    });
+    // Clicks on the backdrop land on the dialog element itself.
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) hide(); });
+    dialog.querySelector('[data-quickview-close]')?.addEventListener('click', hide);
+
+    document.querySelectorAll<HTMLAnchorElement>('.project-card-link[data-project-id]').forEach((link) => {
+      link.setAttribute('aria-haspopup', 'dialog');
+      link.setAttribute('aria-label', (link.getAttribute('aria-label') ?? '').replace('상세 보기', '미리보기 열기'));
+      link.addEventListener('click', (event) => {
+        // Leave new-tab / new-window gestures to the browser.
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const id = link.dataset.projectId!;
+        if (!panels.has(id)) return;
+        event.preventDefault();
+        opener = link;
+        const url = new URL(location.href);
+        url.searchParams.set('project', id);
+        history.pushState(history.state, '', url);
+        pushed = true;
+        show(id);
+      });
+    });
+
+    const sync = () => {
+      const id = new URL(location.href).searchParams.get('project');
+      if (id && panels.has(id)) show(id);
+      else if (dialog.open) { pushed = false; hide(); }
+    };
+    window.addEventListener('popstate', sync);
+    sync();
+  }
+</script>
+<style>
+  .quickview { width: min(720px, calc(100vw - 48px)); max-width: none; max-height: min(760px, calc(100dvh - 48px)); padding: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); color: var(--ink); overflow: hidden; }
+  .quickview::backdrop { background: color-mix(in srgb, #000 48%, transparent); }
+  .quickview[open] { display: block; animation: quickview-in .2s ease-out; }
+  @keyframes quickview-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .quickview-close { position: absolute; z-index: 2; top: 14px; right: 14px; width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer; }
+  .quickview-close:hover { border-color: var(--accent); color: var(--accent); }
+  .quickview-close:focus-visible, .quickview-detail:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+  /* One column on every width: image on top, then the scrolling summary with a pinned action. */
+  .quickview-panel { max-height: min(760px, calc(100dvh - 48px)); overflow-y: auto; overscroll-behavior: contain; }
+  .quickview-panel[hidden] { display: none; }
+  .quickview-media { display: block; aspect-ratio: 16 / 9; max-height: 300px; width: 100%; overflow: hidden; background: var(--surface-muted); }
+  .quickview-media[data-category='game'] { background: var(--media-game); }
+  .quickview-media[data-category='graphics'] { background: var(--media-graphics); }
+  .quickview-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .quickview-media > span { display: grid; place-items: center; height: 100%; }
+  .quickview-media span { padding: 24px; color: var(--media-text); font-weight: 800; }
+  .quickview-body { min-width: 0; padding: 24px 28px 0; }
+  .quickview-groups { display: flex; gap: 6px; margin: 0 48px 12px 0; }
+  .quickview-groups span { padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font: 800 11px var(--sans); }
+  .quickview h2 { margin: 0 48px 8px 0; font-size: 28px; line-height: 1.25; letter-spacing: -.04em; }
+  .quickview-label { margin: 0 0 18px; color: var(--muted); font-size: 15px; line-height: 1.6; }
+  .quickview-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin: 0 0 18px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--line); }
+  .quickview-facts div { padding: 10px 12px; background: var(--surface); }
+  .quickview-facts div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .quickview-facts dt { color: var(--muted); font: 11px var(--mono); }
+  .quickview-facts dd { margin: 3px 0 0; font-size: 13px; line-height: 1.5; word-break: keep-all; }
+  .quickview-summary, .quickview-section p { margin: 0 0 18px; color: var(--body-copy); font-size: 14px; line-height: 1.7; word-break: keep-all; }
+  .quickview-section h3 { margin: 0 0 6px; font-size: 13px; }
+  .quickview-section ul { margin: 0 0 18px; padding-left: 18px; color: var(--body-copy); font-size: 14px; line-height: 1.7; }
+  .quickview-tags { margin-bottom: 22px; }
+  .quickview-tags li { border-radius: 999px; }
+  .quickview-tags .project-ai-tag { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); font-weight: 800; }
+  /* Keeps the detail button reachable while the summary scrolls. */
+  .quickview-actions { position: sticky; bottom: 0; padding: 12px 0 24px; background: linear-gradient(transparent, var(--paper) 12px); }
+  .quickview-detail { justify-content: center; width: 100%; }
+  @media (max-width: 680px) {
+    /* Bottom sheet: full height minus a sliver that keeps the page visible behind it. */
+    .quickview { width: 100vw; max-width: 100vw; height: calc(100dvh - 24px); max-height: none; margin: auto 0 0; border-width: 1px 0 0; border-radius: 16px 16px 0 0; }
+    .quickview[open] { animation-name: quickview-sheet; }
+    @keyframes quickview-sheet { from { transform: translateY(100%); } to { transform: none; } }
+    .quickview-panel { height: 100%; max-height: none; }
+    .quickview-media { max-height: none; }
+    .quickview-body { padding: 20px 16px 0; }
+    .quickview-actions { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+    .quickview h2 { font-size: 24px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .quickview[open] { animation: none; } }
+</style>

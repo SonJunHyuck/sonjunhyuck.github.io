@@ -14,6 +14,7 @@ role: "그래픽스 프로그래밍"
 teamSize: "1인 개발"
 platform: ["PC"]
 thumbnail: "/images/projects/wind-map-simulation/cover.png"
+thumbnailPosition: "center top"
 videos:
   - title: "바람 가시화 지도 시뮬레이션"
     youtubeId: "p5STJoc0wRI"

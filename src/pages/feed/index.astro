@@ -8,7 +8,7 @@ const { entries, groups } = await getFeedIndex();
 const firstPage = entries.slice(0, FEED_PAGE_SIZE);
 ---
 
-<BaseLayout title="피드 — Son Junhyuck" description="짧은 생각과 작업 기록을 모은 피드입니다.">
+<BaseLayout title="피드 — Son Junhyuck" description="짧은 생각과 작업 기록을 모은 피드입니다." next={{ href: '/', title: '프로필', image: '/profile.webp' }} nextRequires="feed-complete">
   <div class="feed-page">
     <h1 class="visually-hidden">피드</h1>
     <section class="container feed-section" aria-label="피드 목록">

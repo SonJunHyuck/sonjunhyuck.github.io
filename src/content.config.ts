@@ -23,6 +23,8 @@ const projects = defineCollection({
     platform: z.array(z.string()).default([]),
     genres: z.array(z.string()).default([]),
     thumbnail: z.string().optional(),
+    /** CSS object-position for crops of the thumbnail (quick view only). */
+    thumbnailPosition: z.string().optional(),
     trailerUrl: z.string().url().optional(),
     videos: z.array(z.object({
       title: z.string(),

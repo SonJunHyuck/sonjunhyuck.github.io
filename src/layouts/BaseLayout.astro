@@ -2,13 +2,18 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import NextUpCard from '../components/NextUpCard.astro';
+import type { NextDestination } from '../lib/projects';
 
 interface Props {
   title: string;
   description?: string;
+  /** Destination offered by the card that rises when the visitor reaches the page end. */
+  next?: NextDestination;
+  nextRequires?: 'feed-complete';
 }
 
-const { title, description = 'Son Junhyuck의 게임 개발 포트폴리오' } = Astro.props;
+const { title, description = 'Son Junhyuck의 게임 개발 포트폴리오', next, nextRequires } = Astro.props;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const shareImageUrl = new URL('/favicon2.png', Astro.site);
 ---
@@ -55,6 +60,7 @@ const shareImageUrl = new URL('/favicon2.png', Astro.site);
   <body>
     <Header currentPath={Astro.url.pathname} />
     <main><slot /></main>
+    {next && <NextUpCard {next} requires={nextRequires} />}
     <Footer />
   </body>
 </html>

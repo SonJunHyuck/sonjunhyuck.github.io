@@ -64,6 +64,9 @@ if (list && index && more && status && empty && sentinel) {
     else if (group.ids.length === 0) status.textContent = '';
     else if (!hasMore()) status.textContent = '모든 피드를 확인했습니다.';
     else status.textContent = `${Math.min(page * pageSize, group.ids.length)}개 피드를 표시했습니다.`;
+    // The page-end "next" card waits until there is nothing left to load.
+    list.toggleAttribute('data-complete', !controller && !failed && !hasMore());
+    document.dispatchEvent(new Event('next-up:update'));
   };
 
   const loadPage = async (nextPage: number, replace = false): Promise<boolean> => {

@@ -14,6 +14,7 @@ role: "Unity 클라이언트 유지보수"
 platform: ["PC", "Android", "iOS"]
 genres: ["Metaverse", "Live Service"]
 thumbnail: "/images/projects/inspix-world/cover.png"
+thumbnailPosition: "center 20%"
 gallery:
   - src: "/images/projects/inspix-world/partner-collaboration.png"
     alt: "파트너사와 업데이트 버전 반영 일정을 조율한 대화 화면"

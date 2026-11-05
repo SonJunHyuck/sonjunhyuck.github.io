@@ -14,6 +14,7 @@ role: "Unity 클라이언트 개발"
 platform: ["PC", "Android", "iOS"]
 genres: ["Metaverse"]
 thumbnail: "/images/projects/project-r/cover.png"
+thumbnailPosition: "center 25%"
 gallery:
   - src: "/images/projects/project-r/build-pipeline.webp"
     alt: "Jenkins에서 Unity와 Addressables를 빌드하고 S3 배포와 Slack 알림으로 이어지는 파이프라인"

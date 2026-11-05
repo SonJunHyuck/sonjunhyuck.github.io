@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TagList from '../components/TagList.astro';
 import { NOTION_DEVLOG_URL } from '../config/links';
+import { PROJECT_LIST_DESTINATION } from '../lib/projects';
 
 const contributionIcons = import.meta.glob<string>('../assets/icons/lucide/*.svg', { eager: true, query: '?raw', import: 'default' });
 
@@ -57,7 +58,7 @@ const experience = [
 
 ---
 
-<BaseLayout title="프로필 — Son Junhyuck" description="Son Junhyuck의 이력, 역량, 활동을 정리한 게임 개발 포트폴리오">
+<BaseLayout title="프로필 — Son Junhyuck" description="Son Junhyuck의 이력, 역량, 활동을 정리한 게임 개발 포트폴리오" next={PROJECT_LIST_DESTINATION}>
   <section class="intro-profile" aria-labelledby="intro-title">
     <div class="container intro-profile-inner">
       <div class="intro-profile-top">
@@ -91,15 +92,18 @@ const experience = [
                 <div class="project-contributions">
                   {item.projects.map((project) => (
                     <section class="contribution-group">
-                      <h4>{'href' in project ? <a href={project.href}>{project.name}</a> : project.name}</h4>
+                      <h4>{'href' in project ? <a class="contribution-project-link" href={project.href}>{project.name}<span aria-hidden="true">→</span></a> : project.name}</h4>
                       <p>{project.description}</p>
                       <ul class="contribution-cards" role="list">
-                        {project.contributions.map((contribution) => (
-                          <li class="contribution-card">
-                            <div class="contribution-card-heading"><span class="contribution-icon" aria-hidden="true" set:html={contributionIcons[`../assets/icons/lucide/${contribution.icon}.svg`]} /><strong>{'href' in contribution ? <a href={contribution.href}>{contribution.keyword}</a> : contribution.keyword}</strong></div>
+                        {project.contributions.map((contribution) => {
+                          const body = <>
+                            <div class="contribution-card-heading"><span class="contribution-icon" aria-hidden="true" set:html={contributionIcons[`../assets/icons/lucide/${contribution.icon}.svg`]} /><strong>{contribution.keyword}</strong></div>
                             <p>{contribution.text}</p>
-                          </li>
-                        ))}
+                          </>;
+                          return 'href' in contribution
+                            ? <li class="contribution-card contribution-card-linked"><a class="contribution-card-link" href={contribution.href}>{body}<span class="contribution-card-arrow" aria-hidden="true">→</span></a></li>
+                            : <li class="contribution-card">{body}</li>;
+                        })}
                       </ul>
                     </section>
                   ))}

@@ -15,6 +15,7 @@ teamSize: "1인 개발"
 platform: ["PC"]
 genres: ["2D", "Forward Defense"]
 thumbnail: "/images/projects/the-hidden-cheer-squad/cover.png"
+thumbnailPosition: "center top"
 videos:
   - title: "The Hidden Cheer Squad 시연"
     youtubeId: "XuslBwZVYNQ"

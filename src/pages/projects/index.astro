@@ -1,14 +1,15 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectGroupNav from '../../components/ProjectGroupNav.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import IntroHex from '../../components/IntroHex.astro';
 import ProfileCharacter from '../../components/ProfileCharacter.astro';
+import ProjectQuickView from '../../components/ProjectQuickView.astro';
+import { getOrderedProjects } from '../../lib/projects';
 
-const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+const projects = await getOrderedProjects();
 ---
-<BaseLayout title="Projects — Son Junhyuck" description="업무와 개인 프로젝트를 소개합니다.">
+<BaseLayout title="Projects — Son Junhyuck" description="업무와 개인 프로젝트를 소개합니다." next={{ href: '/feed/', title: '피드', image: '/favicon2.png' }}>
   <h1 class="visually-hidden">프로젝트</h1>
   <section class="container project-work-style" aria-labelledby="work-style-heading">
     <h2 id="work-style-heading" class="visually-hidden">이렇게 일합니다</h2>
@@ -29,6 +30,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
     <p id="project-filter-status" class="visually-hidden" role="status" aria-live="polite"></p>
     <p id="project-filter-empty" class="empty-state" hidden>이 분류의 프로젝트를 준비하고 있습니다.</p>
   </section>
+  <ProjectQuickView {projects} />
 </BaseLayout>
 
 <script>

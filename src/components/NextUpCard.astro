@@ -1,0 +1,71 @@
+---
+import type { NextDestination } from '../lib/projects';
+
+interface Props {
+  next: NextDestination;
+  /** Extra condition checked by the page (e.g. the feed has loaded everything). */
+  requires?: 'feed-complete';
+}
+const { next, requires } = Astro.props;
+---
+<aside class="next-up" data-next-up data-requires={requires} aria-label="다음 행선지" hidden>
+  <a class="next-up-link" href={next.href}>
+    {next.image && <img src={next.image} alt="" width="64" height="64" loading="lazy" />}
+    <span class="next-up-copy"><span class="next-up-label">다음</span><strong>{next.title}</strong></span>
+    <span class="next-up-arrow" aria-hidden="true">→</span>
+  </a>
+  <button class="next-up-close" type="button" aria-label="다음 행선지 카드 닫기">×</button>
+</aside>
+<script>
+  const card = document.querySelector<HTMLElement>('[data-next-up]');
+  const footer = document.querySelector<HTMLElement>('.site-footer');
+  if (card && footer) {
+    const storageKey = `next-up-dismissed:${location.pathname}`;
+    const isDismissed = () => {
+      try { return sessionStorage.getItem(storageKey) === '1'; } catch { return false; }
+    };
+    let dismissed = isDismissed();
+    let footerVisible = false;
+    let hideTimer: ReturnType<typeof setTimeout>;
+    const conditionMet = () => card.dataset.requires !== 'feed-complete' || document.querySelector('#feed-list')?.hasAttribute('data-complete') === true;
+    const update = () => {
+      const show = !dismissed && footerVisible && conditionMet() && !document.documentElement.hasAttribute('data-quickview-open');
+      clearTimeout(hideTimer);
+      if (show) {
+        card.hidden = false;
+        requestAnimationFrame(() => card.classList.add('is-visible'));
+      } else if (!card.hidden) {
+        // Keep focus from being lost inside a card that is leaving.
+        if (card.contains(document.activeElement)) (document.activeElement as HTMLElement).blur();
+        card.classList.remove('is-visible');
+        hideTimer = setTimeout(() => { card.hidden = true; }, 260);
+      }
+    };
+    new IntersectionObserver(([entry]) => { footerVisible = entry.isIntersecting; update(); }, { rootMargin: '0px 0px 80px 0px' }).observe(footer);
+    document.addEventListener('next-up:update', update);
+    card.querySelector('.next-up-close')?.addEventListener('click', () => {
+      dismissed = true;
+      try { sessionStorage.setItem(storageKey, '1'); } catch { /* Storage can be unavailable; dismissal then lasts for this page view. */ }
+      update();
+    });
+  }
+</script>
+<style>
+  .next-up { position: fixed; z-index: 90; right: 24px; bottom: 24px; display: flex; align-items: stretch; width: 340px; max-width: calc(100vw - 32px); border: 1px solid var(--interactive-line); border-radius: 10px; background: var(--surface); box-shadow: 0 12px 32px var(--shadow); opacity: 0; transform: translateY(16px); transition: opacity .24s ease, transform .24s ease; }
+  .next-up[hidden] { display: none; }
+  .next-up.is-visible { opacity: 1; transform: none; }
+  .next-up-link { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 10px 8px 10px 10px; border-radius: 10px 0 0 10px; color: var(--ink); text-decoration: none; }
+  .next-up-link img { flex: none; width: 56px; height: 56px; border-radius: 6px; object-fit: cover; background: var(--surface-muted); }
+  .next-up-copy { min-width: 0; display: grid; gap: 2px; }
+  .next-up-label { color: var(--muted); font: 11px var(--mono); letter-spacing: .06em; }
+  .next-up-copy strong { overflow: hidden; font-size: 15px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+  .next-up-arrow { flex: none; margin-left: auto; color: var(--accent); font-size: 18px; font-weight: 800; }
+  .next-up-link:hover strong { color: var(--accent); }
+  .next-up-link:focus-visible, .next-up-close:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+  .next-up-close { flex: none; width: 44px; border: 0; border-left: 1px solid var(--soft-line); border-radius: 0 10px 10px 0; background: transparent; color: var(--muted); font-size: 20px; cursor: pointer; }
+  .next-up-close:hover { color: var(--ink); }
+  @media (max-width: 680px) {
+    .next-up { right: 16px; left: 16px; bottom: max(16px, env(safe-area-inset-bottom)); width: auto; max-width: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .next-up { transition: none; transform: none; } }
+</style>
