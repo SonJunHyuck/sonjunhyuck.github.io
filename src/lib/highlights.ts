@@ -47,12 +47,12 @@ function extractSection(html: string, section: string) {
   const heading = (wrapper && flatten(wrapper).find((node) => /^h[1-6]$/.test(node.tagName ?? '')))
     ?? nodes.find((node) => /^h[1-6]$/.test(node.tagName ?? '') && text(node).trim() === section);
   if (!heading?.position) throw new Error(`하이라이트 원본 섹션을 찾을 수 없습니다: ${section}`);
-  // BFX wraps each feature in an article. Its diagram headings are nested content,
-  // while the next sibling article starts the next feature at the same level.
+  // BFX features and portfolio stories each have their own article. Nested diagram
+  // headings (including .portfolio-diagram-title) stay inside the same story.
   const article = root.children?.find((node) => node.tagName === 'article' && flatten(node).includes(heading));
   if (article?.position) return {
     html: html.slice(article.position.start.offset, article.position.end.offset),
-    anchor: article.properties?.id ?? section,
+    anchor: article.properties?.id ?? heading.properties?.id,
   };
   const level = Number(heading.tagName!.slice(1));
   const siblings = root.children ?? [];
