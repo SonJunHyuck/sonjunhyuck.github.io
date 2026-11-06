@@ -289,31 +289,31 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 
 /* BFX dialogue import workflow */
 
-:is(#bfx-import-diagram, .portfolio-import-diagram) { --font-size-base:16px; }
-:is(#bfx-import-diagram, .portfolio-import-diagram) {            color:var(--ink); background:radial-gradient(var(--line) .8px,transparent .8px) 0 0/20px 20px,var(--paper); border:4px solid var(--interactive-line); border-radius:28px; box-shadow:7px 8px 0 var(--line); margin:28px 9px 12px 0; padding:32px 20px 22px; position:relative; font-family:inherit; }
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-tag { position:absolute; top:-16px; left:22px; background:var(--button-bg); color:var(--button-text); border-radius:30px; padding:6px 16px; font-weight:700; }
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-label {font-weight:700; color:var(--subtle-copy);}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-alternative {padding:0 0 18px; border-bottom:1px solid var(--line);}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-alt-flow {display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:8px 0; font-weight:600;}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-note {color:var(--subtle-copy);}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-chosen {padding-top:18px;}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-chosen > .import-label {color:var(--accent);}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-flow {display:grid; grid-template-columns:var(--import-columns,1fr 16px 1fr 16px 1fr 16px 1fr 16px 1fr); align-items:stretch; margin-top:14px;}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-node {background:var(--surface); border:3px solid var(--interactive-line); border-radius:18px; padding:15px 5px; text-align:center; display:flex; flex-direction:column; justify-content:center; gap:10px; min-width:0;}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-index {font-size:calc(var(--font-size-base)*.8); color:var(--subtle-copy);}
-:is(#bfx-import-diagram, .portfolio-import-diagram) h3 {font-size:var(--font-size-base); font-weight:800; word-break:keep-all;}
-:is(#bfx-import-diagram, .portfolio-import-diagram) h3:not(.portfolio-diagram-title) {margin:0;}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-node>span:last-child {font-size:calc(var(--font-size-base)*.85); word-break:keep-all;}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-arrow {align-self:center; text-align:center; font-weight:800; color:var(--accent);}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-gate {background:var(--button-bg); color:var(--button-text); border-color:var(--accent); box-shadow:3px 4px 0 var(--line);}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-gate .import-index {color:var(--button-text);}
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-result {border-style:double; border-width:5px; border-color:var(--accent); background:var(--accent-soft);}
-@media(max-width:620px) {:is(#bfx-import-diagram, .portfolio-import-diagram) .import-flow {grid-template-columns:1fr; gap:6px;} :is(#bfx-import-diagram, .portfolio-import-diagram) .import-arrow {transform:rotate(90deg);} :is(#bfx-import-diagram, .portfolio-import-diagram) .import-node {padding:14px; gap:5px;} :is(#bfx-import-diagram, .portfolio-import-diagram) {padding:30px 16px 20px;} }
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) { --font-size-base:16px; }
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) {            color:var(--ink); background:radial-gradient(var(--line) .8px,transparent .8px) 0 0/20px 20px,var(--paper); border:4px solid var(--interactive-line); border-radius:28px; box-shadow:7px 8px 0 var(--line); margin:28px 9px 12px 0; padding:32px 20px 22px; position:relative; font-family:inherit; }
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-tag { position:absolute; top:-16px; left:22px; background:var(--button-bg); color:var(--button-text); border-radius:30px; padding:6px 16px; font-weight:700; }
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-label {font-weight:700; color:var(--subtle-copy);}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-alternative {padding:0 0 18px; border-bottom:1px solid var(--line);}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-alt-flow {display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:8px 0; font-weight:600;}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-note {color:var(--subtle-copy);}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-chosen {padding-top:18px;}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-chosen > .import-label {color:var(--accent);}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-flow {display:grid; grid-template-columns:var(--import-columns,1fr 16px 1fr 16px 1fr 16px 1fr 16px 1fr); align-items:stretch; margin-top:14px;}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-node {background:var(--surface); border:3px solid var(--interactive-line); border-radius:18px; padding:15px 5px; text-align:center; display:flex; flex-direction:column; justify-content:center; gap:10px; min-width:0;}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-index {font-size:calc(var(--font-size-base)*.8); color:var(--subtle-copy);}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) h3 {font-size:var(--font-size-base); font-weight:800; word-break:keep-all;}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) h3:not(.portfolio-diagram-title) {margin:0;}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-node>span:last-child {font-size:calc(var(--font-size-base)*.85); word-break:keep-all;}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-arrow {align-self:center; text-align:center; font-weight:800; color:var(--accent);}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-gate {background:var(--button-bg); color:var(--button-text); border-color:var(--accent); box-shadow:3px 4px 0 var(--line);}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-gate .import-index {color:var(--button-text);}
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-result {border-style:double; border-width:5px; border-color:var(--accent); background:var(--accent-soft);}
+@media(max-width:620px) {:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-flow {grid-template-columns:1fr; gap:6px;} :is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-arrow {transform:rotate(90deg);} :is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-node {padding:14px; gap:5px;} :is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) {padding:30px 16px 20px;} }
 
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-node h3 { color:inherit; font-size:1rem; margin:0; line-height:1.4; }
-:is(#bfx-import-diagram, .portfolio-import-diagram) .import-node { line-height:1.6; }
-:is(#bfx-import-diagram, .portfolio-import-diagram) > section { margin:0; }
-#dialogue-importer .bfx-sheet-media img { height:auto; max-height:none; cursor:zoom-in; }
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-node h3 { color:inherit; font-size:1rem; margin:0; line-height:1.4; }
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) .import-node { line-height:1.6; }
+:is(#bfx-import-diagram, .portfolio-import-diagram, .project-story .import-board) > section { margin:0; }
+:is(#dialogue-importer, .project-story) .bfx-sheet-media img { height:auto; max-height:none; cursor:zoom-in; }
 
 /* The overview presents projects in a responsive grid. */
 .project-hub-intro { padding: 0 0 24px; }
@@ -364,12 +364,12 @@ nav a[aria-current='page'] { border-bottom: 1px solid var(--ink); }
 }
 
 /* BFX authoring examples share a row; clip only the screenshot's macOS menu bar. */
-#dialogue-importer .bfx-import-media-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
-#dialogue-importer .bfx-import-media-grid figure { min-width: 0; margin: 24px 0; }
-#dialogue-importer .bfx-import-media-grid a { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 4px; }
-#dialogue-importer .bfx-import-media-grid img { border: 0; border-radius: 0; height: auto; max-height: none; }
-#dialogue-importer .bfx-sheet-media img { margin-top: -2.222222%; }
-@media (max-width: 640px) { #dialogue-importer .bfx-import-media-grid { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+:is(#dialogue-importer, .project-story) .bfx-import-media-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+:is(#dialogue-importer, .project-story) .bfx-import-media-grid figure { min-width: 0; margin: 24px 0; }
+:is(#dialogue-importer, .project-story) .bfx-import-media-grid a { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 4px; }
+:is(#dialogue-importer, .project-story) .bfx-import-media-grid img { border: 0; border-radius: 0; height: auto; max-height: none; }
+:is(#dialogue-importer, .project-story) .bfx-sheet-media img { margin-top: -2.222222%; }
+@media (max-width: 640px) { :is(#dialogue-importer, .project-story) .bfx-import-media-grid { grid-template-columns: minmax(0, 1fr); gap: 0; } }
 
 /* Shared separators for major sections in every project detail. */
 .project-detail > section + section { border-top: 1px solid var(--line); padding-top: 40px; }

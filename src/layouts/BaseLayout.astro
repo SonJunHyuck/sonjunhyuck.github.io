@@ -10,7 +10,7 @@ interface Props {
   description?: string;
   /** Destination offered by the card that rises when the visitor reaches the page end. */
   next?: NextDestination;
-  nextRequires?: 'feed-complete';
+  nextRequires?: 'highlights-complete';
 }
 
 const { title, description = 'Son Junhyuck의 게임 개발 포트폴리오', next, nextRequires } = Astro.props;

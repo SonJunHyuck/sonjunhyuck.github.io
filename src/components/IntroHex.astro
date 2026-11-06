@@ -1,4 +1,5 @@
 ---
+import ControlIcon from './ControlIcon.astro';
 const iconSources = import.meta.glob<string>('../assets/icons/lucide/*.svg', { eager: true, query: '?raw', import: 'default' });
 const iconNames = ['shield-check', 'scan-eye', 'wrench', 'messages-square', 'handshake', 'sprout'];
 const icons = iconNames.map((name) => iconSources[`../assets/icons/lucide/${name}.svg`].replace(/<svg[^>]*>|<\/svg>/g, ''));
@@ -60,7 +61,7 @@ const shortLabels = ['책임감', '시야', '개선과 실행', '소통', '협�
   <div class="hex-previews">
     {attitudes.map((attitude, index) => (
       <section id={`${instanceId}-preview-${index}`} class="hex-preview" hidden aria-label={attitude.label}>
-        <button class="preview-close" type="button" aria-label="경험 미리보기 닫기">×</button>
+        <button class="preview-close" type="button" aria-label="경험 미리보기 닫기"><ControlIcon name="close" /></button>
         <img src={attitude.image} alt={attitude.alt} width="280" height="140" loading="lazy" />
         <div class="preview-copy"><p class="preview-category">{attitude.category}</p>
         <p class="preview-text">{attitude.text}</p>
@@ -211,7 +212,7 @@ const shortLabels = ['책임감', '시야', '개선과 실행', '소통', '협�
   .hex-preview[hidden] { display: none; }
   .hex-preview img { display: block; width: 100%; height: clamp(120px, 22vw, 220px); object-fit: contain; background: var(--surface-muted); border-radius: 8px; }
   .preview-copy { align-self: center; padding-right: 16px; }
-  .preview-close { position: absolute; z-index: 1; top: 12px; right: 12px; display: block; width: 32px; height: 32px; flex-shrink: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); color: var(--ink); font-size: 22px; cursor: pointer; }
+  .preview-close { padding: 0; line-height: 1; position: absolute; z-index: 1; top: 12px; right: 12px; display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); color: var(--ink); font-size: 22px; cursor: pointer; }
   .preview-category { margin: 10px 0 5px; font-size: 11px; font-weight: 700; color: var(--muted); }
   .preview-text { margin: 0 0 10px; font-size: 15px; line-height: 1.7; word-break: keep-all; }
   .preview-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 16px; border: 1px solid var(--button-bg); border-radius: 8px; background: var(--button-bg); color: var(--button-text); font-size: 13px; font-weight: 800; line-height: 1.5; text-decoration: none; }

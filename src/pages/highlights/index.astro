@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HighlightCard from '../../components/HighlightCard.astro';
+import HighlightPreview from '../../components/HighlightPreview.astro';
+import { HIGHLIGHT_PAGE_SIZE, getHighlightIndex } from '../../lib/highlights';
+import '../../styles/highlights.css';
+const { entries, groups } = await getHighlightIndex();
+---
+<BaseLayout title="하이라이트 — Son Junhyuck" description="프로젝트의 주요 구현과 짧은 생각, 작업 기록을 모았습니다." next={{ href: '/projects/', title: '프로젝트 목록', image: '/images/projects/portfolio-website/card.webp' }} nextRequires="highlights-complete">
+  <section class="container highlights-section" aria-label="하이라이트 목록">
+    <h1 class="visually-hidden">하이라이트</h1>
+    <div class="highlight-filter-bar">
+      <div class="highlight-filters" role="group" aria-label="태그 필터">
+        {groups.map((group) => <button type="button" data-highlight-filter={group.key} aria-pressed={group.key === 'all' ? 'true' : 'false'} disabled>{group.tag ?? '전체'}</button>)}
+      </div>
+    </div>
+    <div id="highlight-list" data-page-size={HIGHLIGHT_PAGE_SIZE}>{entries.slice(0, HIGHLIGHT_PAGE_SIZE).map((entry) => <HighlightCard {entry} />)}</div>
+    <p id="highlight-empty" hidden={entries.length > 0}>아직 공개된 하이라이트가 없습니다.</p>
+    <div class="highlight-pagination">
+      <p id="highlight-status" role="status" aria-live="polite">{entries.length > 0 && entries.length <= HIGHLIGHT_PAGE_SIZE ? '모든 하이라이트를 확인했습니다.' : ''}</p>
+      <button id="highlight-more" type="button" hidden>이전 하이라이트 불러오기</button>
+      <span id="highlight-sentinel" aria-hidden="true"></span>
+    </div>
+    {entries.length > HIGHLIGHT_PAGE_SIZE && <noscript><p>추가 하이라이트와 미리보기를 보려면 JavaScript를 켜 주세요.</p></noscript>}
+    <script id="highlight-index" type="application/json" is:inline set:html={JSON.stringify(groups).replaceAll('<', '\\u003c')} />
+  </section>
+  <HighlightPreview {entries} />
+</BaseLayout>
+<script>
+  import '../../scripts/highlights';
+</script>

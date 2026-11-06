@@ -1,10 +1,11 @@
 ---
+import ControlIcon from './ControlIcon.astro';
 import type { NextDestination } from '../lib/projects';
 
 interface Props {
   next: NextDestination;
-  /** Extra condition checked by the page (e.g. the feed has loaded everything). */
-  requires?: 'feed-complete';
+  /** Extra condition checked by the page (e.g. the highlights has loaded everything). */
+  requires?: 'highlights-complete';
 }
 const { next, requires } = Astro.props;
 ---
@@ -14,7 +15,7 @@ const { next, requires } = Astro.props;
     <span class="next-up-copy"><span class="next-up-label">다음</span><strong>{next.title}</strong></span>
     <span class="next-up-arrow" aria-hidden="true">→</span>
   </a>
-  <button class="next-up-close" type="button" aria-label="다음 행선지 카드 닫기">×</button>
+  <button class="next-up-close" type="button" aria-label="다음 행선지 카드 닫기"><ControlIcon name="close" /></button>
 </aside>
 <script>
   const card = document.querySelector<HTMLElement>('[data-next-up]');
@@ -27,7 +28,7 @@ const { next, requires } = Astro.props;
     let dismissed = isDismissed();
     let footerVisible = false;
     let hideTimer: ReturnType<typeof setTimeout>;
-    const conditionMet = () => card.dataset.requires !== 'feed-complete' || document.querySelector('#feed-list')?.hasAttribute('data-complete') === true;
+    const conditionMet = () => card.dataset.requires !== 'highlights-complete' || document.querySelector('#highlight-list')?.hasAttribute('data-complete') === true;
     const update = () => {
       const show = !dismissed && footerVisible && conditionMet() && !document.documentElement.hasAttribute('data-quickview-open');
       clearTimeout(hideTimer);
@@ -62,7 +63,7 @@ const { next, requires } = Astro.props;
   .next-up-arrow { flex: none; margin-left: auto; color: var(--accent); font-size: 18px; font-weight: 800; }
   .next-up-link:hover strong { color: var(--accent); }
   .next-up-link:focus-visible, .next-up-close:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
-  .next-up-close { flex: none; width: 44px; border: 0; border-left: 1px solid var(--soft-line); border-radius: 0 10px 10px 0; background: transparent; color: var(--muted); font-size: 20px; cursor: pointer; }
+  .next-up-close { display: grid; place-items: center; padding: 0; line-height: 1; flex: none; width: 44px; border: 0; border-left: 1px solid var(--soft-line); border-radius: 0 10px 10px 0; background: transparent; color: var(--muted); font-size: 20px; cursor: pointer; }
   .next-up-close:hover { color: var(--ink); }
   @media (max-width: 680px) {
     .next-up { right: 16px; left: 16px; bottom: max(16px, env(safe-area-inset-bottom)); width: auto; max-width: none; }

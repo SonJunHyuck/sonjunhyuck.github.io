@@ -25,6 +25,7 @@ const isCurrent = (section?: string) => {
       <nav aria-label="주요 탐색">
         <ul>
           <li><a href="/" aria-current={isCurrent('profile') ? 'page' : undefined}><span class="nav-label">프로필</span></a></li>
+          <li><a href="/highlights/" aria-current={currentPath === '/highlights/' ? 'page' : undefined}><span class="nav-label">하이라이트</span></a></li>
           <li class="project-navigation">
             <a href="/projects/" class:list={['project-toggle', { 'is-current': currentPath.startsWith('/projects/') }]} aria-current={currentPath === '/projects/' ? 'page' : undefined}>
               <span class="nav-label">프로젝트</span>
@@ -35,7 +36,6 @@ const isCurrent = (section?: string) => {
               ))}
             </ul>
           </li>
-          <li><a href="/feed/" aria-current={currentPath === '/feed/' ? 'page' : undefined}><span class="nav-label">피드</span></a></li>
           <li><a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="개발일지를 Notion에서 새 탭으로 열기"><span class="nav-label">개발일지 ↗</span></a></li>
         </ul>
       </nav>

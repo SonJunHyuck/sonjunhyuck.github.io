@@ -1,0 +1,22 @@
+---
+import type { Highlight } from '../lib/highlights';
+interface Props { entry: Highlight; }
+const { entry } = Astro.props;
+---
+<article class="highlight-card" id={entry.id}>
+  <a class="highlight-card-link" href={entry.project ? `/projects/${entry.project.id}/${entry.section ? `#${entry.section}` : ''}` : entry.notionUrl ?? `/highlights/?h=${entry.id}`} data-highlight-id={entry.id} aria-haspopup="dialog" aria-label={`${entry.title} 미리보기 열기`}>
+    <div class:list={['highlight-thumbnail', { 'has-image': !!entry.image }]}>
+      {entry.image && <img src={entry.image} alt={entry.imageAlt} loading="lazy" decoding="async" />}
+      <span class="highlight-lettering" aria-hidden="true">{entry.lettering}</span>
+    </div>
+    <div class="highlight-card-copy">
+      <h2>{entry.title}</h2>
+      <p class="highlight-summary">{entry.summary}</p>
+      <ul class="tag-list highlight-tags" aria-label="태그">
+        {entry.project && <li class="highlight-project-tag">프로젝트: {entry.project.title}</li>}
+        {entry.tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+      <time datetime={entry.date}>{entry.date.replaceAll('-', '.')}</time>
+    </div>
+  </a>
+</article>

@@ -1,0 +1,31 @@
+---
+import ControlIcon from './ControlIcon.astro';
+import type { Highlight } from '../lib/highlights';
+import '../styles/project-story.css';
+interface Props { entries: Highlight[]; }
+const { entries } = Astro.props;
+---
+<dialog class="highlight-preview" id="highlight-preview" aria-modal="true" aria-label="하이라이트 미리보기">
+  <div class="highlight-preview-toolbar">
+    <button type="button" data-highlight-prev aria-label="이전 하이라이트"><ControlIcon name="arrow-left" /></button>
+    <span data-highlight-position role="status" aria-live="polite"></span>
+    <button type="button" data-highlight-next aria-label="다음 하이라이트"><ControlIcon name="arrow-right" /></button>
+    <button type="button" data-highlight-close aria-label="미리보기 닫기"><ControlIcon name="close" /></button>
+  </div>
+  {entries.map((entry) => <article class="highlight-preview-panel" data-highlight-panel={entry.id} aria-labelledby={`highlight-title-${entry.id}`} hidden>
+    {!entry.source && entry.image && <div class="highlight-preview-media"><img src={entry.image} alt={entry.imageAlt} loading="lazy" /></div>}
+    <div class="highlight-preview-copy">
+      <ul class="tag-list highlight-tags" aria-label="태그">
+        {entry.project && <li class="highlight-project-tag">프로젝트: {entry.project.title}</li>}
+        {entry.tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+      <time datetime={entry.date}>{entry.date.replaceAll('-', '.')}</time>
+      <h2 id={`highlight-title-${entry.id}`}>{entry.title}</h2>
+      <div class:list={["highlight-body", { "project-story": !!entry.source }]} set:html={entry.html} />
+      {(entry.project || entry.notionUrl) && <footer class="highlight-preview-actions">
+        {entry.project && <a class="button button-primary" href={`/projects/${entry.project.id}/${entry.section ? `#${entry.section}` : ''}`}>이 프로젝트 전체 보기 →</a>}
+        {entry.notionUrl && <a class="button button-outline" href={entry.notionUrl} target="_blank" rel="noopener noreferrer">Notion에서 자세히 보기 ↗</a>}
+      </footer>}
+    </div>
+  </article>)}
+</dialog>

@@ -1,0 +1,46 @@
+/* Source sections use these same body rules in project details and highlight previews. */
+.project-story p, .project-story li { color: var(--body-copy); line-height: 1.85; }
+.project-story .implementation-note { margin: 48px 0; padding: 28px 30px; border-left: 3px solid var(--accent); background: var(--surface-note); }
+.project-story .implementation-note h3 { margin: 4px 0 18px; }
+.project-story .implementation-note p:last-child { margin-bottom: 0; }
+.project-story .note-label { margin: 0; color: var(--muted); font: 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.project-story .story-media { margin: 30px 0 42px; }
+.project-story .story-media img { display: block; width: 100%; max-height: 620px; border: 1px solid var(--line); border-radius: 4px; object-fit: contain; background: var(--image-frame); }
+.project-story .story-media figcaption { margin-top: 9px; color: var(--muted); font-size: .82rem; line-height: 1.55; }
+.project-story .story-media-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.project-story .story-media-grid .story-media { margin: 30px 0 42px; }
+.project-story .bfx-video video { display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 4px; background: #000; }
+.project-story .bfx-case > header { padding: 0; }
+.project-story .bfx-case > header h3 { max-width: 100%; margin: 8px 0 10px; font-size: clamp(1.3rem, 2.2vw, 1.7rem); letter-spacing: -.02em; }
+.project-story .bfx-case > header p { max-width: 100%; }
+.project-story .bfx-case > header .bfx-case-lead { margin-bottom: 14px; color: var(--ink); font-size: 1.02rem; font-weight: 700; line-height: 1.65; }
+.project-story .bfx-flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin: 22px 0; }
+.project-story .bfx-flow > div { position: relative; padding: 12px 14px; border: 1px solid var(--soft-line); border-radius: 4px; }
+.project-story .bfx-flow > div:not(:last-child)::after { content: "→"; position: absolute; right: -23px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.project-story .bfx-flow strong { display: block; font-size: .86rem; font-weight: 600; }
+.project-story .bfx-flow p { margin: 4px 0 0; color: var(--muted); font-size: .78rem; word-break: keep-all; }
+.project-story .bfx-notification-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin: 28px 0 8px; border: 1px solid var(--line); background: var(--line); }
+.project-story .bfx-notification-list > div { padding: 18px 20px; background: var(--paper); }
+.project-story .bfx-notification-list strong, .project-story .bfx-notification-list span { display: block; }
+.project-story .bfx-notification-list span { margin-top: 5px; color: var(--muted); font-size: .84rem; line-height: 1.55; }
+.project-story pre { max-width: 100%; overflow-x: auto; padding: 18px; border: 1px solid var(--line); background: var(--surface-strong); color: var(--body-copy); font: 12px/1.7 var(--mono); }
+.project-story p code, .project-story li code { overflow-wrap: anywhere; word-break: break-word; }
+.project-story .bfx-importer-media { max-width: 680px; }
+.project-story .bfx-importer-media a { display: block; }
+.project-story .bfx-importer-media img { max-height: 560px; cursor: zoom-in; }
+.project-story .bfx-notification-media { display: grid; gap: 34px; max-width: var(--content-width); }
+.project-story .bfx-notification-media .story-media { margin: 28px 0 0; }
+.project-story .bfx-notification-media img { width: 100%; border: 1px solid var(--line); border-radius: 4px; }
+.project-story .bfx-popup-note { max-width: 100%; margin-top: 34px; padding-top: 30px; border-top: 1px dashed var(--line); }
+.project-story .bfx-popup-note h4 { margin: 0 0 14px; font-size: 1.15rem; }
+.project-story .bfx-popup-note p:last-child { margin-bottom: 0; }
+.project-story :is(.text-highlight, .bfx-text-highlight) { color: var(--accent); background: transparent; font-weight: 800; }
+@media (max-width: 760px) {
+  .project-story .bfx-flow { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .project-story .bfx-flow > div:not(:last-child)::after { content: "↓"; right: auto; top: auto; left: 50%; bottom: -23px; transform: translateX(-50%); }
+  .project-story .bfx-notification-list { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .project-story .story-media-grid { grid-template-columns: minmax(0, 1fr); }
+  .project-story .story-media-grid .story-media { margin-bottom: 0; }
+}

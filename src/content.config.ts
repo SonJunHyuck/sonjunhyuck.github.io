@@ -1,6 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { feedTags } from './config/feedTags';
+import { highlightTags } from './config/highlightTags';
 
 const projects = defineCollection({
   loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
@@ -63,24 +63,31 @@ const projects = defineCollection({
   }),
 });
 
-const feed = defineCollection({
+const highlights = defineCollection({
   loader: glob({
-    base: './src/content/feed',
+    base: './src/content/highlights',
     pattern: '**/*.md',
   }),
   schema: ({ image }) => z.object({
     title: z.string().trim().min(1),
     date: z.coerce.date(),
-    notionUrl: z.string().url(),
-    tags: z.array(z.enum(feedTags)).max(2).default([]),
+    notionUrl: z.string().url().optional(),
+    summary: z.string().trim().min(1).optional(),
+    project: z.string().trim().min(1).optional(),
+    source: z.object({ project: z.string().trim().min(1), section: z.string().trim().min(1) }).optional(),
+    lettering: z.string().trim().min(1),
+    tags: z.array(z.enum(highlightTags)).max(2).default([]),
     image: image().optional(),
     imageAlt: z.string().trim().min(1).optional(),
     draft: z.boolean().default(false),
   }).superRefine((data, context) => {
+    if (data.source && data.project && data.source.project !== data.project) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ['project'], message: '연결 프로젝트와 원본 프로젝트가 일치해야 합니다.' });
+    }
     if (data.image && !data.imageAlt) {
       context.addIssue({ code: z.ZodIssueCode.custom, path: ['imageAlt'], message: '사진의 대체 텍스트가 필요합니다.' });
     }
   }),
 });
 
-export const collections = { projects, feed };
+export const collections = { projects, highlights };
