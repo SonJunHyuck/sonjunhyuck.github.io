@@ -1,0 +1,35 @@
+.landing-shell { --card-width: clamp(210px, 25vw, 280px); --fan-step: 260px; display: flex; flex-direction: column; justify-content: center; min-height: calc(100svh - 181px); padding-block: 36px; }
+.landing-hand { min-width: 0; }
+.landing-stage { position: relative; display: block; width: 100%; height: 540px; padding: 0; margin: 0; list-style: none; touch-action: pan-y pinch-zoom; --drag: 0px; --drag-angle: 0deg; }
+.landing-slot { --angle: calc(var(--slot) * 11deg + var(--drag-angle)); position: absolute; top: 50%; left: 50%; width: var(--card-width); transform-origin: 50% 85%; transform: translate(-50%, -50%) translate(calc(var(--slot) * var(--fan-step) + var(--nudge, 0px) + var(--drag)), calc(var(--depth) * 28px)) rotate(var(--angle)); transition: transform .36s cubic-bezier(.22,.68,.22,1), opacity .2s; animation: landing-deal .7s cubic-bezier(.22,.68,.22,1) backwards; animation-delay: calc(var(--order) * 80ms); }
+.landing-card { display: block; padding: 0; overflow: hidden; border: 1px solid var(--card-line); border-radius: 10px; background: var(--surface); color: var(--ink); box-shadow: 0 18px 42px var(--shadow); transform-origin: 50% 85%; transition: transform .25s ease, box-shadow .25s, border-color .2s; -webkit-tap-highlight-color: transparent; }
+.landing-media { display: grid; place-items: center; width: 100%; aspect-ratio: 1; overflow: hidden; background: var(--paper); }
+.landing-media img { display: block; width: 100%; height: 100%; object-fit: var(--image-fit); object-position: var(--image-position); }
+.landing-media > span { color: var(--muted); font-size: 24px; font-weight: 800; }
+.landing-card-copy { padding: 22px 16px 24px; text-align: center; }
+.landing-card h2 { margin: 0 0 10px; font-size: 26px; line-height: 1.25; letter-spacing: -.04em; }
+.landing-card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; white-space: nowrap; }
+.landing-slot[data-raised] .landing-card, .landing-card:focus-visible { transform: translateY(-38px) rotate(calc(-1 * var(--angle))) scale(1.04); border-color: var(--accent); box-shadow: 0 26px 60px var(--shadow); }
+.landing-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.landing-shell:not([data-enhanced]) .landing-card:hover { transform: translateY(-38px) rotate(calc(-1 * var(--angle))) scale(1.04); border-color: var(--accent); }
+.landing-shell[data-navigating] .landing-stage { pointer-events: none; }
+.landing-shell[data-navigating] .landing-slot:not([data-raised]) { opacity: .5; }
+.landing-stage[data-dragging] .landing-slot { transition: none; }
+.landing-mobile-ui { display: none; }
+@keyframes landing-deal { from { opacity: 0; transform: translate(-50%, -20%) rotate(0deg) scale(.84); } to { opacity: 1; } }
+@media (max-width: 680px), (hover: none) {
+  .landing-shell { --card-width: min(68vw, 260px); --fan-step: 138px; min-height: calc(100svh - 153px); padding-block: 16px 28px; }
+  .landing-hand { overflow: clip; margin-inline: -16px; }
+  .landing-stage { height: 460px; }
+  .landing-card-copy { padding: 20px 12px 22px; }
+  .landing-card h2 { font-size: 24px; }
+  .landing-card p { font-size: 13px; }
+  .landing-slot[data-raised] .landing-card, .landing-card:focus-visible { transform: translateY(-24px) rotate(calc(-1 * var(--angle))) scale(1.02); }
+  .landing-shell[data-enhanced] .landing-mobile-ui { display: block; text-align: center; }
+  .landing-selection { margin: 0 0 10px; color: var(--ink); font-size: 13px; font-weight: 800; }
+  .landing-gesture-hint { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-slot { animation: none; transition: none; }
+  .landing-card { transition: none; }
+}

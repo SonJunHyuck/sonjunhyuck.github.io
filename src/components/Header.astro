@@ -10,21 +10,21 @@ const detailProject = detailSlug
   : undefined;
 const activeProjectGroup = detailProject?.data.projectGroup;
 const isCurrent = (section?: string) => {
-  if (section === 'profile') return currentPath === '/';
+  if (section === 'profile') return currentPath === '/profile/';
   return activeProjectGroup === section;
 };
 ---
 
 <header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href="/" aria-label="손준혁 프로필 페이지">
+    <a class="brand" href="/" aria-label="손준혁 포트폴리오 첫 화면">
       <span class="brand-mark" aria-hidden="true"><img src="/favicon2.png" alt="" /></span>
       <span>Son Junhyuck</span>
     </a>
     <div class="header-actions">
       <nav aria-label="주요 탐색">
         <ul>
-          <li><a href="/" aria-current={isCurrent('profile') ? 'page' : undefined}><span class="nav-label">프로필</span></a></li>
+          <li><a href="/profile/" aria-current={isCurrent('profile') ? 'page' : undefined}><span class="nav-label">프로필</span></a></li>
           <li><a href="/highlights/" aria-current={currentPath === '/highlights/' ? 'page' : undefined}><span class="nav-label">하이라이트</span></a></li>
           <li class="project-navigation">
             <a href="/projects/" class:list={['project-toggle', { 'is-current': currentPath.startsWith('/projects/') }]} aria-current={currentPath === '/projects/' ? 'page' : undefined}>

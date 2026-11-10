@@ -1,197 +1,31 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import TagList from '../components/TagList.astro';
-import { NOTION_DEVLOG_URL } from '../config/links';
-
-const contributionIcons = import.meta.glob<string>('../assets/icons/lucide/*.svg', { eager: true, query: '?raw', import: 'default' });
-
-const experience = [
-  {
-    company: '보이저',
-    role: '클라이언트 개발',
-    period: '2025.04–2026.03',
-    duration: '1년 (12개월)',
-    tech: ['Unity', 'C#', 'Jenkins', 'AWS S3'],
-    projects: [
-      {
-        name: 'Project R',
-        href: '/projects/project-r/',
-        description: 'Unity 기반 메타버스 소셜 게임 개발 참여',
-        contributions: [
-          { keyword: '빌드·배포', icon: 'workflow', text: 'Jenkins를 활용한 클라이언트 빌드·배포 자동화', href: '/projects/project-r/#빌드-자동화' },
-          { keyword: '인게임 콘텐츠', icon: 'network', text: '네트워크 동기화를 포함한 감정표현 기능 구현', href: '/projects/project-r/#이모트' },
-          { keyword: 'UI', icon: 'panels-top-left', text: 'Popup UI / HUD 기능 구현', href: '/projects/project-r/#상점-ui' },
-        ],
-      },
-      {
-        name: 'InspixWorld',
-        href: '/projects/inspix-world/',
-        description: 'Unity 기반 메타버스 소셜 게임 라이브서비스 유지보수',
-        contributions: [
-          { keyword: '라이브 서비스 운영', icon: 'bug', text: '라이브 서비스 이슈 분석·수정 및 업데이트 대응', href: '/projects/inspix-world/#라이브-이슈-대응' },
-          { keyword: '협업·조율', icon: 'list-checks', text: '팀원과 수정 공수를 검토하고, 이슈 중요도와 함께 종합해 파트너사와 버전별 수정·업데이트 범위를 조율', href: '/projects/inspix-world/#라이브-이슈-대응' },
-          { keyword: '문서화', icon: 'book-open', text: '운영 중 축적한 경험과 신규 투입 인원을 위한 가이드 작성', href: '/projects/inspix-world/#협업-및-문서화' },
-        ],
-      },
-    ],
-  },
-  {
-    company: '갈라랩',
-    role: '클라이언트 개발',
-    period: '2015.12–2017.02',
-    duration: '1년 3개월 (15개월)',
-    tech: ['Unity', 'C#'],
-    projects: [
-      {
-        name: '프리프 레거시',
-        description: 'Unity 기반 모바일 MMORPG',
-        contributions: [
-          { keyword: 'UI', icon: 'unplug', text: '콘텐츠 UI 기능과 서버 트랜잭션 연동' },
-          { keyword: '게임플레이', icon: 'swords', text: '게임플레이 기능 구현 보조' },
-          { keyword: '최적화', icon: 'gauge', text: '클라이언트 최적화 적용' },
-        ],
-      },
-    ],
-  },
-];
-
+import { getLandingCards } from '../lib/landing';
+import '../styles/landing.css';
+const cards = await getLandingCards();
+const middle = Math.floor(cards.length / 2);
 ---
-
-<BaseLayout title="프로필 — Son Junhyuck" description="Son Junhyuck의 이력, 역량, 활동을 정리한 게임 개발 포트폴리오" next={{ href: '/highlights/', title: '하이라이트', image: '/favicon2.png' }}>
-  <section class="intro-profile" aria-labelledby="intro-title">
-    <div class="container intro-profile-inner">
-      <div class="intro-profile-top">
-        <div class="intro-profile-copy">
-          <p class="eyebrow intro-role">GAME CLIENT DEVELOPER</p>
-          <h1 id="intro-title">부딪히고, 설계합니다.</h1>
-          <p class="intro-description">직접 해보며 문제를 이해하고, 반복되는 일을 자동화하는 것을 추구하는 개발자 <em>손준혁</em>입니다.</p>
-        </div>
-        <figure class="intro-portrait">
-          <img src="/profile.webp" alt="꽃밭에서 촬영한 손준혁 프로필 사진" width="900" height="1200" fetchpriority="high" />
-          <figcaption><span>SON JUNHYUCK</span>게임 클라이언트 개발</figcaption>
-        </figure>
-      </div>
+<BaseLayout title="Son Junhyuck — 포트폴리오" description="프로필, 하이라이트, 프로젝트에서 손준혁의 이력과 개발 경험을 둘러보세요.">
+  <section class="landing-shell container" data-landing data-active-id={cards[middle]?.id} aria-labelledby="landing-title">
+    <h1 id="landing-title" class="visually-hidden">손준혁 포트폴리오 — 둘러볼 페이지 선택</h1>
+    <nav class="landing-hand" aria-label="둘러볼 페이지 선택">
+      <ul class="landing-stage" data-landing-stage>
+        {cards.map((card, index) => <li class="landing-slot" style={{ '--slot': index - middle, '--depth': Math.abs(index - middle), '--order': index, 'z-index': cards.length - Math.abs(index - middle) }} data-landing-slot={index}>
+          <a class="landing-card" href={card.href} data-landing-card={card.id} data-title={card.title} style={{ '--image-fit': card.imageFit ?? 'cover', '--image-position': card.imagePosition ?? 'center' }}>
+            <div class="landing-media">
+              {card.image ? <img src={card.image.src} alt={card.image.alt} width="640" height="640" decoding="async" fetchpriority="high" /> : <span aria-hidden="true">{card.title}</span>}
+            </div>
+            <div class="landing-card-copy"><h2>{card.title}</h2><p>{card.description}</p></div>
+          </a>
+        </li>)}
+      </ul>
+    </nav>
+    <div class="landing-mobile-ui">
+      <p class="landing-selection" data-landing-status role="status" aria-live="polite" aria-atomic="true">{cards[middle]?.title} · {middle + 1} / {cards.length}</p>
+      <p class="landing-gesture-hint">좌우로 밀거나 옆 카드를 눌러 보세요.</p>
     </div>
   </section>
-
-  <div class="resume container">
-    <div class="resume-content">
-      <section id="experience" class="resume-section">
-        <p class="eyebrow">EXPERIENCE</p>
-        <h2>업무 경험</h2>
-        <div class="experience-list">
-          {experience.map((item) => (
-            <div class="experience-timeline">
-              <article class="experience-item">
-                <span class="timeline-dot" aria-hidden="true"></span>
-                <header class="resume-item-header">
-                  <div><h3>{item.company}</h3><p class="experience-role">{item.role}</p></div>
-                  <p class="resume-period"><span>{item.period}</span><span>{item.duration}</span></p>
-                </header>
-                <div class="project-contributions">
-                  {item.projects.map((project) => (
-                    <section class="contribution-group">
-                      <h4>{'href' in project ? <a class="contribution-project-link" href={project.href}>{project.name}<span aria-hidden="true">→</span></a> : project.name}</h4>
-                      <p>{project.description}</p>
-                      <ul class="contribution-cards" role="list">
-                        {project.contributions.map((contribution) => {
-                          const body = <>
-                            <div class="contribution-card-heading"><span class="contribution-icon" aria-hidden="true" set:html={contributionIcons[`../assets/icons/lucide/${contribution.icon}.svg`]} /><strong>{contribution.keyword}</strong></div>
-                            <p>{contribution.text}</p>
-                          </>;
-                          return 'href' in contribution
-                            ? <li class="contribution-card contribution-card-linked"><a class="contribution-card-link" href={contribution.href}>{body}<span class="contribution-card-arrow" aria-hidden="true">→</span></a></li>
-                            : <li class="contribution-card">{body}</li>;
-                        })}
-                      </ul>
-                    </section>
-                  ))}
-                </div>
-                <div class="experience-tech">
-                  <p>Tech Stack</p>
-                  <TagList tags={item.tech} label={`${item.company} 기술 스택`} />
-                </div>
-                {item.company === '보이저' && (
-                  <aside class="experience-reflection" aria-label="보이저 근무 회고">
-                    <p>라이브 서비스 유지보수와 빌드 파이프라인 작업을 경험하며, 개별 구현을 넘어 프로젝트 전체의 흐름을 보는 시야를 넓혔습니다. 신규 입사자 멘토링과 온보딩 가이드 작성을 통해 동료가 적응하고 함께 일할 수 있도록 돕는 방법도 배웠습니다.</p>
-                    <a class="detail-link" href="/reflections/voyager/">Voyager 근무 회고 읽기 →</a>
-                  </aside>
-                )}
-              </article>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section id="education" class="resume-section">
-        <p class="eyebrow">EDUCATION</p>
-        <h2>학력</h2>
-        <div class="grouped-info-card education-card">
-          <section class="info-group" aria-labelledby="degree-title">
-            <h3 id="degree-title">학위</h3>
-            <ul class="info-list">
-              <li>
-                <div><strong>석사</strong><span>계명대학교 대학원 : 컴퓨터공학과</span><span>컴퓨터 그래픽스 연구실 군중 시뮬레이션 연구</span></div>
-                <time>2021.08–2023.08 · 졸업</time>
-              </li>
-              <li>
-                <div><strong>학사</strong><span>계명대학교 : 게임모바일콘텐츠학과</span></div>
-                <time>2012.03–2020.08 · 졸업</time>
-              </li>
-            </ul>
-          </section>
-          <section class="info-group" aria-labelledby="research-title">
-            <h3 id="research-title">연구</h3>
-            <a class="research-row" href="https://doi.org/10.3390/app14083386" target="_blank" rel="noopener noreferrer" aria-label="연구 논문 Position-Based Formation Control Scheme for Crowds Using Short Range Distance 새 탭에서 열기">
-              <div><strong>Position-Based Formation Control Scheme for Crowds Using Short Range Distance</strong><span>Applied Sciences, 2024</span></div>
-              <span aria-hidden="true">↗</span>
-            </a>
-          </section>
-        </div>
-      </section>
-
-      <section id="activities" class="resume-section">
-        <p class="eyebrow">ACTIVITIES</p>
-        <h2>활동</h2>
-        <div class="grouped-info-card activity-card">
-          <section class="info-group" aria-labelledby="award-title">
-            <h3 id="award-title">수상</h3>
-            <div class="credential-row">
-              <div class="credential-main">
-                <div class="credential-heading"><strong>2014 한국과학기술창작대전 최우수상</strong><span class="status-badge">AWARD</span></div>
-                <p>JH Feeltware팀 (계명대)</p>
-                <p>Unity 3D 기반 모션 인식 기기와 HMD를 접목한 VR 체험형 우주 시뮬레이션 개발로 수상했습니다.</p>
-                <a class="button button-outline activity-link" href="https://www.korea.kr/briefing/pressReleaseView.do?newsId=156054488#pressRelease" target="_blank" rel="noopener noreferrer" aria-label="2014 한국과학기술창작대전 수상 관련 기사 새 탭에서 열기">관련 기사 보기 <span aria-hidden="true">↗</span></a>
-              </div>
-              <time>2014.12</time>
-            </div>
-          </section>
-          <section class="info-group" aria-labelledby="certification-title">
-            <h3 id="certification-title">국가기술</h3>
-            <div class="credential-row compact">
-              <div class="credential-main">
-                <div class="credential-heading"><strong>정보처리산업기사</strong><span class="status-badge">CERTIFIED</span></div>
-                <p>국가기술자격</p>
-              </div>
-              <time>2016.05</time>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <nav class="profile-destinations" aria-label="다음으로 둘러보기">
-        <a class="button button-primary" href="/highlights/">하이라이트 구경하기 →</a>
-        <a class="button button-primary" href="/projects/">프로젝트 구경하기 →</a>
-      </nav>
-
-      <div class="intro-connect">
-        <p class="eyebrow">CONNECT</p>
-        <div class="intro-connect-links">
-          <a href="https://github.com/SonJunHyuck" target="_blank" rel="noopener noreferrer" aria-label="손준혁 GitHub 프로필 새 탭에서 열기"><img src="/icons/github.svg" alt="" />GitHub <span aria-hidden="true">↗</span></a>
-          <a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="손준혁 Notion 개발일지를 새 탭에서 열기"><img src="/icons/notion.svg" alt="" />Notion <span aria-hidden="true">↗</span></a>
-          <a href="https://www.canva.com/design/DAHICLybg4Y/dWylZ6Ir57iAQCFhZH8y9Q/view?utlId=ha95d026d35" target="_blank" rel="noopener noreferrer" aria-label="손준혁 Canva 포트폴리오 새 탭에서 열기"><img src="/icons/canva.svg" alt="" />Canva <span aria-hidden="true">↗</span></a>
-        </div>
-      </div>
-    </div>
-  </div>
 </BaseLayout>
+<script>
+  import '../scripts/landing';
+</script>

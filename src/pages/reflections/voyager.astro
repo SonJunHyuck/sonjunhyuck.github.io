@@ -5,10 +5,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 <BaseLayout
   title="Voyager 근무 회고 — 구현에서 프로젝트 전체로"
   description="라이브 서비스와 빌드 파이프라인 협업, 멘토링과 온보딩 가이드를 통해 구현 너머의 프로젝트 흐름을 배운 기록"
-  next={{ href: '/#experience', title: '프로필 업무 경험', image: '/profile.webp' }}
+  next={{ href: '/profile/#experience', title: '프로필 업무 경험', image: '/profile.webp' }}
 >
   <article class="reflection-detail container">
-    <a class="back-link" href="/#experience">← 프로필의 업무 경험으로</a>
+    <a class="back-link" href="/profile/#experience">← 프로필의 업무 경험으로</a>
 
     <header class="reflection-header">
       <p class="eyebrow">WORK REFLECTION</p>
@@ -55,7 +55,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </div>
 
     <footer class="reflection-footer">
-      <a class="button button-outline" href="/#experience">프로필로 돌아가기 <span aria-hidden="true">→</span></a>
+      <a class="button button-outline" href="/profile/#experience">프로필로 돌아가기 <span aria-hidden="true">→</span></a>
     </footer>
   </article>
 </BaseLayout>
