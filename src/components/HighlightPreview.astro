@@ -32,7 +32,7 @@ const { entries } = Astro.props;
         {entry.project && <a class="button button-primary" href={`/projects/${entry.project.id}/${entry.section ? `#${entry.section}` : ''}`}>이 프로젝트 전체 보기 →</a>}
         {entry.notionUrl && <a class="button button-outline" href={entry.notionUrl} target="_blank" rel="noopener noreferrer">Notion에서 자세히 보기 ↗</a>}
       </footer>}
-      {(entry.problem || entry.solution) && <p class="highlight-auto-summary-note">문제·해결: AI 자동 요약</p>}
+      <p class="highlight-auto-summary-note">AI 요약</p>
     </div>
   </article>)}
 </dialog>
