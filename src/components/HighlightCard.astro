@@ -11,7 +11,7 @@ const { entry } = Astro.props;
     </div>
     <div class="highlight-card-copy">
       <h2>{entry.title}</h2>
-      <p class="highlight-summary">{entry.summary}</p>
+      <p class="highlight-summary">{entry.solution ?? entry.summary}</p>
       <ul class="tag-list highlight-tags" aria-label="태그">
         {entry.project && <li class="highlight-project-tag">프로젝트: {entry.project.title}</li>}
         {entry.tags.map((tag) => <li>{tag}</li>)}

@@ -1,4 +1,6 @@
 ---
+problem: "개인 프로젝트 작업 환경을 한 PC에 모으고, 외부에서도 해당 환경에 접근할 수 있게 구성하려는 목적"
+solution: "Tailscale·SSH를 이용한 원격 접속 절차를 확인하고, 개인 프로젝트 작업 환경을 중앙화하는 구성을 검토함"
 title: "원격 개발 환경 구성 검토"
 date: 2026-10-26
 notionUrl: "https://sonnysmile.notion.site/405ed1cbaf6c802a99a5ddb95d7270a2"

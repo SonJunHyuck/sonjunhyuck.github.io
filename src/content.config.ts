@@ -73,6 +73,8 @@ const highlights = defineCollection({
     date: z.coerce.date(),
     notionUrl: z.string().url().optional(),
     summary: z.string().trim().min(1).optional(),
+    problem: z.string().trim().min(1).optional(),
+    solution: z.string().trim().min(1).optional(),
     project: z.string().trim().min(1).optional(),
     source: z.object({ project: z.string().trim().min(1), section: z.string().trim().min(1) }).optional(),
     lettering: z.string().trim().min(1),

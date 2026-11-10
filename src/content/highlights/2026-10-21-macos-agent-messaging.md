@@ -1,4 +1,5 @@
 ---
+solution: "터미널 패널에 두 AI 에이전트를 나눠 실행하고, 역할·메시지 규칙을 기록해 작업 요청 전달 흐름을 구성함"
 title: "macOS에서 AI 에이전트 간 메시징 환경 구성"
 date: 2026-10-21
 notionUrl: "https://sonnysmile.notion.site/400ed1cbaf6c807996bcc69a4e35c021"

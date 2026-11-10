@@ -1,4 +1,5 @@
 ---
+solution: "원본 8단계를 Unity 병렬 작업으로 이식해 결과를 테스트했으며, 대량 렌더링·캐릭터 애니메이션 확장은 예정"
 title: "군중 대형 제어 시뮬레이션, Unity 리뉴얼 시작"
 date: 2026-10-29
 notionUrl: "https://sonnysmile.notion.site/408ed1cbaf6c810b8c48f9aac8ceb10c"

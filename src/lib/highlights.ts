@@ -26,6 +26,8 @@ export interface Highlight {
   title: string;
   date: string;
   summary: string;
+  problem?: string;
+  solution?: string;
   tags: string[];
   lettering: string;
   project?: { id: string; title: string };
@@ -102,6 +104,7 @@ async function buildIndex() {
       .replace(/\bhref="#([^"]+)"/g, (match, value: string) => ids.has(value) ? `href="#${ids.get(value)}"` : match)
       .replace(/\b(aria-labelledby|aria-describedby)="([^"]+)"/g, (_, attr: string, value: string) => `${attr}="${value.split(/\s+/).map((key) => ids.get(key) ?? key).join(' ')}"`);
     return { id, title: data.title, date: data.date.toISOString().slice(0, 10), summary: data.summary ?? firstLine.replace(/\s+/g, ' '),
+      problem: data.problem, solution: data.solution,
       tags: data.tags, lettering: data.lettering, project: project ? { id: project.id, title: project.data.title } : undefined,
       section: section?.anchor, source: data.source, image, imageAlt, html: previewHtml, notionUrl: data.notionUrl };
   }));

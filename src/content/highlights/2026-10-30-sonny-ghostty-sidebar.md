@@ -1,4 +1,6 @@
 ---
+problem: "여러 에이전트를 나란히 띄운 Ghostty 터미널 안에서, 현재 작업 폴더의 파일 구조를 바로 확인하려는 목적"
+solution: "Ghostty를 포크해 작업 폴더를 보여 주는 탐색기를 추가하고, 실제 설치 앱에서 드러난 판별 버그를 수정함"
 title: "Sonny Ghostty — 터미널 안 파일 탐색기 사이드바"
 date: 2026-10-30
 notionUrl: "https://sonnysmile.notion.site/409ed1cbaf6c804ea1a4fb8c92d93e2a"
