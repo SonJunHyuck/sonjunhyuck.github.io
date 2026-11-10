@@ -53,7 +53,7 @@ html[data-quickview-open] { overflow: hidden; }
 .highlight-preview-copy > .highlight-tags { margin-bottom: 12px; }
 .highlight-preview h2 { margin: 16px 0 24px; font-size: 28px; line-height: 1.35; letter-spacing: -.04em; }
 .highlight-auto-summary { margin-bottom: 24px; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--body-copy); font-size: 14px; line-height: 1.7; }
-.highlight-auto-summary-note { margin: 0 0 12px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.highlight-auto-summary-note { margin: 16px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; text-align: right; }
 .highlight-auto-summary dl { display: grid; gap: 10px; margin: 0; }
 .highlight-auto-summary dl > div { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px; align-items: baseline; }
 .highlight-auto-summary dt { color: var(--ink); font-weight: 800; }
