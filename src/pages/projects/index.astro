@@ -5,11 +5,12 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import IntroHex from '../../components/IntroHex.astro';
 import ProfileCharacter from '../../components/ProfileCharacter.astro';
 import ProjectQuickView from '../../components/ProjectQuickView.astro';
-import { getOrderedProjects } from '../../lib/projects';
+import { getOrderedProjects, getProjectListDestination } from '../../lib/projects';
 
-const projects = await getOrderedProjects();
+const projects = await getOrderedProjects('projects');
+const next = await getProjectListDestination('ai');
 ---
-<BaseLayout title="Projects — Son Junhyuck" description="업무와 개인 프로젝트를 소개합니다." next={{ href: '/profile/', title: '프로필', image: '/profile.webp' }}>
+<BaseLayout title="Projects — Son Junhyuck" description="업무와 개인 프로젝트를 소개합니다." {next}>
   <h1 class="visually-hidden">프로젝트</h1>
   <section class="container project-work-style" aria-labelledby="work-style-heading">
     <h2 id="work-style-heading" class="visually-hidden">이렇게 일합니다</h2>

@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { getProjectSection } from '../lib/projects';
 import { NOTION_DEVLOG_URL } from '../config/links';
 import { getProjectGroupNavLabel, projectGroups } from '../config/projectGroups';
 
@@ -8,7 +9,9 @@ const detailSlug = currentPath.match(/^\/projects\/([^/]+)\/?$/)?.[1];
 const detailProject = detailSlug
   ? (await getCollection('projects', ({ data }) => !data.draft)).find((project) => project.id === detailSlug)
   : undefined;
-const activeProjectGroup = detailProject?.data.projectGroup;
+const isAiSection = currentPath === '/ai/' || (detailProject && getProjectSection(detailProject.data) === 'ai');
+const isProjectSection = currentPath.startsWith('/projects/') && !isAiSection;
+const activeProjectGroup = isProjectSection ? detailProject?.data.projectGroup : undefined;
 const isCurrent = (section?: string) => {
   if (section === 'profile') return currentPath === '/profile/';
   return activeProjectGroup === section;
@@ -27,7 +30,7 @@ const isCurrent = (section?: string) => {
           <li><a href="/profile/" aria-current={isCurrent('profile') ? 'page' : undefined}><span class="nav-label">프로필</span></a></li>
           <li><a href="/highlights/" aria-current={currentPath === '/highlights/' ? 'page' : undefined}><span class="nav-label">하이라이트</span></a></li>
           <li class="project-navigation">
-            <a href="/projects/" class:list={['project-toggle', { 'is-current': currentPath.startsWith('/projects/') }]} aria-current={currentPath === '/projects/' ? 'page' : undefined}>
+            <a href="/projects/" class:list={['project-toggle', { 'is-current': isProjectSection }]} aria-current={currentPath === '/projects/' ? 'page' : undefined}>
               <span class="nav-label">프로젝트</span>
             </a>
             <ul id="project-navigation-links" class="project-dropdown" hidden>
@@ -36,6 +39,7 @@ const isCurrent = (section?: string) => {
               ))}
             </ul>
           </li>
+          <li><a href="/ai/" aria-current={isAiSection ? 'page' : undefined}><span class="nav-label">AI 협업</span></a></li>
           <li><a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="개발일지를 Notion에서 새 탭으로 열기"><span class="nav-label">개발일지 ↗</span></a></li>
         </ul>
       </nav>

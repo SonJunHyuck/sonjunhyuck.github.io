@@ -1,12 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getProjectListDestination } from '../../lib/projects';
 import HighlightCard from '../../components/HighlightCard.astro';
 import HighlightPreview from '../../components/HighlightPreview.astro';
 import { HIGHLIGHT_PAGE_SIZE, getHighlightIndex } from '../../lib/highlights';
 import '../../styles/highlights.css';
 const { entries, groups } = await getHighlightIndex();
+const next = await getProjectListDestination('projects');
 ---
-<BaseLayout title="하이라이트 — Son Junhyuck" description="프로젝트의 주요 구현과 짧은 생각, 작업 기록을 모았습니다." next={{ href: '/projects/', title: '프로젝트 목록', image: '/images/projects/portfolio-website/card.webp' }} nextRequires="highlights-complete">
+<BaseLayout title="하이라이트 — Son Junhyuck" description="프로젝트의 주요 구현과 짧은 생각, 작업 기록을 모았습니다." {next} nextRequires="highlights-complete">
   <section class="container highlights-section" aria-label="하이라이트 목록">
     <h1 class="visually-hidden">하이라이트</h1>
     <div class="highlight-filter-bar">

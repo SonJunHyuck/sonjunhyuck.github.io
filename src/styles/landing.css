@@ -1,7 +1,7 @@
 .landing-shell { --card-width: clamp(210px, 25vw, 280px); --fan-step: 260px; display: flex; flex-direction: column; justify-content: center; min-height: calc(100svh - 181px); padding-block: 36px; }
 .landing-hand { min-width: 0; }
 .landing-stage { position: relative; display: block; width: 100%; height: 540px; padding: 0; margin: 0; list-style: none; touch-action: pan-y pinch-zoom; --drag: 0px; --drag-angle: 0deg; }
-.landing-slot { --angle: calc(var(--slot) * 11deg + var(--drag-angle)); position: absolute; top: 50%; left: 50%; width: var(--card-width); transform-origin: 50% 85%; transform: translate(-50%, -50%) translate(calc(var(--slot) * var(--fan-step) + var(--nudge, 0px) + var(--drag)), calc(var(--depth) * 28px)) rotate(var(--angle)); transition: transform .36s cubic-bezier(.22,.68,.22,1), opacity .2s; animation: landing-deal .7s cubic-bezier(.22,.68,.22,1) backwards; animation-delay: calc(var(--order) * 80ms); }
+.landing-slot { --angle: calc(var(--slot) * var(--fan-angle, 11deg) + var(--drag-angle)); position: absolute; top: 50%; left: 50%; width: var(--card-width); transform-origin: 50% 85%; transform: translate(-50%, -50%) translate(calc(var(--slot) * var(--fan-step) + var(--nudge, 0px) + var(--drag)), calc(var(--depth) * 28px)) rotate(var(--angle)); transition: transform .36s cubic-bezier(.22,.68,.22,1), opacity .2s; animation: landing-deal .7s cubic-bezier(.22,.68,.22,1) backwards; animation-delay: calc(var(--order) * 80ms); }
 .landing-card { display: block; padding: 0; overflow: hidden; border: 1px solid var(--card-line); border-radius: 10px; background: var(--surface); color: var(--ink); box-shadow: 0 18px 42px var(--shadow); transform-origin: 50% 85%; transition: transform .25s ease, box-shadow .25s, border-color .2s; -webkit-tap-highlight-color: transparent; }
 .landing-media { display: grid; place-items: center; width: 100%; aspect-ratio: 1; overflow: hidden; background: var(--paper); }
 .landing-media img { display: block; width: 100%; height: 100%; object-fit: var(--image-fit); object-position: var(--image-position); }
@@ -17,6 +17,14 @@
 .landing-stage[data-dragging] .landing-slot { transition: none; }
 .landing-mobile-ui { display: none; }
 @keyframes landing-deal { from { opacity: 0; transform: translate(-50%, -20%) rotate(0deg) scale(.84); } to { opacity: 1; } }
+@media (min-width: 681px) and (hover: hover) {
+  .landing-shell { --card-width: clamp(220px, 30vw, 300px); --fan-angle: 2deg; }
+  /* Keep every caption within the exposed part of its overlapping card. */
+  .landing-card-copy { margin-left: var(--copy-inset-left, 0px); margin-right: var(--copy-inset-right, 0px); padding-inline: 10px; transition: margin .25s ease; }
+  .landing-card h2 { font-size: clamp(18px, calc(var(--fan-step) * .13), 26px); }
+  .landing-card p { font-size: clamp(9px, calc(var(--fan-step) * .07), 14px); }
+  .landing-slot[data-raised] .landing-card-copy, .landing-card:focus-visible .landing-card-copy { margin-inline: 0; }
+}
 @media (max-width: 680px), (hover: none) {
   .landing-shell { --card-width: min(68vw, 260px); --fan-step: 138px; min-height: calc(100svh - 153px); padding-block: 16px 28px; }
   .landing-hand { overflow: clip; margin-inline: -16px; }
@@ -31,5 +39,5 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .landing-slot { animation: none; transition: none; }
-  .landing-card { transition: none; }
+  .landing-card, .landing-card-copy { transition: none; }
 }

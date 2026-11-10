@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import ProjectQuickView from '../../components/ProjectQuickView.astro';
+import { getOrderedProjects } from '../../lib/projects';
+
+const projects = await getOrderedProjects('ai');
+---
+<BaseLayout title="AI 협업 — Son Junhyuck" description="AI와 함께 만든 프로젝트를 소개합니다." next={{ href: '/profile/', title: '프로필', image: '/profile.webp' }}>
+  <h1 class="visually-hidden">AI 협업</h1>
+  <section class="container projects-section project-list-section ai-list-section" aria-label="AI 협업 프로젝트 목록">
+    <div class="project-list-grid project-list-surface">
+      {projects.map((project) => <ProjectCard {project} />)}
+    </div>
+  </section>
+  <ProjectQuickView {projects} />
+</BaseLayout>
+
+<style>
+  .ai-list-section { padding-top: 40px; }
+  @media (max-width: 680px) { .ai-list-section { padding-top: 24px; } }
+</style>

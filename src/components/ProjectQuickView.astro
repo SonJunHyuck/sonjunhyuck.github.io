@@ -10,7 +10,7 @@ const groupLabel = { work: '업무', games: '게임', research: '연구', ai: 'A
   <button class="quickview-close" type="button" data-quickview-close aria-label="미리보기 닫기"><ControlIcon name="close" /></button>
   {projects.map((project) => {
     const { data } = project;
-    const tags = [...(data.aiCollaboration ? ['AI 협업'] : []), ...data.technologies.map(({ name }) => name)];
+    const tags = data.technologies.map(({ name }) => name);
     const highlights = getHighlights(project);
     const facts = [
       ['기간', data.period],
@@ -32,7 +32,7 @@ const groupLabel = { work: '업무', games: '게임', research: '연구', ai: 'A
           {data.cardLabel && <p class="quickview-summary">{data.summary}</p>}
           {data.cardContribution && <section class="quickview-section"><h3>담당</h3><p>{data.cardContribution}</p></section>}
           {highlights.length > 0 && <section class="quickview-section"><h3>주요 구현</h3><ul>{highlights.map((item) => <li>{item}</li>)}</ul></section>}
-          {tags.length > 0 && <ul class="tag-list quickview-tags" aria-label="기술 스택">{tags.map((tag, index) => <li class:list={{ 'project-ai-tag': data.aiCollaboration && index === 0 }}>{tag}</li>)}</ul>}
+          {tags.length > 0 && <ul class="tag-list quickview-tags" aria-label="기술 스택">{tags.map((tag) => <li>{tag}</li>)}</ul>}
           <div class="quickview-actions"><a class="button button-primary quickview-detail" href={`/projects/${project.id}/`}>상세 보기 <span aria-hidden="true">→</span></a></div>
         </div>
       </article>
@@ -140,7 +140,6 @@ const groupLabel = { work: '업무', games: '게임', research: '연구', ai: 'A
   .quickview-section ul { margin: 0 0 18px; padding-left: 18px; color: var(--body-copy); font-size: 14px; line-height: 1.7; }
   .quickview-tags { margin-bottom: 22px; }
   .quickview-tags li { border-radius: 999px; }
-  .quickview-tags .project-ai-tag { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); font-weight: 800; }
   /* Keeps the detail button reachable while the summary scrolls. */
   .quickview-actions { position: sticky; bottom: 0; padding: 12px 0 24px; background: linear-gradient(transparent, var(--paper) 12px); }
   .quickview-detail { justify-content: center; width: 100%; }

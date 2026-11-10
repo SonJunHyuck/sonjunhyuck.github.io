@@ -1,8 +1,8 @@
-import type { Project } from '../lib/projects';
+import type { ProjectSection } from '../lib/projects';
 
 export type LandingImageRule =
   | { kind: 'static'; src: string; alt: string }
-  | { kind: 'first-project'; group?: Project['data']['projectGroup'] }
+  | { kind: 'first-project'; section: ProjectSection }
   | { kind: 'latest-highlight-image' };
 
 export interface LandingCard {
@@ -28,6 +28,10 @@ export const landingCards: LandingCard[] = [
   },
   {
     id: 'projects', title: '프로젝트', description: '프로젝트 전체 이야기', href: '/projects/',
-    image: { kind: 'first-project' }, imageFit: 'contain',
+    image: { kind: 'first-project', section: 'projects' }, imageFit: 'contain',
+  },
+  {
+    id: 'ai', title: 'AI 협업', description: 'AI와 함께 만든 프로젝트', href: '/ai/',
+    image: { kind: 'first-project', section: 'ai' }, imageFit: 'contain',
   },
 ];

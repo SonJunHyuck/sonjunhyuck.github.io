@@ -2,7 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getNextProject } from '../lib/projects';
+import { getNextProject, getProjectSection } from '../lib/projects';
 import DetailGauge from './DetailGauge.astro';
 import '../styles/project-story.css';
 
@@ -16,6 +16,8 @@ interface Props {
 
 const { project, Content } = Astro.props;
 const { data } = project;
+const listHref = getProjectSection(data) === 'ai' ? '/ai/' : '/projects/';
+const listLabel = getProjectSection(data) === 'ai' ? 'AI 협업 목록' : '프로젝트 목록';
 const isPortfolio = project.id === 'portfolio-website';
 const isProjectR = project.id === 'project-r';
 const isInspixWorld = project.id === 'inspix-world';
@@ -29,7 +31,7 @@ const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || i
 ---
 <BaseLayout title={`${data.title} — Son Junhyuck`} description={data.summary} {next}>
   <article class:list={["project-detail", "container", { "case-study-detail": usesCaseStudyLayout, "inspix-world-detail": isInspixWorld, "bfx-detail": isBfx, "portfolio-detail": isPortfolio }]}>
-    <a class="back-link" href="/projects/">← 돌아가기</a>
+    <a class="back-link" href={listHref}>← 돌아가기</a>
     <header><p class="eyebrow">{data.category === 'game' ? 'GAME' : data.category === 'graphics' ? 'GRAPHICS' : 'AI 활용'} PROJECT {data.isExample && '· EXAMPLE'}</p><h1>{data.title}</h1><p class="lead">{isBfx && data.description.startsWith(bfxLeadHighlight) ? <><span class="lead-highlight">{bfxLeadHighlight}</span>{data.description.slice(bfxLeadHighlight.length)}</> : data.description}</p></header>
     {data.thumbnail && <img class="project-cover" src={data.thumbnail} alt={`${data.title} 대표 이미지`} />}
     <dl class="facts">
@@ -51,7 +53,7 @@ const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || i
     <section class:list={["story", "project-story", { "case-study-story": usesCaseStudyLayout }]}><Content /></section>
     <div class="links">{data.repositoryUrl && <a class="button button-primary" href={data.repositoryUrl} target="_blank" rel="noreferrer">GitHub ↗</a>}{data.playableUrl && <a class="button button-outline" href={data.playableUrl} target="_blank" rel="noreferrer">실행·다운로드 ↗</a>}{data.notionUrl && <a class="button button-outline" href={data.notionUrl} target="_blank" rel="noreferrer">Notion 기록 ↗</a>}{data.externalLinks.map((link) => <a class="button button-outline" href={link.url} target="_blank" rel="noreferrer">{link.label} ↗</a>)}</div>
     <nav class="detail-pager" aria-label="프로젝트 이동">
-      <a class="button button-outline" href="/projects/">← 프로젝트 목록</a>
+      <a class="button button-outline" href={listHref}>← {listLabel}</a>
       {hasNextProject && <a class="button button-primary" href={next.href}>다음 프로젝트: {next.title} <span aria-hidden="true">→</span></a>}
     </nav>
   </article>

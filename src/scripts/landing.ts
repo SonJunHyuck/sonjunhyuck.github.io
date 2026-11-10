@@ -16,12 +16,15 @@ if (root && stage) {
   const wrap = (index: number) => (index + cards.length) % cards.length;
   const update = () => {
     const mobile = touchLayout.matches;
+    let overlap = 0;
     if (!mobile && slots[0]) {
       const width = slots[0].offsetWidth;
-      stage.style.setProperty('--fan-step', `${Math.min(260, Math.max(80, (stage.clientWidth - width) * .84 / Math.max(1, cards.length - 1)))}px`);
+      const step = Math.min(260, Math.max(80, (stage.clientWidth - width - 40) / Math.max(1, cards.length - 1)));
+      overlap = Math.max(0, width - step);
+      stage.style.setProperty('--fan-step', `${step}px`);
     } else stage.style.removeProperty('--fan-step');
     slots.forEach((slot, index) => {
-      let distance = index - (mobile ? active : Math.floor(cards.length / 2));
+      let distance = index - (mobile ? active : (cards.length - 1) / 2);
       if (mobile) {
         if (distance > cards.length / 2) distance -= cards.length;
         if (distance < -cards.length / 2) distance += cards.length;
@@ -29,8 +32,10 @@ if (root && stage) {
       const isRaised = mobile ? distance === 0 : index === raised;
       slot.style.setProperty('--slot', String(distance));
       slot.style.setProperty('--depth', String(Math.abs(distance)));
+      slot.style.setProperty('--copy-inset-left', `${!mobile && distance > 0 ? overlap : 0}px`);
+      slot.style.setProperty('--copy-inset-right', `${!mobile && distance < 0 ? overlap : 0}px`);
       slot.style.setProperty('--nudge', `${!mobile && raised !== null && index !== raised ? Math.sign(index - raised) * 16 : 0}px`);
-      slot.style.zIndex = String(isRaised ? cards.length + 10 : cards.length - Math.abs(distance));
+      slot.style.zIndex = String(isRaised ? cards.length + 10 : cards.length - Math.floor(Math.abs(distance)));
       slot.toggleAttribute('data-raised', isRaised);
     });
     root.dataset.activeId = cards[active]?.dataset.landingCard ?? '';
