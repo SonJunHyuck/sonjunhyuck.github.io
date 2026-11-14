@@ -11,7 +11,7 @@ const fanCenter = (cards.length - 1) / 2;
     <h1 id="landing-title" class="visually-hidden">손준혁 포트폴리오 — 둘러볼 페이지 선택</h1>
     <nav class="landing-hand" aria-label="둘러볼 페이지 선택">
       <ul class="landing-stage" data-landing-stage>
-        {cards.map((card, index) => <li class="landing-slot" style={{ '--slot': index - fanCenter, '--depth': Math.abs(index - fanCenter), '--order': index, 'z-index': cards.length - Math.floor(Math.abs(index - fanCenter)) }} data-landing-slot={index}>
+        {cards.map((card, index) => <li class="landing-slot" style={{ '--slot': index - fanCenter, '--depth': Math.abs(index - fanCenter), '--order': index, 'z-index': index === middle ? cards.length + 10 : cards.length - Math.floor(Math.abs(index - fanCenter)) }} data-landing-slot={index} data-raised={index === middle}>
           <a class="landing-card" href={card.href} data-landing-card={card.id} data-title={card.title} style={{ '--image-fit': card.imageFit ?? 'cover', '--image-position': card.imagePosition ?? 'center' }}>
             <div class="landing-media">
               {card.image ? <img src={card.image.src} alt={card.image.alt} width="640" height="640" decoding="async" fetchpriority="high" /> : <span aria-hidden="true">{card.title}</span>}

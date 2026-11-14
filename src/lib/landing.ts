@@ -13,5 +13,11 @@ export async function getLandingCards() {
     const highlight = entries.find((entry) => entry.image);
     return highlight?.image ? { src: highlight.image, alt: highlight.imageAlt } : undefined;
   };
-  return landingCards.map((card) => ({ ...card, image: resolveImage(card.image) }));
+  const orderedCards = [...landingCards];
+  const profileIndex = orderedCards.findIndex(({ id }) => id === 'profile');
+  if (profileIndex >= 0) {
+    const [profile] = orderedCards.splice(profileIndex, 1);
+    orderedCards.splice(Math.floor(landingCards.length / 2), 0, profile);
+  }
+  return orderedCards.map((card) => ({ ...card, image: resolveImage(card.image) }));
 }

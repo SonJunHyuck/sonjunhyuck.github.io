@@ -6,8 +6,8 @@ if (root && stage) {
   const status = root.querySelector<HTMLElement>('[data-landing-status]');
   const touchLayout = matchMedia('(max-width: 680px), (hover: none)');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  let active = Math.floor(cards.length / 2);
-  let raised: number | null = null;
+  let active = Math.max(0, cards.findIndex((card) => card.dataset.landingCard === root.dataset.activeId));
+  let raised: number | null = active;
   let keyboardFocus = false;
   let suppressClickUntil = 0;
   let navigating = false;
@@ -54,7 +54,7 @@ if (root && stage) {
   stage.addEventListener('pointermove', (event) => {
     if (event.pointerType === 'mouse' && !touchLayout.matches) {
       const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('[data-landing-card]') : null;
-      if (link && !navigating) { raised = cards.indexOf(link); update(); }
+      if (link && !navigating) { select(cards.indexOf(link)); }
     }
     if (!gesture || gesture.id !== event.pointerId) return;
     gesture.dx = event.clientX - gesture.x;
@@ -70,7 +70,7 @@ if (root && stage) {
   stage.addEventListener('pointerleave', () => {
     if (touchLayout.matches || navigating) return;
     const focused = cards.indexOf(document.activeElement as HTMLAnchorElement);
-    raised = focused >= 0 ? focused : null;
+    raised = focused >= 0 ? focused : active;
     update();
   });
   stage.addEventListener('pointerdown', (event) => {
@@ -95,7 +95,7 @@ if (root && stage) {
   });
   stage.addEventListener('focusout', (event) => {
     if (event.relatedTarget instanceof Node && stage.contains(event.relatedTarget)) return;
-    raised = null;
+    raised = active;
     update();
   });
   stage.addEventListener('keydown', (event) => {
