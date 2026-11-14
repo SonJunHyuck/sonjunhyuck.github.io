@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TagList from '../../components/TagList.astro';
+import { mottos, renderMotto } from '../../data/mottos';
 import { NOTION_DEVLOG_URL } from '../../config/links';
 
 const contributionIcons = import.meta.glob<string>('../../assets/icons/lucide/*.svg', { eager: true, query: '?raw', import: 'default' });
@@ -58,13 +59,37 @@ const experience = [
 ---
 
 <BaseLayout title="프로필 — Son Junhyuck" description="Son Junhyuck의 이력, 역량, 활동을 정리한 게임 개발 포트폴리오" next={{ href: '/highlights/', title: '하이라이트', image: '/favicon2.png' }}>
+  <Fragment slot="head">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400&display=swap" rel="stylesheet" />
+  </Fragment>
   <section class="intro-profile" aria-labelledby="intro-title">
     <div class="container intro-profile-inner">
       <div class="intro-profile-top">
         <div class="intro-profile-copy">
           <p class="eyebrow intro-role">GAME CLIENT DEVELOPER</p>
-          <h1 id="intro-title">부딪히고, 설계합니다.</h1>
-          <p class="intro-description">직접 해보며 문제를 이해하고, 반복되는 일을 자동화하는 것을 추구하는 개발자 <em>손준혁</em>입니다.</p>
+          <h1 id="intro-title" class="visually-hidden">손준혁 프로필</h1>
+          <div class="profile-mottos" data-profile-mottos>
+            {mottos.map((motto, index) => <blockquote aria-hidden={index !== 0 ? 'true' : undefined} set:html={renderMotto(motto)} />)}
+          </div>
+          <script is:inline>
+            (() => {
+              const container = document.currentScript.previousElementSibling;
+              const quotes = [...container.children];
+              const selectMotto = () => {
+                const selected = Math.floor(Math.random() * quotes.length);
+                quotes.forEach((quote, index) => {
+                  if (index === selected) quote.removeAttribute('aria-hidden');
+                  else quote.setAttribute('aria-hidden', 'true');
+                });
+              };
+              selectMotto();
+              window.addEventListener('pageshow', (event) => {
+                if (event.persisted) selectMotto();
+              });
+            })();
+          </script>
         </div>
         <figure class="intro-portrait">
           <img src="/profile.webp" alt="꽃밭에서 촬영한 손준혁 프로필 사진" width="900" height="1200" fetchpriority="high" />
