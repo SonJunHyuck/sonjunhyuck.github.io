@@ -38,6 +38,14 @@ export interface Highlight {
   html: string;
   notionUrl?: string;
 }
+export function getHighlightDetailHref(entry: Highlight): string {
+  if (!entry.project) return entry.notionUrl ?? `/highlights/?h=${entry.id}`;
+  if (entry.project.id === 'project-r' || entry.project.id === 'inspix-world') {
+    const anchor = ({ '이모트': '콘텐츠', '상점-ui': 'ui' } as Record<string, string>)[entry.section ?? ''] ?? entry.section ?? entry.project.id;
+    return `/experience/voyager/#${anchor}`;
+  }
+  return `/projects/${entry.project.id}/${entry.section ? `#${entry.section}` : ''}`;
+}
 export interface HighlightGroup { key: string; tag: string | null; ids: string[]; }
 export interface HighlightPageData { key: string; page: number; html: string; }
 

@@ -59,6 +59,7 @@ const projects = defineCollection({
       url: z.string().url(),
     })).default([]),
     isExample: z.boolean().default(false),
+    hiddenFromProjects: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),
 });

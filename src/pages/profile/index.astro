@@ -15,22 +15,22 @@ const experience = [
     projects: [
       {
         name: 'Project R',
-        href: '/projects/project-r/',
+        href: '/experience/voyager/#project-r',
         description: 'Unity 기반 메타버스 소셜 게임 개발 참여',
         contributions: [
-          { keyword: '빌드·배포', icon: 'workflow', text: 'Jenkins를 활용한 클라이언트 빌드·배포 자동화', href: '/projects/project-r/#빌드-자동화' },
-          { keyword: '인게임 콘텐츠', icon: 'network', text: '네트워크 동기화를 포함한 감정표현 기능 구현', href: '/projects/project-r/#이모트' },
-          { keyword: 'UI', icon: 'panels-top-left', text: 'Popup UI / HUD 기능 구현', href: '/projects/project-r/#상점-ui' },
+          { keyword: '빌드·배포', icon: 'workflow', text: 'Jenkins를 활용한 클라이언트 빌드·배포 자동화', href: '/experience/voyager/#빌드-자동화' },
+          { keyword: '인게임 콘텐츠', icon: 'network', text: '네트워크 동기화를 포함한 감정표현 기능 구현', href: '/experience/voyager/#콘텐츠' },
+          { keyword: 'UI', icon: 'panels-top-left', text: 'Popup UI / HUD 기능 구현', href: '/experience/voyager/#ui' },
         ],
       },
       {
         name: 'InspixWorld',
-        href: '/projects/inspix-world/',
+        href: '/experience/voyager/#inspix-world',
         description: 'Unity 기반 메타버스 소셜 게임 라이브서비스 유지보수',
         contributions: [
-          { keyword: '라이브 서비스 운영', icon: 'bug', text: '라이브 서비스 이슈 분석·수정 및 업데이트 대응', href: '/projects/inspix-world/#라이브-이슈-대응' },
-          { keyword: '협업·조율', icon: 'list-checks', text: '팀원과 수정 공수를 검토하고, 이슈 중요도와 함께 종합해 파트너사와 버전별 수정·업데이트 범위를 조율', href: '/projects/inspix-world/#라이브-이슈-대응' },
-          { keyword: '문서화', icon: 'book-open', text: '운영 중 축적한 경험과 신규 투입 인원을 위한 가이드 작성', href: '/projects/inspix-world/#협업-및-문서화' },
+          { keyword: '라이브 서비스 운영', icon: 'bug', text: '라이브 서비스 이슈 분석·수정 및 업데이트 대응', href: '/experience/voyager/#라이브-이슈-대응' },
+          { keyword: '협업·조율', icon: 'list-checks', text: '팀원과 수정 공수를 검토하고, 이슈 중요도와 함께 종합해 파트너사와 버전별 수정·업데이트 범위를 조율', href: '/experience/voyager/#라이브-이슈-대응' },
+          { keyword: '문서화', icon: 'book-open', text: '운영 중 축적한 경험과 신규 투입 인원을 위한 가이드 작성', href: '/experience/voyager/#협업-및-문서화' },
         ],
       },
     ],
@@ -112,6 +112,7 @@ const experience = [
                   <TagList tags={item.tech} label={`${item.company} 기술 스택`} />
                 </div>
                 {item.company === '보이저' && (
+                  <a class="button button-primary experience-detail-link" href="/experience/voyager/">업무경험 상세보기 →</a>
                   <aside class="experience-reflection" aria-label="보이저 근무 회고">
                     <p>라이브 서비스 유지보수와 빌드 파이프라인 작업을 경험하며, 개별 구현을 넘어 프로젝트 전체의 흐름을 보는 시야를 넓혔습니다. 신규 입사자 멘토링과 온보딩 가이드 작성을 통해 동료가 적응하고 함께 일할 수 있도록 돕는 방법도 배웠습니다.</p>
                     <a class="detail-link" href="/reflections/voyager/">Voyager 근무 회고 읽기 →</a>

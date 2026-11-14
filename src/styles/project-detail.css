@@ -1,0 +1,13 @@
+.voyager-detail { padding-top: 36px; padding-bottom: 120px; }
+.voyager-detail > .back-link { margin-bottom: 24px; }
+.voyager-detail > header { padding: 0 0 44px; }
+.voyager-detail > header h1 { max-width: 100%; margin: 16px 0 24px; }
+.voyager-detail .lead { max-width: 720px; color: var(--muted); font-size: 1.2rem; line-height: 1.75; word-break: keep-all; overflow-wrap: break-word; }
+.voyager-detail .lead { max-width: none; }
+.voyager-detail .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; margin: 0 0 32px; background: var(--line); border: 1px solid var(--line); }
+.voyager-detail .facts div { padding: 20px; background: var(--paper); }
+.voyager-detail .facts dt { color: var(--muted); font: 11px var(--mono); text-transform: uppercase; }
+.voyager-detail .facts dd { margin: 7px 0 0; line-height: 1.5; }
+.voyager-detail > .overview > h2 { margin: 10px 0 24px; font-size: clamp(1.8rem, 4vw, 2.7rem); letter-spacing: -.05em; }
+.voyager-detail .detail-pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 72px; padding-top: 32px; border-top: 1px solid var(--line); }
+.voyager-detail .detail-pager .button { min-height: 48px; }

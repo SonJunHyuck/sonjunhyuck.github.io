@@ -1,14 +1,5 @@
 export const projectGroups = [
   {
-    id: 'work',
-    label: '업무',
-    navLabel: '업무경험',
-    eyebrow: 'PROFESSIONAL WORK',
-    title: '업무 프로젝트',
-    description: '팀과 제품 환경에서 맡은 역할, 협업, 구현 결과를 정리했습니다.',
-    href: '/projects/?filter=work',
-  },
-  {
     id: 'games',
     label: '게임',
     eyebrow: 'PERSONAL GAMES',

@@ -1,4 +1,5 @@
 ---
+import { getHighlightDetailHref } from '../lib/highlights';
 import ControlIcon from './ControlIcon.astro';
 import type { Highlight } from '../lib/highlights';
 import '../styles/project-story.css';
@@ -29,7 +30,7 @@ const { entries } = Astro.props;
       </section>}
       <div class:list={["highlight-body", { "project-story": !!entry.source }]} set:html={entry.html} />
       {(entry.project || entry.notionUrl) && <footer class="highlight-preview-actions">
-        {entry.project && <a class="button button-primary" href={`/projects/${entry.project.id}/${entry.section ? `#${entry.section}` : ''}`}>이 프로젝트 전체 보기 →</a>}
+        {entry.project && <a class="button button-primary" href={getHighlightDetailHref(entry)}>이 프로젝트 전체 보기 →</a>}
         {entry.notionUrl && <a class="button button-outline" href={entry.notionUrl} target="_blank" rel="noopener noreferrer">Notion에서 자세히 보기 ↗</a>}
       </footer>}
       <p class="highlight-auto-summary-note">AI 요약</p>
