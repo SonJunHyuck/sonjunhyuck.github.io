@@ -7,6 +7,7 @@ description: "파트너사의 게임 라이브 이슈 대응과 콘텐츠 업데
 publishedAt: 2026-02-01
 category: "game"
 projectGroup: "work"
+hiddenFromProjects: true
 workTypes: ["professional", "team", "live-service"]
 status: "released"
 period: "2025.05–2026.03"

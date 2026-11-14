@@ -14,7 +14,7 @@ export interface NextDestination {
 
 /** Published projects in list order; omit section when all projects are needed. */
 export const getOrderedProjects = async (section?: ProjectSection) =>
-  (await getCollection('projects', ({ data }) => !data.draft && (!section || getProjectSection(data) === section))).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
+  (await getCollection('projects', ({ data }) => !data.draft && !data.hiddenFromProjects && (!section || getProjectSection(data) === section))).sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf());
 
 export const getProjectListDestination = async (section: ProjectSection): Promise<NextDestination> => ({
   href: section === 'ai' ? '/ai/' : '/projects/',

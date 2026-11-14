@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Content from '../../content/experience/voyager.md';
+import '../../styles/project-story.css';
+import '../../styles/project-detail.css';
+
+const lead = 'Unity 클라이언트 개발자로 신규 메타버스 소셜 게임 개발과 파트너사 게임의 라이브 서비스 운영에 함께 참여한 1년입니다.';
+const projects = [
+  { id: 'project-r', name: 'Project R', nature: '신규 개발', status: '개발 중단' },
+  { id: 'inspix-world', name: 'InspixWorld', nature: '파트너사 게임 라이브 운영', status: '출시' },
+];
+---
+<BaseLayout title="Voyager — Son Junhyuck" description={lead}>
+  <article class="project-detail container case-study-detail voyager-detail">
+    <a class="back-link" href="/profile/#experience">← 돌아가기</a>
+    <header><h1>Voyager</h1><p class="lead">{lead}</p></header>
+    <dl class="facts">
+      <div><dt>기간</dt><dd>2025.04–2026.03</dd></div>
+      <div><dt>역할</dt><dd>Unity 클라이언트 개발</dd></div>
+      <div><dt>기술</dt><dd>Unity, C#, Jenkins, AWS S3, Docker</dd></div>
+    </dl>
+    <section class="overview" aria-labelledby="project-overview">
+      <h2 id="project-overview">프로젝트 개요</h2>
+      <div class="overview-grid">
+        {projects.map((project) => <a class="overview-project" href={`#${project.id}`}>
+          <img src={`/images/projects/${project.id}/cover.png`} alt={`${project.name} 대표 이미지`} />
+          <div><h3>{project.name}</h3><p>{project.nature} · {project.status}</p><p>PC·Android·iOS</p></div>
+        </a>)}
+      </div>
+    </section>
+    <div class="story project-story case-study-story"><Content /></div>
+    <nav class="detail-pager" aria-label="업무경험 이동">
+      <a class="button button-outline" href="/reflections/voyager/">Voyager 근무 회고 읽기 →</a>
+      <a class="button button-outline" href="/profile/#experience">← 프로필 업무경험</a>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .overview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .overview-project { min-width: 0; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+  .overview-project img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: var(--image-frame); }
+  .overview-project > div { padding: 20px; }
+  .overview-project h3 { margin: 0 0 12px; }
+  .overview-project p { margin: 6px 0 0; color: var(--muted); line-height: 1.65; }
+  .overview-project:hover { border-color: var(--accent); }
+  .story :global(.voyager-chapter) { margin-top: 72px; }
+  .story :global(.voyager-chapter + .voyager-chapter) { margin-top: 112px; }
+  .story :global(.chapter-header) { padding: 32px; border-top: 3px solid var(--line); background: var(--surface); }
+  .story :global(.chapter-header h2) { margin: 12px 0 18px; font-size: clamp(1.8rem, 4vw, 2.7rem); letter-spacing: -.05em; }
+  .story :global(.chapter-header .eyebrow) { color: var(--muted); line-height: 1.5; }
+  .story :global(.chapter-header .chapter-meta) { margin-bottom: 20px; color: var(--muted); font-size: .85rem; }
+  .story :global(.chapter-header p:last-child) { margin-bottom: 0; }
+  .story :global(h3) { margin: 48px 0 24px; padding-top: 32px; border-top: 1px solid var(--soft-line); font-size: clamp(1.4rem, 3vw, 1.8rem); }
+  .story :global(.chapter-header + h3) { border-top: 0; padding-top: 0; }
+  .story :global(h4) { margin: 32px 0 18px; font-size: 1.15rem; }
+  .story :global(h5) { margin: 28px 0 16px; font-size: 1rem; }
+  .story :global([id]), .overview [id] { scroll-margin-top: 110px; }
+  .story :global(.implementation-note h4) { margin-top: 4px; }
+  @media (max-width: 640px) {
+    .voyager-detail { padding-top: 24px; padding-bottom: 80px; }
+    .overview-grid, .voyager-detail .facts { grid-template-columns: minmax(0, 1fr); }
+    .story :global(.voyager-chapter) { margin-top: 54px; }
+    .story :global(.voyager-chapter + .voyager-chapter) { margin-top: 80px; }
+    .story :global(.chapter-header) { padding: 24px 20px; }
+  }
+</style>

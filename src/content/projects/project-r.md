@@ -7,6 +7,7 @@ description: "빌드 파이프라인, 네트워크 동기화, 데이터 반응�
 publishedAt: 2026-03-01
 category: "game"
 projectGroup: "work"
+hiddenFromProjects: true
 workTypes: ["professional", "team"]
 status: "prototype"
 period: "2025.06–2026.03"

@@ -1,10 +1,11 @@
 ---
+import { getHighlightDetailHref } from '../lib/highlights';
 import type { Highlight } from '../lib/highlights';
 interface Props { entry: Highlight; }
 const { entry } = Astro.props;
 ---
 <article class="highlight-card" id={entry.id}>
-  <a class="highlight-card-link" href={entry.project ? `/projects/${entry.project.id}/${entry.section ? `#${entry.section}` : ''}` : entry.notionUrl ?? `/highlights/?h=${entry.id}`} data-highlight-id={entry.id} aria-haspopup="dialog" aria-label={`${entry.title} 미리보기 열기`}>
+  <a class="highlight-card-link" href={getHighlightDetailHref(entry)} data-highlight-id={entry.id} aria-haspopup="dialog" aria-label={`${entry.title} 미리보기 열기`}>
     <div class:list={['highlight-thumbnail', { 'has-image': !!entry.image }]}>
       {entry.image && <img src={entry.image} alt={entry.imageAlt} loading="lazy" decoding="async" />}
       <span class="highlight-lettering" aria-hidden="true">{entry.lettering}</span>

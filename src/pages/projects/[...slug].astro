@@ -2,7 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import ProjectDetail from '../../components/ProjectDetail.astro';
 
-export async function getStaticPaths() { return (await getCollection('projects', ({ data }) => !data.draft)).map((project) => ({ params: { slug: project.id }, props: { project } })); }
+export async function getStaticPaths() { return (await getCollection('projects', ({ data }) => !data.draft && !data.hiddenFromProjects)).map((project) => ({ params: { slug: project.id }, props: { project } })); }
 const { project } = Astro.props;
 const { Content } = await render(project);
 ---
