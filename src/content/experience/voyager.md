@@ -111,18 +111,8 @@ MMO 환경에서 다른 플레이어에게 이모트 재생 상태가 보이도�
 
 전달받은 변경 사항을 기준으로 수정 대상과 영향 범위를 정리했습니다. 콘텐츠 수정과 업데이트 대응을 병행하며 팀원과 수정 공수를 검토하고, 이슈의 중요도를 고려해 처리 우선순위와 버전별 반영 범위를 조율했습니다.
 
-<figure class="story-media">
-  <img src="/images/projects/inspix-world/issue-list-redacted.png" alt="민감한 정보를 블러 처리한 이슈 해결 현황 관리 화면" loading="lazy" />
-  <figcaption>이슈 해결 현황과 버전별 반영 범위 관리 일부</figcaption>
-</figure>
-
 ### 협업 및 문서화
 
 일본 파트너사와 서버·클라이언트 담당자 사이의 이슈 공유 및 해결 흐름을 정리했습니다. 테스트 서버 오픈, 에셋 번들 및 플레이어 빌드 절차, 이슈 해결 현황 등을 문서화하고, 신규 투입 인원이 참고할 수 있는 온보딩 및 기술 가이드를 작성했습니다.
-
-<figure class="story-media">
-  <img src="/images/projects/inspix-world/partner-collaboration.png" alt="파트너사와 업데이트 버전 반영 일정을 조율한 대화 화면" loading="lazy" />
-  <figcaption>파트너사와 업데이트 반영 버전을 조율한 대화 일부</figcaption>
-</figure>
 
 </section>
