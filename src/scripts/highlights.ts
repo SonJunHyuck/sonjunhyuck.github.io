@@ -1,3 +1,4 @@
+import { createHighlightPreview } from './highlight-preview';
 import type { HighlightGroup, HighlightPageData } from '../lib/highlights';
 
 const list = document.querySelector<HTMLElement>('#highlight-list');
@@ -126,102 +127,39 @@ if (list && index && more && status && empty && sentinel) {
       if (!await loadNext()) return;
     }
   };
-  const dialog = document.querySelector<HTMLDialogElement>('#highlight-preview')!;
-  const panels = new Map([...dialog.querySelectorAll<HTMLElement>('[data-highlight-panel]')].map((panel) => [panel.dataset.highlightPanel!, panel]));
-  const previous = dialog.querySelector<HTMLButtonElement>('[data-highlight-prev]')!;
-  const nextButton = dialog.querySelector<HTMLButtonElement>('[data-highlight-next]')!;
-  const positionLabel = dialog.querySelector<HTMLElement>('[data-highlight-position]')!;
-  const closeButton = dialog.querySelector<HTMLButtonElement>('[data-highlight-close]')!;
-  let activeId: string | null = null;
-  let opener: HTMLElement | null = null;
   let pushed = false;
   let locationVersion = 0;
-  const hidePreview = () => {
-    if (!dialog.open) return;
-    const id = activeId;
-    activeId = null;
-    dialog.querySelectorAll<HTMLVideoElement>('video').forEach((video) => video.pause());
-    dialog.close();
-    document.documentElement.removeAttribute('data-quickview-open');
-    document.dispatchEvent(new Event('next-up:update'));
-    const target = opener?.isConnected ? opener : (id ? list.querySelector<HTMLElement>(`[data-highlight-id="${CSS.escape(id)}"]`) : null);
-    (target ?? buttons.find((button) => button.getAttribute('aria-pressed') === 'true'))?.focus({ preventScroll: true });
-    opener = null;
-  };
-  const showPreview = (id: string) => {
-    const panel = panels.get(id);
-    const position = group.ids.indexOf(id);
-    if (!panel || position < 0) return;
-    dialog.querySelectorAll<HTMLVideoElement>('video').forEach((video) => video.pause());
-    panels.forEach((candidate) => { candidate.hidden = candidate !== panel; });
-    activeId = id;
-    previous.disabled = position === 0;
-    nextButton.disabled = position === group.ids.length - 1;
-    positionLabel.textContent = `${position + 1} / ${group.ids.length}`;
-    dialog.setAttribute('aria-labelledby', `highlight-title-${id}`);
-    panel.scrollTop = 0;
-    if (!dialog.open) {
-      document.documentElement.setAttribute('data-quickview-open', '');
-      dialog.showModal();
-      closeButton.focus();
-      document.dispatchEvent(new Event('next-up:update'));
-    }
-  };
-  const requestClose = () => {
-    if (pushed) { pushed = false; history.back(); }
-    else {
+  const preview = createHighlightPreview({
+    dialog: document.querySelector<HTMLDialogElement>('#highlight-preview')!,
+    ids: () => group.ids,
+    onRequestClose: () => {
+      if (pushed) { pushed = false; history.back(); }
+      else {
+        const url = new URL(location.href);
+        url.searchParams.delete('h');
+        history.replaceState(history.state, '', url);
+        preview.hide();
+      }
+    },
+    onMove: (id) => {
       const url = new URL(location.href);
-      url.searchParams.delete('h');
+      url.searchParams.set('h', id);
       history.replaceState(history.state, '', url);
-      hidePreview();
-    }
-  };
-  const movePreview = (direction: number) => {
-    if (!activeId) return;
-    const id = group.ids[group.ids.indexOf(activeId) + direction];
-    if (!id) return;
-    const url = new URL(location.href);
-    url.searchParams.set('h', id);
-    history.replaceState(history.state, '', url);
-    showPreview(id);
-    void revealPreviewCard(id);
-  };
-  previous.addEventListener('click', () => movePreview(-1));
-  nextButton.addEventListener('click', () => movePreview(1));
-  closeButton.addEventListener('click', requestClose);
-  dialog.addEventListener('cancel', (event) => { event.preventDefault(); requestClose(); });
-  dialog.addEventListener('click', (event) => { if (event.target === dialog) requestClose(); });
-  dialog.addEventListener('keydown', (event) => {
-    if (event.altKey || event.metaKey || event.ctrlKey || (event.target instanceof Element && event.target.closest('input,textarea,select,video,[contenteditable]'))) return;
-    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-      event.preventDefault();
-      movePreview(event.key === 'ArrowLeft' ? -1 : 1);
-    }
+      void revealPreviewCard(id);
+    },
+    returnFocus: (id) => (id ? list.querySelector<HTMLElement>(`[data-highlight-id="${CSS.escape(id)}"]`) : null)
+      ?? buttons.find((button) => button.getAttribute('aria-pressed') === 'true'),
   });
-  let touchStart: { x: number; y: number } | null = null;
-  dialog.addEventListener('touchstart', (event) => {
-    if (event.touches.length !== 1 || (event.target instanceof Element && event.target.closest('video,a,button,pre'))) { touchStart = null; return; }
-    touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY };
-  }, { passive: true });
-  dialog.addEventListener('touchend', (event) => {
-    if (!touchStart || !event.changedTouches.length) return;
-    const dx = event.changedTouches[0].clientX - touchStart.x;
-    const dy = event.changedTouches[0].clientY - touchStart.y;
-    touchStart = null;
-    if (matchMedia('(max-width: 680px)').matches && Math.abs(dx) >= 60 && Math.abs(dx) > Math.abs(dy) * 1.5) movePreview(dx > 0 ? -1 : 1);
-  }, { passive: true });
-  dialog.addEventListener('touchcancel', () => { touchStart = null; });
   list.addEventListener('click', (event) => {
     if (!(event instanceof MouseEvent) || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('[data-highlight-id]') : null;
-    if (!link || !panels.has(link.dataset.highlightId!)) return;
+    if (!link || !preview.has(link.dataset.highlightId!)) return;
     event.preventDefault();
-    opener = link;
     const url = new URL(location.href);
     url.searchParams.set('h', link.dataset.highlightId!);
     history.pushState(history.state, '', url);
     pushed = true;
-    showPreview(link.dataset.highlightId!);
+    preview.show(link.dataset.highlightId!, link);
   });
 
   const applyLocation = async () => {
@@ -243,12 +181,12 @@ if (list && index && more && status && empty && sentinel) {
     updateControls();
     if (version !== locationVersion) return;
     const id = url.searchParams.get('h');
-    if (id && group.ids.includes(id) && panels.has(id)) {
-      showPreview(id);
+    if (id && group.ids.includes(id) && preview.has(id)) {
+      preview.show(id);
       await revealPreviewCard(id);
     } else {
       pushed = false;
-      hidePreview();
+      preview.hide();
       if (id) { url.searchParams.delete('h'); history.replaceState(history.state, '', url); }
     }
     if (version === locationVersion) refreshSentinel();
