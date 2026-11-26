@@ -23,10 +23,6 @@ export const landingCards: LandingCard[] = [
     imagePosition: '50% 42%',
   },
   {
-    id: 'highlights', title: '하이라이트', description: '작업의 핵심 장면을 짧게', href: '/highlights/',
-    image: { kind: 'latest-highlight-image' },
-  },
-  {
     id: 'projects', title: '프로젝트', description: '프로젝트 전체 이야기', href: '/projects/',
     image: { kind: 'first-project', section: 'projects' }, imageFit: 'contain',
   },

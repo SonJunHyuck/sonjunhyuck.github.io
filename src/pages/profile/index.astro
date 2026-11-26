@@ -3,6 +3,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import TagList from '../../components/TagList.astro';
 import { mottos, renderMotto } from '../../data/mottos';
 import { NOTION_DEVLOG_URL } from '../../config/links';
+import { getProjectListDestination } from '../../lib/projects';
+
+const next = await getProjectListDestination('projects');
 
 const contributionIcons = import.meta.glob<string>('../../assets/icons/lucide/*.svg', { eager: true, query: '?raw', import: 'default' });
 
@@ -58,7 +61,7 @@ const experience = [
 
 ---
 
-<BaseLayout title="프로필 — Son Junhyuck" description="Son Junhyuck의 이력, 역량, 활동을 정리한 게임 개발 포트폴리오" next={{ href: '/highlights/', title: '하이라이트', image: '/favicon2.png' }}>
+<BaseLayout title="프로필 — Son Junhyuck" description="Son Junhyuck의 이력, 역량, 활동을 정리한 게임 개발 포트폴리오" {next}>
   <Fragment slot="head">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -211,7 +214,6 @@ const experience = [
       </section>
 
       <nav class="profile-destinations" aria-label="다음으로 둘러보기">
-        <a class="button button-primary" href="/highlights/">하이라이트 구경하기 →</a>
         <a class="button button-primary" href="/projects/">프로젝트 구경하기 →</a>
       </nav>
 

@@ -1,6 +1,16 @@
+---
+import { NOTION_DEVLOG_URL } from '../config/links';
+---
 <footer class="site-footer">
   <div class="container footer-inner">
     <p>© {new Date().getFullYear()} Son Junhyuck.</p>
-    <a href="https://github.com/SonJunHyuck" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+    <div class="footer-links">
+      <a href="https://github.com/SonJunHyuck" target="_blank" rel="noopener noreferrer" aria-label="GitHub 새 탭에서 열기" title="GitHub 새 탭에서 열기">
+        <img src="/icons/github.svg" width="20" height="20" alt="" />
+      </a>
+      <a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="Notion 개발일지 새 탭에서 열기" title="Notion 개발일지 새 탭에서 열기">
+        <img src="/icons/notion.svg" width="20" height="20" alt="" />
+      </a>
+    </div>
   </div>
 </footer>
