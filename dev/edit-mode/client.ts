@@ -28,7 +28,6 @@ interface Pane {
 }
 
 interface SendTargets {
-  codex: Pane[];
   claude: Pane[];
   error: string | null;
   openCount: number;
@@ -48,8 +47,7 @@ ui.innerHTML = `
       <summary>이 페이지의 요청 <span id="count"></span></summary>
       <div class="requests">
         <div class="send-controls">
-          <label hidden>받을 Codex pane<select id="codex-pane"></select></label>
-          <label hidden>보고받을 Claude pane<select id="claude-pane"></select></label>
+          <label hidden>받을 Claude pane<select id="claude-pane"></select></label>
           <div class="send-action">
             <span id="send-count">전체 페이지의 open 요청</span>
             <button id="send" type="button" class="primary" aria-describedby="send-count target-error" disabled>보내기</button>
@@ -86,7 +84,6 @@ const list = ui.querySelector<HTMLUListElement>('#list')!;
 const panelMessage = ui.querySelector<HTMLElement>('#panel-message')!;
 const sendCount = ui.querySelector<HTMLElement>('#send-count')!;
 const sendButton = ui.querySelector<HTMLButtonElement>('#send')!;
-const codexPane = ui.querySelector<HTMLSelectElement>('#codex-pane')!;
 const claudePane = ui.querySelector<HTMLSelectElement>('#claude-pane')!;
 const targetError = ui.querySelector<HTMLElement>('#target-error')!;
 const sendMessage = ui.querySelector<HTMLElement>('#send-message')!;
@@ -349,21 +346,21 @@ function populatePanes(select: HTMLSelectElement, panes: Pane[]) {
 }
 
 function updateSendButton() {
-  sendButton.disabled = sending || refreshing || !targets?.openCount || !!targets.error || !codexPane.value || !claudePane.value;
+  sendButton.disabled = sending || refreshing || !targets?.openCount || !!targets.error || !claudePane.value;
   sendButton.textContent = sending ? '보내는 중…' : '보내기';
 }
 
 async function sendOpenRequests() {
   if (sendButton.disabled || !targets) return;
   const { batch, openCount } = targets;
-  const selection = { batch, codexPane: codexPane.value, claudePane: claudePane.value };
-  if (!window.confirm(`open 요청 ${openCount}개(전체 페이지 기준)를 Codex에 보낼까요?`)) return;
+  const selection = { batch, claudePane: claudePane.value };
+  if (!window.confirm(`open 요청 ${openCount}개(전체 페이지 기준)를 Claude에 보낼까요?`)) return;
   sending = true;
   updateSendButton();
   sendMessage.textContent = '';
   try {
     const { count } = await api<{ count: number }>('POST', selection, '/send');
-    sendMessage.textContent = `요청 ${count}개를 Codex에 보냈습니다.`;
+    sendMessage.textContent = `요청 ${count}개를 Claude에 보냈습니다.`;
   } catch (error) {
     sendMessage.textContent = error instanceof Error ? error.message : '요청을 보내지 못했습니다.';
   } finally {
@@ -391,7 +388,6 @@ async function refreshList() {
     panelMessage.textContent = requestsResult.reason instanceof Error ? requestsResult.reason.message : '요청을 불러오지 못했습니다.';
   }
   targets = targetsResult.status === 'fulfilled' ? targetsResult.value : null;
-  populatePanes(codexPane, targets?.codex ?? []);
   populatePanes(claudePane, targets?.claude ?? []);
   sendCount.textContent = targets ? `전체 페이지의 open 요청 ${targets.openCount}개` : '전체 페이지의 open 요청';
   targetError.textContent = targetsResult.status === 'fulfilled' ? targetsResult.value.error ?? '' :
@@ -444,7 +440,6 @@ function setEnabled(enabled: boolean) {
 
 toggle.addEventListener('click', () => setEnabled(!inspection));
 sendButton.addEventListener('click', () => void sendOpenRequests());
-codexPane.addEventListener('change', updateSendButton);
 claudePane.addEventListener('change', updateSendButton);
 panel.addEventListener('toggle', () => { if (inspection && panel.open) void refreshList(); });
 window.addEventListener('focus', () => { if (inspection && panel.open) void refreshList(); });
