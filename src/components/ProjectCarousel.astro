@@ -5,13 +5,14 @@ interface Props { projects: Project[]; }
 const { projects } = Astro.props;
 const count = projects.length;
 const hasControls = count > 1;
+const paired = count === 2;
 const positions = projects.map((_, index) => index);
 if (hasControls) positions.unshift(-2, -1);
 if (hasControls) positions.push(count, count + 1);
 const categories = { game: '게임', graphics: '그래픽스 연구', ai: 'AI 협업' };
 ---
 
-<section class="project-carousel" aria-label="프로젝트 커버" aria-roledescription="캐러셀" data-project-carousel>
+<section class="project-carousel" aria-label="프로젝트 커버" aria-roledescription="캐러셀" data-project-carousel data-paired={paired ? '' : undefined}>
   <div class="carousel-frame">
     <div class="carousel-track" id="project-slides">
       {positions.map((position) => {
@@ -44,7 +45,7 @@ const categories = { game: '게임', graphics: '그래픽스 연구', ai: 'AI �
   </div>
   {hasControls && (
     <div class="carousel-controls" data-carousel-controls hidden>
-      <button type="button" class="carousel-preview-control" data-step="-1" aria-label="이전 프로젝트" aria-controls="project-slides"></button>
+      <button type="button" class="carousel-preview-control" data-step="-1" aria-label="이전 프로젝트" aria-controls="project-slides" hidden={paired}></button>
       <div class="carousel-dots" role="group" aria-label="프로젝트 선택">
         {projects.map(({ data }, index) => (
           <button type="button" class="carousel-dot" data-dot={index} aria-label={data.title} aria-current={index === 0 ? 'true' : undefined} aria-controls="project-slides"></button>
@@ -65,6 +66,8 @@ const categories = { game: '게임', graphics: '그래픽스 연구', ai: 'AI �
     const slides = [...track.querySelectorAll<HTMLElement>('[data-slide]')];
     const covers = slides.map((slide) => slide.querySelector('a')!);
     const dots = [...controls.querySelectorAll<HTMLButtonElement>('[data-dot]')];
+    const previews = [...controls.querySelectorAll<HTMLButtonElement>('[data-step]')];
+    const paired = carousel.hasAttribute('data-paired');
     const status = carousel.querySelector<HTMLElement>('[data-carousel-status]')!;
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const mobile = matchMedia('(max-width: 680px)');
@@ -93,6 +96,15 @@ const categories = { game: '게임', graphics: '그래픽스 연구', ai: 'AI �
           overlay(from).animate([{ opacity: 1 }, { opacity: 0 }], timing),
           overlay(next).animate([{ opacity: 0 }, { opacity: 1 }], timing),
         ];
+        if (paired && (from < 0 || from >= slides.length)) {
+          // Show only the departing copy for the wrap, then leave the real neighbor visible.
+          const copy = overlay(from).closest<HTMLElement>('.carousel-item')!;
+          animations.push(copy.animate([
+            { visibility: 'visible', opacity: 1 },
+            { visibility: 'visible', opacity: 1, offset: .8 },
+            { visibility: 'visible', opacity: 0 },
+          ], timing));
+        }
         animations[0].onfinish = () => {
           animations = [];
           advance();
@@ -106,6 +118,13 @@ const categories = { game: '게임', graphics: '그래픽스 연구', ai: 'AI �
       dots[current].removeAttribute('aria-current');
       dots[next].setAttribute('aria-current', 'true');
       current = next;
+      if (paired) {
+        const shown = previews[1 - current];
+        const hidden = previews[current];
+        shown.hidden = false;
+        if (document.activeElement === hidden) shown.focus({ preventScroll: true });
+        hidden.hidden = true;
+      }
       if (!moveFocus) status.textContent = `${dots[current].getAttribute('aria-label')} (${current + 1}/${slides.length})`;
     };
 
@@ -122,7 +141,7 @@ const categories = { game: '게임', graphics: '그래픽스 연구', ai: 'AI �
       }
       advance();
     }));
-    controls.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((button) => {
+    previews.forEach((button) => {
       button.addEventListener('click', () => queueStep(Number(button.dataset.step)));
     });
 
@@ -182,6 +201,7 @@ const categories = { game: '게임', graphics: '그래픽스 연구', ai: 'AI �
     grid-area: 1 / 1;
     transform: translateX(calc(var(--position) * var(--slide-step)));
   }
+  [data-paired] .carousel-item[aria-hidden='true'] { visibility: hidden; }
   .carousel-cover {
     position: relative;
     display: block;

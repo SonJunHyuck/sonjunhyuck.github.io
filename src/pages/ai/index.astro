@@ -1,63 +1,60 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { Image } from 'astro:assets';
-import workspace from '../../assets/ai/workspace.png';
-import ProjectCard from '../../components/ProjectCard.astro';
-import HighlightPreview from '../../components/HighlightPreview.astro';
-import { getHighlightIndex } from '../../lib/highlights';
-import '../../styles/highlights.css';
-import ProjectQuickView from '../../components/ProjectQuickView.astro';
+import ProjectCarousel from '../../components/ProjectCarousel.astro';
+import ProjectShowcase from '../../components/ProjectShowcase.astro';
 import { getOrderedProjects } from '../../lib/projects';
 
 const projects = await getOrderedProjects('ai');
-const relatedIds = [
-  '2026-10-21-macos-agent-messaging',
-  '2026-10-30-sonny-ghostty-sidebar',
-];
-const { entries: highlights } = await getHighlightIndex();
-const relatedHighlights = relatedIds.map((id) => {
-  const entry = highlights.find((highlight) => highlight.id === id);
-  if (!entry) throw new Error(`하이라이트를 찾을 수 없습니다: ${id}`);
-  return entry;
-});
 ---
 <BaseLayout title="AI 협업 — Son Junhyuck" description="AI와 함께 만든 프로젝트를 소개합니다." next={{ href: '/profile/', title: '프로필', image: '/profile.webp' }}>
   <h1 class="visually-hidden">AI 협업</h1>
+  {projects.length > 0 && (
+    <>
+      <ProjectCarousel {projects} />
+      <ProjectShowcase {projects} label="AI 협업 프로젝트 소개" />
+    </>
+  )}
   <section class="container ai-workspace" aria-labelledby="workspace-title">
-    <p class="eyebrow">WORKFLOW</p>
-    <h2 id="workspace-title">작업 환경</h2>
-    <figure class="workspace-figure">
-      <Image class="workspace-image" src={workspace} alt="Ghostty 터미널에서 herdr로 Claude Code와 Codex를 나란히 띄우고 오른쪽에 파일 탐색기를 연 작업 화면" widths={[390, 768, 940, 1880]} sizes="(max-width: 680px) calc(100vw - 32px), (max-width: 988px) calc(100vw - 48px), 940px" format="webp" loading="eager" />
-      <figcaption>Ghostty를 개조해 쓰고, 멀티플렉서 herdr로 여러 에이전트를 오케스트레이션합니다. 필요한 도구는 프로젝트에 맞게 골라 씁니다.</figcaption>
-    </figure>
-    <ul class="workspace-links" aria-label="관련 하이라이트">
-      {relatedHighlights.map((entry) => <li><a class="detail-link" data-highlight-id={entry.id} href={`/highlights/?h=${entry.id}`}>{entry.title}</a></li>)}
-    </ul>
-  </section>
-  <section class="container projects-section project-list-section ai-list-section" aria-label="AI 협업 프로젝트 목록">
-    <div class="project-list-grid project-list-surface">
-      {projects.map((project) => <ProjectCard {project} />)}
+    <div class="workspace-media">
+      <img src="/images/ai/multi-agent-relay.gif" width="1400" height="975" alt="herdr에서 Claude Code와 두 Codex가 작업 메시지를 주고받는 터미널 녹화" loading="lazy" decoding="async" />
+      <div class="workspace-heading">
+        <p class="eyebrow">WORKFLOW</p>
+        <h2 id="workspace-title">작업 환경</h2>
+      </div>
     </div>
   </section>
-  <ProjectQuickView {projects} />
-  <HighlightPreview entries={relatedHighlights} />
 </BaseLayout>
 
-<script>
-  import '../../scripts/ai-highlights';
-</script>
-
 <style>
-  .ai-workspace { padding-top: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--line); }
-  .ai-workspace h2 { margin: 12px 0 28px; font-size: clamp(31px, 4vw, 48px); letter-spacing: -.06em; }
-  .workspace-image { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; }
-  .workspace-figure { margin: 0; }
-  .workspace-figure figcaption { margin-top: 9px; color: var(--muted); font-size: .82rem; line-height: 1.55; }
-  .workspace-links { display: grid; gap: 12px; margin: 24px 0 0; padding: 0; list-style: none; }
-  .workspace-links a { max-width: 100%; line-height: 1.6; }
-  .ai-list-section { padding-top: 40px; }
+  .ai-workspace { padding-block: clamp(32px, 5vw, 64px) clamp(48px, 7vw, 96px); border-top: 1px solid var(--line); }
+  .workspace-media {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--media-neutral);
+  }
+  .workspace-media img { display: block; width: 100%; height: auto; }
+  .workspace-heading {
+    position: absolute;
+    inset: 0 0 auto;
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    padding: clamp(10px, 1.15vw, 16px) 16px clamp(12px, 1.2vw, 18px);
+    background: linear-gradient(180deg, rgb(0 0 0 / .74), rgb(0 0 0 / .58) 82%, transparent);
+    color: #fff;
+    text-align: center;
+  }
+  .workspace-heading .eyebrow { color: inherit; }
+  .workspace-heading h2 {
+    margin: 0;
+    font-size: clamp(1.5rem, 3.6vw, 2.75rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -.045em;
+  }
   @media (max-width: 680px) {
-    .ai-workspace { padding-top: 24px; padding-bottom: 32px; }
-    .ai-list-section { padding-top: 24px; }
+    .workspace-media { border-radius: 16px; }
   }
 </style>

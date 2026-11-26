@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCarousel from '../../components/ProjectCarousel.astro';
+import ProjectShowcase from '../../components/ProjectShowcase.astro';
 import { getOrderedProjects, getProjectListDestination } from '../../lib/projects';
 
 const projects = await getOrderedProjects('projects');
@@ -11,102 +12,7 @@ const next = await getProjectListDestination('ai');
   {projects.length > 0 && (
     <>
       <ProjectCarousel {projects} />
-      <section class="container project-showcase" aria-label="프로젝트 소개">
-        {projects.map(({ id, data }) => (
-          <article class="project-feature">
-            <div class="project-media">
-              {data.thumbnail && <img src={data.thumbnail} alt="" loading="lazy" decoding="async" />}
-            </div>
-            <div class="project-copy">
-              <h2>{data.title}</h2>
-              <p>{data.cardLabel ?? data.summary}</p>
-              {data.technologies.length > 0 && (
-                <ul class="tag-list" aria-label="기술 스택">
-                  {data.technologies.slice(0, 4).map(({ name }) => <li>{name}</li>)}
-                </ul>
-              )}
-              <a class="project-detail-link" href={`/projects/${id}/`} aria-label={`${data.title} 자세히 보기`}>자세히 보기</a>
-            </div>
-          </article>
-        ))}
-      </section>
+      <ProjectShowcase {projects} />
     </>
   )}
 </BaseLayout>
-
-<style>
-  .project-showcase {
-    display: grid;
-    gap: clamp(56px, 8vw, 112px);
-    padding-block: clamp(32px, 5vw, 72px) clamp(64px, 9vw, 128px);
-  }
-  .project-feature {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: start;
-    --overlap: clamp(24px, 4.5vw, 64px);
-    --stagger: clamp(24px, 4vw, 56px);
-  }
-  .project-media, .project-copy { grid-row: 1; min-width: 0; border-radius: 20px; }
-  .project-media {
-    grid-column: 2;
-    margin-top: var(--stagger);
-    margin-inline-start: calc(-1 * var(--overlap));
-    aspect-ratio: 3 / 2;
-    overflow: hidden;
-    outline: 1px solid var(--card-line);
-    outline-offset: -1px;
-    background: var(--media-neutral);
-  }
-  .project-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .project-copy {
-    grid-column: 1;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    min-height: 86%;
-    padding: clamp(24px, 4vw, 48px);
-    border: 1px solid var(--card-line);
-    background: var(--surface);
-    box-shadow: 0 8px 24px var(--shadow);
-  }
-  .project-copy h2 {
-    margin: 0 0 12px;
-    font-size: clamp(26px, 3.1vw, 40px);
-    line-height: 1.16;
-    letter-spacing: -.045em;
-    word-break: keep-all;
-  }
-  .project-copy p { margin: 0 0 20px; color: var(--muted); line-height: 1.6; overflow-wrap: anywhere; }
-  .project-copy .tag-list { margin-bottom: 32px; }
-  .project-copy .tag-list li { border-radius: 999px; overflow-wrap: anywhere; }
-  .project-detail-link {
-    display: inline-grid;
-    place-items: center;
-    min-height: 44px;
-    min-width: 140px;
-    margin-top: auto;
-    padding: 8px 20px;
-    border: 1px solid var(--interactive-line);
-    border-radius: 999px;
-    font-size: .875rem;
-    font-weight: 800;
-  }
-  .project-detail-link:hover { border-color: var(--accent); color: var(--accent); }
-  @media (width > 680px) {
-    .project-feature:nth-child(even) .project-media {
-      grid-column: 1;
-      margin-inline: 0 calc(-1 * var(--overlap));
-    }
-    .project-feature:nth-child(even) .project-copy { grid-column: 2; }
-  }
-  @media (max-width: 680px) {
-    .project-showcase { gap: 36px; }
-    .project-feature { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-    .project-media { grid-column: 1; margin: 0; }
-    .project-copy { grid-area: 2 / 1; min-height: 0; }
-    .project-media, .project-copy { border-radius: 16px; }
-    .project-copy .tag-list { margin-bottom: 24px; }
-  }
-</style>
