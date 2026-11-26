@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import { getProjectSection } from '../lib/projects';
-import { getProjectGroupNavLabel, projectGroups } from '../config/projectGroups';
 
 const { currentPath = '/' } = Astro.props;
 const detailSlug = currentPath.match(/^\/projects\/([^/]+)\/?$/)?.[1];
@@ -10,11 +9,6 @@ const detailProject = detailSlug
   : undefined;
 const isAiSection = currentPath === '/ai/' || (detailProject && getProjectSection(detailProject.data) === 'ai');
 const isProjectSection = currentPath.startsWith('/projects/') && !isAiSection;
-const activeProjectGroup = isProjectSection ? detailProject?.data.projectGroup : undefined;
-const isCurrent = (section?: string) => {
-  if (section === 'profile') return currentPath === '/profile/';
-  return activeProjectGroup === section;
-};
 ---
 
 <header class="site-header">
@@ -26,16 +20,11 @@ const isCurrent = (section?: string) => {
     <div class="header-actions">
       <nav aria-label="주요 탐색">
         <ul>
-          <li><a href="/profile/" aria-current={isCurrent('profile') ? 'page' : undefined}><span class="nav-label">프로필</span></a></li>
-          <li class="project-navigation">
-            <a href="/projects/" class:list={['project-toggle', { 'is-current': isProjectSection }]} aria-current={currentPath === '/projects/' ? 'page' : undefined}>
+          <li><a href="/profile/" aria-current={currentPath === '/profile/' ? 'page' : undefined}><span class="nav-label">프로필</span></a></li>
+          <li>
+            <a href="/projects/" class:list={{ 'is-current': isProjectSection }} aria-current={currentPath === '/projects/' ? 'page' : undefined}>
               <span class="nav-label">프로젝트</span>
             </a>
-            <ul id="project-navigation-links" class="project-dropdown" hidden>
-              {projectGroups.map((group) => (
-                <li><a href={group.href} aria-current={isCurrent(group.id) ? 'page' : undefined}>{getProjectGroupNavLabel(group)}</a></li>
-              ))}
-            </ul>
           </li>
           <li><a href="/ai/" aria-current={isAiSection ? 'page' : undefined}><span class="nav-label">AI 협업</span></a></li>
         </ul>
@@ -86,52 +75,5 @@ const isCurrent = (section?: string) => {
   nav > ul > li > a { display: block; line-height: 1.5; border-bottom: 1px solid transparent; }
   nav > ul > li > a[aria-current='page'] { border-bottom-color: var(--ink); }
   .nav-label { display: block; white-space: nowrap; }
-  .project-navigation { position: relative; }
-  .project-toggle.is-current { color: var(--ink); border-bottom: 1px solid var(--ink); }
-  .project-dropdown { position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); z-index: 1; display: flex; align-items: center; flex-wrap: nowrap; justify-content: flex-start; gap: 18px; width: max-content; padding: 12px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); box-shadow: 0 8px 24px var(--shadow); }
-  .project-dropdown::before { content: ''; position: absolute; top: -12px; left: 0; width: 100%; height: 12px; }
-  .project-dropdown[hidden] { display: none; }
-  .project-dropdown a { display: block; white-space: nowrap; }
-  .project-toggle:focus-visible, .project-dropdown a:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
-  @media (max-width: 680px) {
-    .header-actions nav .project-dropdown { gap: 14px; padding: 10px 12px; }
-  }
-  @media (hover: none) {
-    .project-dropdown { display: none; }
-  }
+  nav > ul > li > a.is-current { color: var(--ink); border-bottom-color: var(--ink); }
 </style>
-
-<script is:inline>
-  (() => {
-    const navigation = document.querySelector('.project-navigation');
-    const toggle = navigation?.querySelector('.project-toggle');
-    const dropdown = navigation?.querySelector('.project-dropdown');
-    if (!navigation || !toggle || !dropdown) return;
-    const touch = window.matchMedia('(hover: none)');
-    const setOpen = (open) => {
-      const expanded = !touch.matches && open;
-      if (touch.matches) {
-        toggle.removeAttribute('aria-expanded');
-        toggle.removeAttribute('aria-controls');
-      } else {
-        toggle.setAttribute('aria-expanded', String(expanded));
-        toggle.setAttribute('aria-controls', dropdown.id);
-      }
-      dropdown.hidden = !expanded;
-    };
-    navigation.addEventListener('mouseenter', () => setOpen(true));
-    navigation.addEventListener('mouseleave', () => setOpen(navigation.contains(document.activeElement)));
-    navigation.addEventListener('focusin', () => setOpen(true));
-    navigation.addEventListener('focusout', (event) => {
-      if (!navigation.contains(event.relatedTarget)) setOpen(navigation.matches(':hover'));
-    });
-    navigation.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && !dropdown.hidden && !touch.matches) {
-        toggle.focus();
-        setOpen(false);
-      }
-    });
-    touch.addEventListener('change', () => setOpen(false));
-    setOpen(false);
-  })();
-</script>

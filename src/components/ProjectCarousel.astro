@@ -1,0 +1,176 @@
+---
+import type { Project } from '../lib/projects';
+
+interface Props { projects: Project[]; }
+const { projects } = Astro.props;
+const hasControls = projects.length > 1;
+const previousCover = projects.at(-1)?.data.thumbnail;
+const nextCover = projects[1]?.data.thumbnail;
+---
+<section class="project-carousel" aria-label="프로젝트 커버" aria-roledescription="캐러셀" data-project-carousel>
+  <div class="carousel-frame" id="project-slides">
+    {hasControls && (
+      <div class="carousel-preview carousel-preview-previous" aria-hidden="true">
+        <img data-preview="previous" src={previousCover} hidden={!previousCover} alt="" decoding="async" />
+      </div>
+    )}
+    {projects.map(({ id, data }, index) => (
+      <div class="carousel-slide" data-slide hidden={index !== 0} role="group" aria-roledescription="슬라이드" aria-label={`${index + 1} / ${projects.length}`}>
+        <a class="carousel-cover" href={`/projects/${id}/`}>
+          {data.thumbnail && <img src={data.thumbnail} alt="" decoding="async" fetchpriority={index === 0 ? 'high' : 'auto'} />}
+          <span class="carousel-title">{data.title} <span aria-hidden="true">→</span></span>
+        </a>
+      </div>
+    ))}
+    {hasControls && (
+      <div class="carousel-preview carousel-preview-next" aria-hidden="true">
+        <img data-preview="next" src={nextCover} hidden={!nextCover} alt="" decoding="async" />
+      </div>
+    )}
+  </div>
+  {hasControls && (
+    <div class="carousel-controls" data-carousel-controls hidden>
+      <button type="button" class="carousel-arrow" data-step="-1" aria-label="이전 프로젝트" aria-controls="project-slides"><span aria-hidden="true">←</span></button>
+      <div class="carousel-dots" role="group" aria-label="프로젝트 선택">
+        {projects.map(({ data }, index) => (
+          <button type="button" class="carousel-dot" data-dot={index} aria-label={data.title} aria-current={index === 0 ? 'true' : undefined} aria-controls="project-slides"></button>
+        ))}
+      </div>
+      <button type="button" class="carousel-arrow" data-step="1" aria-label="다음 프로젝트" aria-controls="project-slides"><span aria-hidden="true">→</span></button>
+    </div>
+  )}
+  <p class="visually-hidden" data-carousel-status role="status"></p>
+</section>
+
+<script>
+  const carousel = document.querySelector<HTMLElement>('[data-project-carousel]');
+  const controls = carousel?.querySelector<HTMLElement>('[data-carousel-controls]');
+  if (carousel && controls) {
+    const slides = [...carousel.querySelectorAll<HTMLElement>('[data-slide]')];
+    const covers = slides.map((slide) => slide.querySelector('a')!);
+    const dots = [...controls.querySelectorAll<HTMLButtonElement>('[data-dot]')];
+    const status = carousel.querySelector<HTMLElement>('[data-carousel-status]')!;
+    const previousPreview = carousel.querySelector<HTMLImageElement>('[data-preview="previous"]')!;
+    const nextPreview = carousel.querySelector<HTMLImageElement>('[data-preview="next"]')!;
+    const wrap = (index: number) => (index + slides.length) % slides.length;
+    let current = 0;
+
+    const updatePreview = (preview: HTMLImageElement, index: number) => {
+      const image = covers[wrap(index)].querySelector('img');
+      preview.hidden = !image;
+      if (image) preview.src = image.src;
+    };
+
+    const showSlide = (index: number) => {
+      const next = wrap(index);
+      if (next === current) return;
+
+      const moveFocus = document.activeElement === covers[current];
+      slides[next].hidden = false;
+      if (moveFocus) covers[next].focus({ preventScroll: true });
+      slides[current].hidden = true;
+      dots[current].removeAttribute('aria-current');
+      dots[next].setAttribute('aria-current', 'true');
+      updatePreview(previousPreview, next - 1);
+      updatePreview(nextPreview, next + 1);
+      current = next;
+      if (!moveFocus) status.textContent = `${dots[current].getAttribute('aria-label')} (${current + 1}/${slides.length})`;
+    };
+
+    dots.forEach((dot, index) => dot.addEventListener('click', () => showSlide(index)));
+    controls.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((button) => {
+      button.addEventListener('click', () => showSlide(current + Number(button.dataset.step)));
+    });
+    carousel.addEventListener('keydown', (event) => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      showSlide(current + (event.key === 'ArrowLeft' ? -1 : 1));
+    });
+    controls.hidden = false;
+  }
+</script>
+
+<style>
+  .project-carousel { padding-top: clamp(24px, 3.4vw, 48px); }
+  .carousel-frame {
+    --cover-width: min(86vw, 1280px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, var(--cover-width)) minmax(0, 1fr);
+    align-items: stretch;
+    gap: clamp(12px, 1.4vw, 20px);
+  }
+  .carousel-slide { grid-area: 1 / 2; min-width: 0; }
+  .carousel-cover, .carousel-preview {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 18px;
+    background: var(--media-neutral);
+  }
+  .carousel-cover { aspect-ratio: 2.12 / 1; }
+  .carousel-cover:focus-visible { outline-offset: -5px; }
+  .carousel-cover img, .carousel-preview img {
+    position: absolute;
+    inset-block: 0;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 38%;
+  }
+  .carousel-cover img { width: 100%; }
+  .carousel-preview img { width: var(--cover-width); max-width: none; }
+  .carousel-preview-previous { grid-area: 1 / 1; border-radius: 0 18px 18px 0; }
+  .carousel-preview-previous img { right: 0; }
+  .carousel-preview-next { grid-area: 1 / 3; border-radius: 18px 0 0 18px; }
+  .carousel-preview-next img { left: 0; }
+  .carousel-title {
+    position: absolute;
+    inset: auto auto clamp(12px, 2vw, 28px) clamp(12px, 2vw, 28px);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    max-width: calc(100% - 24px);
+    padding: 10px 16px;
+    border: 1px solid var(--card-line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: clamp(.875rem, 1.5vw, 1.125rem);
+    font-weight: 800;
+    overflow-wrap: anywhere;
+  }
+  .carousel-cover:hover .carousel-title { border-color: var(--accent); color: var(--accent); }
+  .carousel-controls, .carousel-dots { display: flex; align-items: center; justify-content: center; }
+  .carousel-controls { gap: 8px; margin-top: 10px; }
+  .carousel-arrow, .carousel-dot {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    cursor: pointer;
+  }
+  .carousel-arrow { font-size: 1.2rem; }
+  .carousel-arrow:hover, .carousel-dot:hover { color: var(--ink); }
+  .carousel-dot::before {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: currentColor;
+    content: '';
+  }
+  .carousel-dot[aria-current='true'] { color: var(--accent); }
+  .carousel-dot[aria-current='true']::before { width: 24px; }
+  [hidden] { display: none; }
+  @media (max-width: 680px) {
+    .carousel-frame { grid-template-columns: minmax(0, 1fr); width: calc(100% - 32px); margin-inline: auto; }
+    .carousel-slide { grid-column: 1; }
+    .carousel-cover { aspect-ratio: 3 / 2; border-radius: 16px; }
+    .carousel-preview { display: none; }
+  }
+</style>

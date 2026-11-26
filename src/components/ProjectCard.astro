@@ -10,7 +10,7 @@ const tags = data.technologies.map(({ name }) => name);
 const visibleTags = tags.slice(0, 4);
 ---
 
-<article class="project-card" data-category={data.category} data-project-groups={groups.join(' ')}>
+<article class="project-card" data-category={data.category}>
   <a class="project-card-link" href={`/projects/${project.id}/`} data-project-id={project.id} aria-label={`${data.title} 상세 보기`}>
     <div class="project-visual">
       <div class="project-category-stickers">{labels.map((label) => <span>{label}</span>)}</div>

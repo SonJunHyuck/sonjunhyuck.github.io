@@ -16,6 +16,6 @@ description: 포트폴리오의 업무, 게임, 연구 프로젝트 상세와 �
 - 업무 프로젝트: [work.md](references/work.md)
 - 게임 프로젝트: [games.md](references/games.md)
 - 연구 프로젝트: [research.md](references/research.md)
-- 프로젝트 목록·필터·공유 카드: [list.md](references/list.md)
+- 프로젝트 목록·AI 협업 카드: [list.md](references/list.md)
 
 배치·스타일·반응형 변경이나 화면 문제를 다룰 때는 [portfolio-layout](../portfolio-layout/SKILL.md)을 함께 적용한다.

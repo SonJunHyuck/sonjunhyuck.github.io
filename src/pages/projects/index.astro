@@ -1,77 +1,112 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectGroupNav from '../../components/ProjectGroupNav.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
-import IntroHex from '../../components/IntroHex.astro';
-import ProfileCharacter from '../../components/ProfileCharacter.astro';
-import ProjectQuickView from '../../components/ProjectQuickView.astro';
+import ProjectCarousel from '../../components/ProjectCarousel.astro';
 import { getOrderedProjects, getProjectListDestination } from '../../lib/projects';
 
 const projects = await getOrderedProjects('projects');
 const next = await getProjectListDestination('ai');
 ---
-<BaseLayout title="Projects — Son Junhyuck" description="업무와 개인 프로젝트를 소개합니다." {next}>
+<BaseLayout title="Projects — Son Junhyuck" description="개인 게임과 그래픽스 연구 프로젝트를 소개합니다." {next}>
   <h1 class="visually-hidden">프로젝트</h1>
-  <section class="container project-work-style" aria-labelledby="work-style-heading">
-    <h2 id="work-style-heading" class="visually-hidden">이렇게 일합니다</h2>
-    <div class="project-work-style-layout">
-      <IntroHex instanceId="work-style">
-        <ProfileCharacter eager />
-      </IntroHex>
-    </div>
-  </section>
-  <section class="page-intro container project-hub-intro">
-    <ProjectGroupNav />
-  </section>
-  <section class="container projects-section project-list-section" aria-labelledby="project-list-heading">
-    <h2 id="project-list-heading" class="visually-hidden">전체 프로젝트 목록</h2>
-    <div id="all-projects" class="project-list-grid project-list-surface" role="region" aria-label="전체 프로젝트 목록">
-      {projects.map((project) => <ProjectCard {project} />)}
-    </div>
-    <p id="project-filter-status" class="visually-hidden" role="status" aria-live="polite"></p>
-    <p id="project-filter-empty" class="empty-state" hidden>이 분류의 프로젝트를 준비하고 있습니다.</p>
-  </section>
-  <ProjectQuickView {projects} />
+  {projects.length > 0 && (
+    <>
+      <ProjectCarousel {projects} />
+      <section class="container project-showcase" aria-label="프로젝트 소개">
+        {projects.map(({ id, data }) => (
+          <article class="project-feature">
+            <div class="project-media">
+              {data.thumbnail && <img src={data.thumbnail} alt="" loading="lazy" decoding="async" />}
+            </div>
+            <div class="project-copy">
+              <h2>{data.title}</h2>
+              <p>{data.cardLabel ?? data.summary}</p>
+              {data.technologies.length > 0 && (
+                <ul class="tag-list" aria-label="기술 스택">
+                  {data.technologies.slice(0, 4).map(({ name }) => <li>{name}</li>)}
+                </ul>
+              )}
+              <a class="project-detail-link" href={`/projects/${id}/`} aria-label={`${data.title} 자세히 보기`}>자세히 보기</a>
+            </div>
+          </article>
+        ))}
+      </section>
+    </>
+  )}
 </BaseLayout>
 
-<script>
-  import { projectGroups } from '../../config/projectGroups';
-
-  const list = document.querySelector<HTMLElement>('#all-projects');
-  const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-project-filter]')];
-  const cards = [...document.querySelectorAll<HTMLElement>('#all-projects [data-project-groups]')];
-  const status = document.querySelector<HTMLElement>('#project-filter-status');
-  const empty = document.querySelector<HTMLElement>('#project-filter-empty');
-  const validFilters: string[] = ['all', ...projectGroups.map((group) => group.id)];
-  const applyFilter = () => {
-    const requested = new URL(location.href).searchParams.get('filter') || 'all';
-    const filter = validFilters.includes(requested) ? requested : 'all';
-    let count = 0;
-    cards.forEach((card) => {
-      card.hidden = filter !== 'all' && !card.dataset.projectGroups?.split(' ').includes(filter);
-      if (!card.hidden) count++;
-    });
-    buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.projectFilter === filter)));
-    const label = buttons.find((button) => button.dataset.projectFilter === filter)?.textContent?.trim() || '전체';
-    if (list) {
-      list.setAttribute('aria-label', `${label} 프로젝트 목록`);
-      list.hidden = count === 0;
+<style>
+  .project-showcase {
+    display: grid;
+    gap: clamp(56px, 8vw, 112px);
+    padding-block: clamp(32px, 5vw, 72px) clamp(64px, 9vw, 128px);
+  }
+  .project-feature {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    --overlap: clamp(24px, 4.5vw, 64px);
+    --stagger: clamp(24px, 4vw, 56px);
+  }
+  .project-media, .project-copy { grid-row: 1; min-width: 0; border-radius: 20px; }
+  .project-media {
+    grid-column: 2;
+    margin-top: var(--stagger);
+    margin-inline-start: calc(-1 * var(--overlap));
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    outline: 1px solid var(--card-line);
+    outline-offset: -1px;
+    background: var(--media-neutral);
+  }
+  .project-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .project-copy {
+    grid-column: 1;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 86%;
+    padding: clamp(24px, 4vw, 48px);
+    border: 1px solid var(--card-line);
+    background: var(--surface);
+    box-shadow: 0 8px 24px var(--shadow);
+  }
+  .project-copy h2 {
+    margin: 0 0 12px;
+    font-size: clamp(26px, 3.1vw, 40px);
+    line-height: 1.16;
+    letter-spacing: -.045em;
+    word-break: keep-all;
+  }
+  .project-copy p { margin: 0 0 20px; color: var(--muted); line-height: 1.6; overflow-wrap: anywhere; }
+  .project-copy .tag-list { margin-bottom: 32px; }
+  .project-copy .tag-list li { border-radius: 999px; overflow-wrap: anywhere; }
+  .project-detail-link {
+    display: inline-grid;
+    place-items: center;
+    min-height: 44px;
+    min-width: 140px;
+    margin-top: auto;
+    padding: 8px 20px;
+    border: 1px solid var(--interactive-line);
+    border-radius: 999px;
+    font-size: .875rem;
+    font-weight: 800;
+  }
+  .project-detail-link:hover { border-color: var(--accent); color: var(--accent); }
+  @media (width > 680px) {
+    .project-feature:nth-child(even) .project-media {
+      grid-column: 1;
+      margin-inline: 0 calc(-1 * var(--overlap));
     }
-    if (empty) empty.hidden = count > 0;
-    if (status) status.textContent = `${label} 프로젝트 ${count}개`;
-    document.querySelectorAll<HTMLAnchorElement>('.project-dropdown a').forEach((link) => {
-      if (new URL(link.href).searchParams.get('filter') === filter) link.setAttribute('aria-current', 'page');
-      else link.removeAttribute('aria-current');
-    });
-  };
-  buttons.forEach((button) => button.addEventListener('click', () => {
-    const url = new URL(location.href);
-    const filter = button.dataset.projectFilter || 'all';
-    if (filter === 'all') url.searchParams.delete('filter');
-    else url.searchParams.set('filter', filter);
-    if (url.href !== location.href) history.pushState(null, '', url);
-    applyFilter();
-  }));
-  window.addEventListener('popstate', applyFilter);
-  applyFilter();
-</script>
+    .project-feature:nth-child(even) .project-copy { grid-column: 2; }
+  }
+  @media (max-width: 680px) {
+    .project-showcase { gap: 36px; }
+    .project-feature { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .project-media { grid-column: 1; margin: 0; }
+    .project-copy { grid-area: 2 / 1; min-height: 0; }
+    .project-media, .project-copy { border-radius: 16px; }
+    .project-copy .tag-list { margin-bottom: 24px; }
+  }
+</style>
