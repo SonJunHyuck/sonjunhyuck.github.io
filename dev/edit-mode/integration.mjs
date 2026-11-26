@@ -122,33 +122,21 @@ async function getTargets(root, herdr) {
     throw new RequestError(502, 'herdr에서 대상 pane 목록을 읽지 못했습니다. 개발 서버의 herdr 연결을 확인해 주세요.');
   }
 
-  const localPanes = panes.filter((pane) => typeof pane?.cwd === 'string' && resolve(pane.cwd) === root &&
-    typeof pane.pane_id === 'string' && pane.pane_id);
-  const candidates = (agent) => localPanes.filter((pane) => pane.agent === agent).map((pane) => ({
-    id: pane.pane_id, title: pane.terminal_title ?? '', tab: pane.tab_id ?? '',
-  }));
-  const codex = candidates('codex');
-  const claude = candidates('claude');
-  const missing = [!codex.length && 'Codex', !claude.length && 'Claude'].filter(Boolean);
-  const error = missing.length ? `이 저장소의 ${missing.join(' 및 ')} pane을 찾지 못했습니다.` : null;
-  return { codex, claude, error };
+  const claude = panes
+    .filter((pane) => pane?.agent === 'claude' && typeof pane.cwd === 'string' && resolve(pane.cwd) === root &&
+      typeof pane.pane_id === 'string' && pane.pane_id)
+    .map((pane) => ({ id: pane.pane_id, title: pane.terminal_title ?? '', tab: pane.tab_id ?? '' }));
+  const error = claude.length ? null : '이 저장소의 Claude pane을 찾지 못했습니다.';
+  return { claude, error };
 }
 
-function buildPrompt(file, ids, claudePane) {
+function buildPrompt(file, ids) {
   return `포트폴리오 편집 모드에서 사용자가 모아 보낸 수정 요청입니다.
 
 요청 파일: ${file}
 이번 요청 ID: ${JSON.stringify(ids)}
-요청 본문은 위 파일에서 해당 ID의 항목을 읽으세요. 해당 항목에 status "sent"가 기록된 것을 확인한 뒤 처리하세요.
 
-- AGENTS.md와 portfolio-edit-requests 및 관련 스킬을 따르고, 위 ID의 요청 범위만 수정하세요.
-- newText가 있으면 빈 문자열을 포함해 값 그대로 교체하세요. comment는 수정 지시로 해석하세요.
-- 판단이 애매한 요청은 보류하고 이유를 보고하세요. 커밋하지 마세요.
-- 빌드 확인은 아래 Node 22 PATH로 실행하세요.
-  PATH="/Users/sonny/Library/Application Support/com.raycast.macos/NodeJS/runtime/22.23.5/bin:$PATH" npm run build
-- 결과를 기록할 때 요청 파일을 다시 읽어 다른 항목을 보존하세요. 반영한 요청에는 status "done"과 doneAt(ISO 시각), 보류한 요청에는 status "held"와 heldReason을 기록하세요.
-- 각 요청의 반영 또는 보류 결과와 이유, 변경 파일, 빌드 결과를 다음 명령으로 Claude에 보고하세요.
-  herdr agent prompt ${claudePane} "<보고>"`;
+portfolio-edit-requests 스킬을 따라 요청을 정리하고 페이지·기능별 Codex에 맡기세요.`;
 }
 
 export default function editMode() {
@@ -175,13 +163,13 @@ export default function editMode() {
     });
   }
 
-  function sendRequests({ batch, codexPane, claudePane }) {
+  function sendRequests({ batch, claudePane }) {
     if (sending) throw new RequestError(409, '이미 요청을 보내고 있습니다.');
     sending = true;
     return serialize(async () => {
       const targets = await getTargets(root, herdr);
       if (targets.error) throw new RequestError(409, targets.error);
-      if (!targets.codex.some(({ id }) => id === codexPane) || !targets.claude.some(({ id }) => id === claudePane)) {
+      if (!targets.claude.some(({ id }) => id === claudePane)) {
         throw new RequestError(409, '대상 pane이 바뀌었습니다. 목록을 다시 열고 대상을 확인해 주세요.');
       }
       const open = openEntries(await readEntries(file));
@@ -189,20 +177,20 @@ export default function editMode() {
         throw new RequestError(409, '보낼 요청 목록이 바뀌었습니다. 새 요청 수를 확인해 주세요.');
       }
       const ids = new Set(open.map(({ id }) => id));
-      const saveError = 'Codex에 전달했지만 전송 상태를 저장하지 못했습니다. 다시 보내기 전에 대상 pane과 요청 파일을 확인해 주세요.';
+      const saveError = 'Claude에 전달했지만 전송 상태를 저장하지 못했습니다. 다시 보내기 전에 대상 pane과 요청 파일을 확인해 주세요.';
       if ([...ids].some((id) => delivered.has(id))) throw new RequestError(409, saveError);
 
       try {
-        await runFile(herdr, ['agent', 'prompt', codexPane, buildPrompt(file, [...ids], claudePane)], { cwd: root, timeout: 10000 });
+        await runFile(herdr, ['agent', 'prompt', claudePane, buildPrompt(file, [...ids])], { cwd: root, timeout: 10000 });
       } catch {
-        throw new RequestError(502, 'herdr가 Codex에 프롬프트를 보내지 못했습니다. 대상 pane과 herdr 연결을 확인해 주세요.');
+        throw new RequestError(502, 'herdr가 Claude에 프롬프트를 보내지 못했습니다. 대상 pane과 herdr 연결을 확인해 주세요.');
       }
       for (const id of ids) delivered.add(id);
       const sentAt = new Date().toISOString();
       try {
         const latest = await readEntries(file);
         await writeEntries(file, latest.map((entry) => ids.has(entry.id)
-          ? { ...entry, status: entry.status === 'open' ? 'sent' : entry.status, sentAt, sentTo: codexPane }
+          ? { ...entry, status: entry.status === 'open' ? 'sent' : entry.status, sentAt, sentTo: claudePane }
           : entry));
       } catch (error) {
         throw new RequestError(500, saveError, { cause: error });
