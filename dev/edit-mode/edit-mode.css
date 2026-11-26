@@ -11,7 +11,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
 
-button, textarea { color: inherit; font: inherit; }
+button, select, textarea { color: inherit; font: inherit; }
 button {
   padding: 5px 10px;
   border: 1px solid var(--interactive-line);
@@ -22,7 +22,7 @@ button {
 }
 button:hover:not(:disabled) { border-color: var(--accent); }
 button:disabled { opacity: .6; cursor: default; }
-:is(button, summary, textarea):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+:is(button, summary, select, textarea):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 #toggle, #panel, #editor {
   pointer-events: auto;
@@ -66,12 +66,20 @@ summary { padding: 6px 11px; font-weight: 800; cursor: pointer; }
   overflow: auto;
   border-top: 1px solid var(--line);
 }
+.send-controls { display: grid; gap: 6px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.send-controls select { width: 100%; min-width: 0; padding: 4px; border: 1px solid var(--interactive-line); border-radius: 6px; background: var(--surface); }
+.send-action, .request-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.send-action { justify-content: space-between; }
 #list { display: grid; margin: 0; padding: 0; list-style: none; }
 #list > li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px; }
 #list > li + li { border-top: 1px solid var(--soft-line); }
+#list > li:is([data-status='sent'], [data-status='done']) .request { opacity: .65; }
+#list > li:is([data-status='sent'], [data-status='done']) .request:is(:hover, :focus-visible) { opacity: 1; }
 .request { min-width: 0; padding: 6px; border-color: var(--surface); text-align: left; }
 .request span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .request time { color: var(--muted); font-size: 11px; font-weight: 400; }
+.status-badge { padding: 0 5px; border: 1px solid var(--interactive-line); border-radius: 4px; font: 11px/1.5 var(--mono); }
+.request .held-reason { margin-top: 4px; color: var(--muted); white-space: normal; overflow-wrap: anywhere; }
 
 #editor {
   position: fixed;
@@ -95,6 +103,6 @@ textarea {
   font-weight: 400;
 }
 textarea[readonly] { background: var(--paper); color: var(--subtle-copy); }
-#panel-message, #editor-message { color: var(--muted); overflow-wrap: anywhere; }
-#panel-message:empty, #editor-message:empty { display: none; }
+#panel-message, #editor-message, #target-error, #send-message { color: var(--muted); overflow-wrap: anywhere; }
+:is(#panel-message, #editor-message, #target-error, #send-message):empty { display: none; }
 .actions { display: flex; justify-content: flex-end; gap: 6px; }

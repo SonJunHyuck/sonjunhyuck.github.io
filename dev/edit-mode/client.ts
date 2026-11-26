@@ -17,7 +17,22 @@ interface RequestDraft {
 interface EditRequest extends RequestDraft {
   id: string;
   createdAt: string;
-  status: 'open' | 'done';
+  status: 'open' | 'sent' | 'done' | 'held';
+  heldReason?: string;
+}
+
+interface Pane {
+  id: string;
+  title: string;
+  tab: string;
+}
+
+interface SendTargets {
+  codex: Pane[];
+  claude: Pane[];
+  error: string | null;
+  openCount: number;
+  batch: string;
 }
 
 const endpoint = '/__edit-requests';
@@ -32,6 +47,16 @@ ui.innerHTML = `
     <details id="panel" hidden>
       <summary>이 페이지의 요청 <span id="count"></span></summary>
       <div class="requests">
+        <div class="send-controls">
+          <label hidden>받을 Codex pane<select id="codex-pane"></select></label>
+          <label hidden>보고받을 Claude pane<select id="claude-pane"></select></label>
+          <div class="send-action">
+            <span id="send-count">전체 페이지의 open 요청</span>
+            <button id="send" type="button" class="primary" aria-describedby="send-count target-error" disabled>보내기</button>
+          </div>
+          <div id="target-error" role="status"></div>
+          <div id="send-message" role="status"></div>
+        </div>
         <div id="panel-message" role="status"></div>
         <ul id="list"></ul>
       </div>
@@ -59,6 +84,12 @@ const panel = ui.querySelector<HTMLDetailsElement>('#panel')!;
 const count = ui.querySelector<HTMLElement>('#count')!;
 const list = ui.querySelector<HTMLUListElement>('#list')!;
 const panelMessage = ui.querySelector<HTMLElement>('#panel-message')!;
+const sendCount = ui.querySelector<HTMLElement>('#send-count')!;
+const sendButton = ui.querySelector<HTMLButtonElement>('#send')!;
+const codexPane = ui.querySelector<HTMLSelectElement>('#codex-pane')!;
+const claudePane = ui.querySelector<HTMLSelectElement>('#claude-pane')!;
+const targetError = ui.querySelector<HTMLElement>('#target-error')!;
+const sendMessage = ui.querySelector<HTMLElement>('#send-message')!;
 const editor = ui.querySelector<HTMLFormElement>('#editor')!;
 const tag = ui.querySelector<HTMLElement>('#target-tag')!;
 const originalField = ui.querySelector<HTMLLabelElement>('#original-field')!;
@@ -78,6 +109,9 @@ let highlightTimeout = 0;
 let draft: { target: Element; request: RequestDraft } | null = null;
 let saving = false;
 let refreshId = 0;
+let targets: SendTargets | null = null;
+let refreshing = false;
+let sending = false;
 
 function eventTarget(event: Event): Element | null {
   const target = event.target;
@@ -222,9 +256,8 @@ function openEditor(target: Element) {
   (replacementField.hidden ? comment : replacement).focus({ preventScroll: true });
 }
 
-async function api<T>(method: string, body?: object): Promise<T> {
-  const query = method === 'GET' ? `?${new URLSearchParams({ page: location.pathname })}` : '';
-  const response = await fetch(endpoint + query, {
+async function api<T>(method: string, body?: object, path = ''): Promise<T> {
+  const response = await fetch(endpoint + path, {
     method,
     headers: body ? { 'Content-Type': 'application/json' } : undefined,
     body: body ? JSON.stringify(body) : undefined,
@@ -270,6 +303,7 @@ async function deleteRequest(entry: EditRequest, button: HTMLButtonElement) {
 
 function requestRow(entry: EditRequest) {
   const row = document.createElement('li');
+  row.dataset.status = entry.status;
   const jump = document.createElement('button');
   jump.type = 'button';
   jump.className = 'request';
@@ -278,30 +312,92 @@ function requestRow(entry: EditRequest) {
   const time = document.createElement('time');
   time.dateTime = entry.createdAt;
   time.textContent = new Date(entry.createdAt).toLocaleString('ko-KR', { dateStyle: 'short', timeStyle: 'short' });
-  if (entry.status === 'done') time.textContent += ' · 반영 완료';
-  jump.append(summary, time);
+  const meta = document.createElement('div');
+  meta.className = 'request-meta';
+  const badge = document.createElement('span');
+  badge.className = 'status-badge';
+  badge.textContent = entry.status;
+  meta.append(time, badge);
+  jump.append(summary, meta);
+  if (entry.status === 'held' && entry.heldReason) {
+    const reason = document.createElement('span');
+    reason.className = 'held-reason';
+    reason.textContent = entry.heldReason;
+    jump.append(reason);
+  }
   jump.addEventListener('click', () => jumpTo(entry));
+  row.append(jump);
 
-  const remove = document.createElement('button');
-  remove.type = 'button';
-  remove.textContent = '삭제';
-  remove.setAttribute('aria-label', `요청 삭제 (${summary.textContent.slice(0, 60)})`);
-  remove.addEventListener('click', () => void deleteRequest(entry, remove));
-  row.append(jump, remove);
+  if (entry.status === 'open' || entry.status === 'held') {
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.textContent = '삭제';
+    remove.setAttribute('aria-label', `요청 삭제 (${summary.textContent.slice(0, 60)})`);
+    remove.addEventListener('click', () => void deleteRequest(entry, remove));
+    row.append(remove);
+  }
   return row;
+}
+
+function populatePanes(select: HTMLSelectElement, panes: Pane[]) {
+  const previous = select.value;
+  const options = panes.map(({ id, title, tab }) => new Option([title, tab, id].filter(Boolean).join(' · '), id));
+  if (panes.length > 1) options.unshift(new Option('pane을 선택해 주세요', ''));
+  select.replaceChildren(...options);
+  if (panes.some(({ id }) => id === previous)) select.value = previous;
+  select.parentElement!.hidden = panes.length < 2;
+}
+
+function updateSendButton() {
+  sendButton.disabled = sending || refreshing || !targets?.openCount || !!targets.error || !codexPane.value || !claudePane.value;
+  sendButton.textContent = sending ? '보내는 중…' : '보내기';
+}
+
+async function sendOpenRequests() {
+  if (sendButton.disabled || !targets) return;
+  const { batch, openCount } = targets;
+  const selection = { batch, codexPane: codexPane.value, claudePane: claudePane.value };
+  if (!window.confirm(`open 요청 ${openCount}개(전체 페이지 기준)를 Codex에 보낼까요?`)) return;
+  sending = true;
+  updateSendButton();
+  sendMessage.textContent = '';
+  try {
+    const { count } = await api<{ count: number }>('POST', selection, '/send');
+    sendMessage.textContent = `요청 ${count}개를 Codex에 보냈습니다.`;
+  } catch (error) {
+    sendMessage.textContent = error instanceof Error ? error.message : '요청을 보내지 못했습니다.';
+  } finally {
+    await refreshList();
+    sending = false;
+    updateSendButton();
+  }
 }
 
 async function refreshList() {
   const id = ++refreshId;
-  try {
-    const entries = await api<EditRequest[]>('GET');
-    if (id !== refreshId) return;
+  refreshing = true;
+  updateSendButton();
+  const [requestsResult, targetsResult] = await Promise.allSettled([
+    api<EditRequest[]>('GET', undefined, `?${new URLSearchParams({ page: location.pathname })}`),
+    api<SendTargets>('GET', undefined, '/targets'),
+  ]);
+  if (id !== refreshId) return;
+  if (requestsResult.status === 'fulfilled') {
+    const entries = requestsResult.value;
     count.textContent = `(${entries.length})`;
     list.replaceChildren(...entries.reverse().map(requestRow));
     panelMessage.textContent = entries.length ? '' : '남긴 요청이 없습니다.';
-  } catch (error) {
-    if (id === refreshId) panelMessage.textContent = error instanceof Error ? error.message : '요청을 불러오지 못했습니다.';
+  } else {
+    panelMessage.textContent = requestsResult.reason instanceof Error ? requestsResult.reason.message : '요청을 불러오지 못했습니다.';
   }
+  targets = targetsResult.status === 'fulfilled' ? targetsResult.value : null;
+  populatePanes(codexPane, targets?.codex ?? []);
+  populatePanes(claudePane, targets?.claude ?? []);
+  sendCount.textContent = targets ? `전체 페이지의 open 요청 ${targets.openCount}개` : '전체 페이지의 open 요청';
+  targetError.textContent = targetsResult.status === 'fulfilled' ? targetsResult.value.error ?? '' :
+    (targetsResult.reason instanceof Error ? targetsResult.reason.message : '대상 pane을 불러오지 못했습니다.');
+  refreshing = false;
+  updateSendButton();
 }
 
 function inspectClick(event: MouseEvent) {
@@ -347,6 +443,11 @@ function setEnabled(enabled: boolean) {
 }
 
 toggle.addEventListener('click', () => setEnabled(!inspection));
+sendButton.addEventListener('click', () => void sendOpenRequests());
+codexPane.addEventListener('change', updateSendButton);
+claudePane.addEventListener('change', updateSendButton);
+panel.addEventListener('toggle', () => { if (inspection && panel.open) void refreshList(); });
+window.addEventListener('focus', () => { if (inspection && panel.open) void refreshList(); });
 ui.querySelector('#cancel')!.addEventListener('click', () => closeEditor(true));
 const dockObserver = new ResizeObserver(positionDock);
 dockObserver.observe(dock);
