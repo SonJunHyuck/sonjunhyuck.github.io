@@ -1,8 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import TagList from '../../components/TagList.astro';
-import { mottos, renderMotto } from '../../data/mottos';
-import { NOTION_DEVLOG_URL } from '../../config/links';
+import { NOTION_DEVLOG_URL, SURFIT_RESUME_URL } from '../../config/links';
 import { getProjectListDestination } from '../../lib/projects';
 
 const next = await getProjectListDestination('projects');
@@ -19,7 +18,6 @@ const experience = [
     projects: [
       {
         name: 'Project R',
-        href: '/experience/voyager/#project-r',
         description: 'Unity 기반 메타버스 소셜 게임 개발 참여',
         contributions: [
           { keyword: '빌드·배포', icon: 'workflow', text: 'Jenkins를 활용한 클라이언트 빌드·배포 자동화', href: '/experience/voyager/#빌드-자동화' },
@@ -29,12 +27,11 @@ const experience = [
       },
       {
         name: 'InspixWorld',
-        href: '/experience/voyager/#inspix-world',
         description: 'Unity 기반 메타버스 소셜 게임 라이브서비스 유지보수',
         contributions: [
           { keyword: '라이브 서비스 운영', icon: 'bug', text: '라이브 서비스 이슈 분석·수정 및 업데이트 대응', href: '/experience/voyager/#라이브-이슈-대응' },
-          { keyword: '협업·조율', icon: 'list-checks', text: '팀원과 수정 공수를 검토하고, 이슈 중요도와 함께 종합해 파트너사와 버전별 수정·업데이트 범위를 조율', href: '/experience/voyager/#라이브-이슈-대응' },
-          { keyword: '문서화', icon: 'book-open', text: '운영 중 축적한 경험과 신규 투입 인원을 위한 가이드 작성', href: '/experience/voyager/#협업-및-문서화' },
+          { keyword: '협업·조율', icon: 'list-checks', text: '버전별 수정·업데이트 범위 조율', href: '/experience/voyager/#라이브-이슈-대응' },
+          { keyword: '문서화', icon: 'book-open', text: '신규 투입 인원을 위한 가이드 작성', href: '/experience/voyager/#협업-및-문서화' },
         ],
       },
     ],
@@ -62,48 +59,22 @@ const experience = [
 ---
 
 <BaseLayout title="프로필 — Son Junhyuck" description="Son Junhyuck의 이력, 역량, 활동을 정리한 게임 개발 포트폴리오" {next}>
-  <Fragment slot="head">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Song+Myung:wght@400&display=swap" rel="stylesheet" />
-  </Fragment>
-  <section class="intro-profile" aria-labelledby="intro-title">
-    <div class="container intro-profile-inner">
-      <div class="intro-profile-top">
-        <div class="intro-profile-copy">
-          <p class="eyebrow intro-role">GAME CLIENT DEVELOPER</p>
-          <h1 id="intro-title" class="visually-hidden">손준혁 프로필</h1>
-          <div class="profile-mottos" data-profile-mottos>
-            {mottos.map((motto, index) => <blockquote aria-hidden={index !== 0 ? 'true' : undefined} set:html={renderMotto(motto)} />)}
-          </div>
-          <script is:inline>
-            (() => {
-              const container = document.currentScript.previousElementSibling;
-              const quotes = [...container.children];
-              const selectMotto = () => {
-                const selected = Math.floor(Math.random() * quotes.length);
-                quotes.forEach((quote, index) => {
-                  if (index === selected) quote.removeAttribute('aria-hidden');
-                  else quote.setAttribute('aria-hidden', 'true');
-                });
-              };
-              selectMotto();
-              window.addEventListener('pageshow', (event) => {
-                if (event.persisted) selectMotto();
-              });
-            })();
-          </script>
-        </div>
-        <figure class="intro-portrait">
-          <img src="/profile.webp" alt="꽃밭에서 촬영한 손준혁 프로필 사진" width="900" height="1200" fetchpriority="high" />
-          <figcaption>
-            <strong class="intro-name">손준혁</strong>
-            <span>SON JUNHYUCK</span>
-            <p class="intro-job">게임 클라이언트 개발</p>
-            <a class="button button-primary intro-download" href="/files/son-junhyuck-portfolio.pdf" download="손준혁_포트폴리오.pdf">포트폴리오 PDF 다운로드</a>
-          </figcaption>
-        </figure>
-      </div>
+  <section class="intro-profile container" aria-labelledby="intro-title">
+    <div class="intro-profile-top">
+      <img class="intro-portrait" src="/profile.webp" alt="꽃밭에서 촬영한 손준혁 프로필 사진" width="900" height="1200" fetchpriority="high" />
+      <h1 id="intro-title">손준혁</h1>
+      <p class="intro-job">Unity 클라이언트 개발자</p>
+      <p class="intro-contact">
+        <a href="mailto:s.junhyuck@gmail.com">s.junhyuck@gmail.com</a>
+        <span aria-hidden="true">·</span>
+        <a href="tel:01037552737">010-3755-2737</a>
+      </p>
+    </div>
+    <div class="intro-statement">
+      <h2>"팀의 작업에 세이브 포인트를 만듭니다."</h2>
+      <p>게임의 세이브 포인트는 다음 플레이어가 처음부터 시작하지 않게 해 줍니다. 저는 개발에도 이런 지점이 필요하다고 생각합니다.</p>
+      <p>한 번 해결한 문제는 기록으로 남기고, 자주 반복되는 일은 누가 해도 같은 결과가 나오도록 자동화합니다.</p>
+      <p>새로 합류한 사람이 처음부터 헤매지 않고, 다음 작업이 멈춘 자리에서 바로 이어지게, 세이브 포인트를 하나씩 늘려 가는 개발자가 되겠습니다.</p>
     </div>
   </section>
 
@@ -115,7 +86,7 @@ const experience = [
         <div class="experience-list">
           {experience.map((item) => (
             <div class="experience-timeline">
-              <article class="experience-item">
+              <article class:list={['experience-item', { 'experience-item-voyager': item.company === '보이저' }]}>
                 <span class="timeline-dot" aria-hidden="true"></span>
                 <header class="resume-item-header">
                   <div><h3>{item.company}</h3><p class="experience-role">{item.role}</p></div>
@@ -124,13 +95,13 @@ const experience = [
                 <div class="project-contributions">
                   {item.projects.map((project) => (
                     <section class="contribution-group">
-                      <h4>{'href' in project ? <a class="contribution-project-link" href={project.href}>{project.name}<span aria-hidden="true">→</span></a> : project.name}</h4>
+                      <h4>{project.name}</h4>
                       <p>{project.description}</p>
                       <ul class="contribution-cards" role="list">
                         {project.contributions.map((contribution) => {
                           const body = <>
                             <div class="contribution-card-heading"><span class="contribution-icon" aria-hidden="true" set:html={contributionIcons[`../../assets/icons/lucide/${contribution.icon}.svg`]} /><strong>{contribution.keyword}</strong></div>
-                            <p>{contribution.text}</p>
+                            <p title={item.company === '보이저' ? contribution.text : undefined}>{contribution.text}</p>
                           </>;
                           return 'href' in contribution
                             ? <li class="contribution-card contribution-card-linked"><a class="contribution-card-link" href={contribution.href}>{body}<span class="contribution-card-arrow" aria-hidden="true">→</span></a></li>
@@ -145,11 +116,10 @@ const experience = [
                   <TagList tags={item.tech} label={`${item.company} 기술 스택`} />
                 </div>
                 {item.company === '보이저' && (
-                  <a class="button button-primary experience-detail-link" href="/experience/voyager/">업무경험 상세보기 →</a>
-                  <aside class="experience-reflection" aria-label="보이저 근무 회고">
-                    <p>라이브 서비스 유지보수와 빌드 파이프라인 작업을 경험하며, 개별 구현을 넘어 프로젝트 전체의 흐름을 보는 시야를 넓혔습니다. 신규 입사자 멘토링과 온보딩 가이드 작성을 통해 동료가 적응하고 함께 일할 수 있도록 돕는 방법도 배웠습니다.</p>
-                    <a class="detail-link" href="/reflections/voyager/">Voyager 근무 회고 읽기 →</a>
-                  </aside>
+                  <div class="experience-actions">
+                    <a class="button button-primary" href="/experience/voyager/">업무경험 상세보기 →</a>
+                    <a class="button button-primary" href="/reflections/voyager/">근무 회고 →</a>
+                  </div>
                 )}
               </article>
             </div>
@@ -195,7 +165,7 @@ const experience = [
                 <div class="credential-heading"><strong>2014 한국과학기술창작대전 최우수상</strong><span class="status-badge">AWARD</span></div>
                 <p>JH Feeltware팀 (계명대)</p>
                 <p>Unity 3D 기반 모션 인식 기기와 HMD를 접목한 VR 체험형 우주 시뮬레이션 개발로 수상했습니다.</p>
-                <a class="button button-outline activity-link" href="https://www.korea.kr/briefing/pressReleaseView.do?newsId=156054488#pressRelease" target="_blank" rel="noopener noreferrer" aria-label="2014 한국과학기술창작대전 수상 관련 기사 새 탭에서 열기">관련 기사 보기 <span aria-hidden="true">↗</span></a>
+                <a class="button button-outline activity-link" href="https://www.korea.kr/briefing/pressReleaseView.do?newsId=156054488#pressRelease" target="_blank" rel="noopener noreferrer" aria-label="2014 한국과학기술창작대전 수상 관련 기사 새 탭에서 열기">관련 기사</a>
               </div>
               <time>2014.12</time>
             </div>
@@ -213,16 +183,13 @@ const experience = [
         </div>
       </section>
 
-      <nav class="profile-destinations" aria-label="다음으로 둘러보기">
-        <a class="button button-primary" href="/projects/">프로젝트 구경하기 →</a>
-      </nav>
-
       <div class="intro-connect">
         <p class="eyebrow">CONNECT</p>
         <div class="intro-connect-links">
-          <a href="https://github.com/SonJunHyuck" target="_blank" rel="noopener noreferrer" aria-label="손준혁 GitHub 프로필 새 탭에서 열기"><img src="/icons/github.svg" alt="" />GitHub <span aria-hidden="true">↗</span></a>
-          <a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="손준혁 Notion 개발일지를 새 탭에서 열기"><img src="/icons/notion.svg" alt="" />Notion <span aria-hidden="true">↗</span></a>
-          <a href="https://www.canva.com/design/DAHICLybg4Y/dWylZ6Ir57iAQCFhZH8y9Q/view?utlId=ha95d026d35" target="_blank" rel="noopener noreferrer" aria-label="손준혁 Canva 포트폴리오 새 탭에서 열기"><img src="/icons/canva.svg" alt="" />Canva <span aria-hidden="true">↗</span></a>
+          <a href="https://github.com/SonJunHyuck" target="_blank" rel="noopener noreferrer" aria-label="손준혁 GitHub 프로필 새 탭에서 열기"><img src="/icons/github.svg" alt="" />GitHub</a>
+          <a href={NOTION_DEVLOG_URL} target="_blank" rel="noopener noreferrer" aria-label="손준혁 Notion 개발일지를 새 탭에서 열기"><img src="/icons/notion.svg" alt="" />Notion</a>
+          <a href="https://www.canva.com/design/DAHICLybg4Y/dWylZ6Ir57iAQCFhZH8y9Q/view?utlId=ha95d026d35" target="_blank" rel="noopener noreferrer" aria-label="손준혁 Canva 포트폴리오 새 탭에서 열기"><img src="/icons/canva.svg" alt="" />Canva</a>
+          <a href={SURFIT_RESUME_URL} target="_blank" rel="noopener noreferrer" aria-label="손준혁 서핏 이력서 새 탭에서 열기"><span class="intro-connect-icon" aria-hidden="true" set:html={contributionIcons['../../assets/icons/lucide/book-open.svg']} />서핏 이력서</a>
         </div>
       </div>
     </div>
