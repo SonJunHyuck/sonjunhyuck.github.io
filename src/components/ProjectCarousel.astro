@@ -1,7 +1,7 @@
 ---
-import type { Project } from '../lib/projects';
+import type { ProjectListItem } from '../lib/projects';
 
-interface Props { projects: Project[]; }
+interface Props { projects: ProjectListItem[]; }
 const { projects } = Astro.props;
 const count = projects.length;
 const hasControls = count > 1;
@@ -16,7 +16,8 @@ const categories = { game: '게임', graphics: '그래픽스 연구', ai: 'AI �
   <div class="carousel-frame">
     <div class="carousel-track" id="project-slides">
       {positions.map((position) => {
-        const { id, data } = projects[(position + count) % count];
+        const { id, data, series } = projects[(position + count) % count];
+        const title = series?.title ?? data.title;
         const isCopy = position < 0 || position >= count;
         const categoryId = isCopy ? undefined : `carousel-category-${id}`;
         const content = (
@@ -27,7 +28,7 @@ const categories = { game: '게임', graphics: '그래픽스 연구', ai: 'AI �
             <div class="carousel-overlay">
               <div class="carousel-caption">
                 <span id={categoryId} class="carousel-category">{categories[data.category]}</span>
-                <span class="carousel-title">{data.title}</span>
+                <span class="carousel-title">{title}</span>
                 <span class="carousel-cta">자세히 보기</span>
               </div>
             </div>
@@ -37,7 +38,7 @@ const categories = { game: '게임', graphics: '그래픽스 연구', ai: 'AI �
           <div class="carousel-cover carousel-item" style={`--position: ${position}`} data-position={position} aria-hidden="true">{content}</div>
         ) : (
           <div class="carousel-item" style={`--position: ${position}`} data-position={position} data-slide inert={position !== 0} role="group" aria-roledescription="슬라이드" aria-label={`${position + 1} / ${count}`}>
-            <a class="carousel-cover" href={`/projects/${id}/`} aria-label={`${data.title} 자세히 보기`} aria-describedby={categoryId}>{content}</a>
+            <a class="carousel-cover" href={`/projects/${id}/`} aria-label={`${title} 자세히 보기`} aria-describedby={categoryId}>{content}</a>
           </div>
         );
       })}
@@ -47,8 +48,8 @@ const categories = { game: '게임', graphics: '그래픽스 연구', ai: 'AI �
     <div class="carousel-controls" data-carousel-controls hidden>
       <button type="button" class="carousel-preview-control" data-step="-1" aria-label="이전 프로젝트" aria-controls="project-slides" hidden={paired}></button>
       <div class="carousel-dots" role="group" aria-label="프로젝트 선택">
-        {projects.map(({ data }, index) => (
-          <button type="button" class="carousel-dot" data-dot={index} aria-label={data.title} aria-current={index === 0 ? 'true' : undefined} aria-controls="project-slides"></button>
+        {projects.map(({ data, series }, index) => (
+          <button type="button" class="carousel-dot" data-dot={index} aria-label={series?.title ?? data.title} aria-current={index === 0 ? 'true' : undefined} aria-controls="project-slides"></button>
         ))}
       </div>
       <button type="button" class="carousel-preview-control" data-step="1" aria-label="다음 프로젝트" aria-controls="project-slides"></button>

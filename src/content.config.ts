@@ -10,6 +10,12 @@ const projects = defineCollection({
     cardLabel: z.string().optional(),
     cardContribution: z.string().optional(),
     aiCollaboration: z.boolean().default(false),
+    series: z.object({
+      id: z.string().trim().min(1),
+      title: z.string().trim().min(1),
+      part: z.number().int().positive(),
+      partLabel: z.string().trim().min(1),
+    }).optional(),
     description: z.string(),
     publishedAt: z.coerce.date(),
     category: z.enum(['game', 'graphics', 'ai']),

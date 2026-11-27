@@ -1,5 +1,5 @@
 ---
-title: "AI 협업으로 구축한 포트폴리오"
+title: "웹 포트폴리오: AI 협업을 곁들인"
 summary: "익숙하지 않은 웹 프런트엔드에 자연어 AI 협업으로 도전하고, 공통 규격과 작업 방식을 다듬은 개인 프로젝트입니다."
 cardLabel: "AI 협업으로 만든 개인 포트폴리오 웹사이트"
 cardContribution: "페이지 구성과 디자인 방향을 정하고, 통합 결과를 검토하며 공통 규격과 AI 작업 범위를 조정했습니다."
@@ -8,6 +8,11 @@ publishedAt: 2026-10-13
 category: "ai"
 projectGroup: "ai"
 aiCollaboration: true
+series:
+  id: web-portfolio
+  title: "웹 포트폴리오"
+  part: 1
+  partLabel: "구축"
 workTypes: ["personal", "experiment"]
 status: "in-progress"
 draft: false

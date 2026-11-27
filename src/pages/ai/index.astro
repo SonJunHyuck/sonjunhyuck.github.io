@@ -2,9 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCarousel from '../../components/ProjectCarousel.astro';
 import ProjectShowcase from '../../components/ProjectShowcase.astro';
-import { getOrderedProjects } from '../../lib/projects';
+import { getOrderedProjects, getProjectListItems } from '../../lib/projects';
 
-const projects = await getOrderedProjects('ai');
+const projects = getProjectListItems(await getOrderedProjects('ai'));
 ---
 <BaseLayout title="AI 협업 — Son Junhyuck" description="AI와 함께 만든 프로젝트를 소개합니다." next={{ href: '/profile/', title: '프로필', image: '/profile.webp' }}>
   <h1 class="visually-hidden">AI 협업</h1>

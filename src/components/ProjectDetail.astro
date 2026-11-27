@@ -18,22 +18,35 @@ const { project, Content } = Astro.props;
 const { data } = project;
 const listHref = getProjectSection(data) === 'ai' ? '/ai/' : '/projects/';
 const listLabel = getProjectSection(data) === 'ai' ? 'AI 협업 목록' : '프로젝트 목록';
-const isPortfolio = project.id === 'portfolio-website';
+const isEditModeRelay = project.id === 'edit-mode-relay';
+const detailTitle = data.series ? data.title.replace(': ', ':\n') : data.title;
+const isPortfolioCaseStudy = project.id === 'portfolio-website' || isEditModeRelay;
 const isProjectR = project.id === 'project-r';
 const isInspixWorld = project.id === 'inspix-world';
 const isHiddenCheerSquad = project.id === 'the-hidden-cheer-squad';
 const isBfx = project.id === 'bfx';
 const bfxLeadHighlight = 'The Division에서 모티브를 얻은 PvE 중심 FPS입니다.';
 const isPersonalResearch = project.id === 'crowd-formation-control' || project.id === 'wind-map-simulation';
-const usesCaseStudyLayout = isProjectR || isInspixWorld || isHiddenCheerSquad || isBfx || isPersonalResearch || isPortfolio;
-const { destination: next, isProject: hasNextProject } = await getNextProject(project.id);
+const usesCaseStudyLayout = isProjectR || isInspixWorld || isHiddenCheerSquad || isBfx || isPersonalResearch || isPortfolioCaseStudy;
+const { destination: next, isProject: hasNextProject, series } = await getNextProject(project.id);
 const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || isPersonalResearch;
 ---
 <BaseLayout title={`${data.title} — Son Junhyuck`} description={data.summary} {next}>
-  <article class:list={["project-detail", "container", { "case-study-detail": usesCaseStudyLayout, "inspix-world-detail": isInspixWorld, "bfx-detail": isBfx, "portfolio-detail": isPortfolio }]}>
+  <article class:list={["project-detail", "container", { "case-study-detail": usesCaseStudyLayout, "inspix-world-detail": isInspixWorld, "bfx-detail": isBfx, "portfolio-detail": isPortfolioCaseStudy }]}>
     <a class="back-link" href={listHref}>← 돌아가기</a>
-    <header><p class="eyebrow">{data.category === 'game' ? 'GAME' : data.category === 'graphics' ? 'GRAPHICS' : 'AI 활용'} PROJECT {data.isExample && '· EXAMPLE'}</p><h1>{data.title}</h1><p class="lead">{isBfx && data.description.startsWith(bfxLeadHighlight) ? <><span class="lead-highlight">{bfxLeadHighlight}</span>{data.description.slice(bfxLeadHighlight.length)}</> : data.description}</p></header>
-    {data.thumbnail && <img class="project-cover" src={data.thumbnail} alt={`${data.title} 대표 이미지`} />}
+    {series && (
+      <nav class="project-series-nav" aria-label={`${series.title} 시리즈`}>
+        {series.parts.map(({ project: member, part, label }) => (
+          <a href={`/projects/${member.id}/`} aria-current={member.id === project.id ? 'page' : undefined}>Part {part} {label}</a>
+        ))}
+      </nav>
+    )}
+    <header>
+      <p class="eyebrow">{data.category === 'game' ? 'GAME' : data.category === 'graphics' ? 'GRAPHICS' : 'AI 활용'} PROJECT {data.isExample && '· EXAMPLE'}</p>
+      <h1 class={data.series ? 'project-title-split' : undefined}>{detailTitle}</h1>
+      <p class="lead">{isBfx && data.description.startsWith(bfxLeadHighlight) ? <><span class="lead-highlight">{bfxLeadHighlight}</span>{data.description.slice(bfxLeadHighlight.length)}</> : data.description}</p>
+    </header>
+    {data.thumbnail && <img class="project-cover" src={data.thumbnail} alt={isEditModeRelay ? '프로젝트 목록의 개편 전 화면과 개편 후 화면을 좌우로 비교한 이미지' : `${data.title} 대표 이미지`} />}
     <dl class="facts">
       {data.period && <div><dt>기간</dt><dd>{data.period}</dd></div>}
       {data.role && <div><dt>역할</dt><dd>{data.role}</dd></div>}
@@ -61,7 +74,37 @@ const showsRepresentativeMedia = !usesCaseStudyLayout || isHiddenCheerSquad || i
 
 <style>
   .project-detail { padding-top: 36px; padding-bottom: 120px; }.project-detail > .back-link { margin-bottom: 24px; }.project-detail > header { padding: 0 0 44px; }.project-detail > header h1 { max-width: 100%; margin: 16px 0 24px; }.lead { max-width: 720px; color: var(--muted); font-size: 1.2rem; line-height: 1.75; word-break: keep-all; overflow-wrap: break-word; }.case-study-detail .lead { max-width: none; }.project-cover { width: 100%; max-height: 560px; object-fit: cover; border-radius: 4px; outline: 1px solid var(--line); outline-offset: -1px; }.inspix-world-detail .project-cover { max-height: none; object-fit: contain; }.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; margin: 0 0 32px; background: var(--line); border: 1px solid var(--line); }.facts div { padding: 20px; background: var(--paper); }.facts dt { color: var(--muted); font: 11px var(--mono); text-transform: uppercase; }.facts dd { margin: 7px 0 0; line-height: 1.5; }.project-detail section { margin-top: 72px; }.project-detail h2 { margin: 10px 0 24px; font-size: clamp(1.8rem, 4vw, 2.7rem); letter-spacing: -.05em; }.video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 22px; }.video-item { min-width: 0; }.video iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 4px; }.video-item h3 { margin: 14px 0 7px; }.video-item p { margin-bottom: 10px; color: var(--muted); line-height: 1.6; }.video-item a { font-size: 12px; font-weight: 800; text-decoration: underline; text-underline-offset: 4px; }.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }.gallery figure { margin: 0; }.gallery img { width: 100%; border-radius: 4px; }.gallery figcaption { color: var(--muted); font-size: .875rem; }.tech, .feature-grid, .challenges { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; padding: 0; }.feature-grid-wide { grid-template-columns: repeat(2, minmax(0, 1fr)); }.tech { list-style: none; }.tech li, .feature-grid > div, .challenges article { padding: 28px; border: 1px solid var(--line); background:var(--surface); }.tech strong, .tech span { display: block; }.tech span, .feature-grid p, .challenges p { color: var(--muted); line-height: 1.65; }.feature-grid h3, .challenges h3 { margin-top: 0; }.story { max-width: var(--content-width); }.story :global(h2) { margin-top: 2.1em; }.story :global(.reflection) { margin-top: 48px; color: var(--muted); }.story :global(.reflection h3), .story :global(.reflection p) { color: inherit; }.story :global(.story-media-narrow) { max-width: 520px; }.links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 56px; }.links:empty { display: none; }.detail-pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 72px; padding-top: 32px; border-top: 1px solid var(--line); }.detail-pager .button { min-height: 48px; }
+  .project-title-split {
+    white-space: pre-line;
+    word-break: keep-all;
+    font-size: clamp(1.625rem, 8.5vw, 5.875rem);
+  }
   .portfolio-detail .project-cover { max-height: none; height: auto; object-fit: contain; }
+  .project-detail:has(> .project-series-nav) > .back-link { margin-bottom: 14px; }
+  .project-series-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    width: fit-content;
+    max-width: 100%;
+    margin-bottom: 27px;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+  }
+  .project-series-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: .8125rem;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+  .project-series-nav a:hover { color: var(--accent); }
+  .project-series-nav a[aria-current='page'] { background: var(--button-bg); color: var(--button-text); }
   .bfx-detail .project-cover { max-height: none; aspect-ratio: auto; object-fit: contain; }
   .bfx-detail > header { padding-bottom: 32px; }
   .bfx-detail > header .lead { max-width: 100%; }

@@ -1,24 +1,37 @@
 ---
-import type { Project } from '../lib/projects';
+import type { ProjectListItem } from '../lib/projects';
 
-interface Props { projects: Project[]; label?: string; }
+interface Props { projects: ProjectListItem[]; label?: string; }
 const { projects, label = '프로젝트 소개' } = Astro.props;
 ---
 <section class="container project-showcase" aria-label={label}>
-  {projects.map(({ id, data }) => (
+  {projects.map(({ id, data, series }) => (
     <article class="project-feature">
       <div class="project-media">
         {data.thumbnail && <img src={data.thumbnail} alt="" loading="lazy" decoding="async" />}
       </div>
       <div class="project-copy">
-        <h2>{data.title}</h2>
-        <p>{data.cardLabel ?? data.summary}</p>
-        {data.technologies.length > 0 && (
-          <ul class="tag-list" aria-label="기술 스택">
-            {data.technologies.slice(0, 4).map(({ name }) => <li>{name}</li>)}
+        <h2>{series?.title ?? data.title}</h2>
+        {series ? (
+          <ul class="series-parts">
+            {series.parts.map(({ project, part, label }) => (
+              <li>
+                <p>{project.data.title}</p>
+                <a class="project-detail-link" href={`/projects/${project.id}/`}>Part {part} · {label} 보기</a>
+              </li>
+            ))}
           </ul>
+        ) : (
+          <>
+            <p>{data.cardLabel ?? data.summary}</p>
+            {data.technologies.length > 0 && (
+              <ul class="tag-list" aria-label="기술 스택">
+                {data.technologies.slice(0, 4).map(({ name }) => <li>{name}</li>)}
+              </ul>
+            )}
+            <a class="project-detail-link" href={`/projects/${id}/`} aria-label={`${data.title} 자세히 보기`}>자세히 보기</a>
+          </>
         )}
-        <a class="project-detail-link" href={`/projects/${id}/`} aria-label={`${data.title} 자세히 보기`}>자세히 보기</a>
       </div>
     </article>
   ))}
@@ -84,6 +97,22 @@ const { projects, label = '프로젝트 소개' } = Astro.props;
     font-weight: 800;
   }
   .project-detail-link:hover { border-color: var(--accent); color: var(--accent); }
+  .series-parts {
+    display: grid;
+    gap: 16px;
+    width: 100%;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .series-parts li + li { padding-top: 16px; border-top: 1px solid var(--line); }
+  .series-parts p {
+    margin-bottom: 8px;
+    color: var(--subtle-copy);
+    font-weight: 700;
+    word-break: keep-all;
+  }
+  .series-parts .project-detail-link { min-width: min(140px, 100%); text-align: center; overflow-wrap: anywhere; }
   @media (width > 680px) {
     .project-feature:nth-child(even) .project-media {
       grid-column: 1;

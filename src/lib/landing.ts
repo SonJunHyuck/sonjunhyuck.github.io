@@ -1,14 +1,15 @@
 import { landingCards, type LandingImageRule } from '../config/landingCards';
-import { getOrderedProjects, getProjectSection } from './projects';
+import { getOrderedProjects, getProjectListItems, getProjectSection } from './projects';
 import { getHighlightIndex } from './highlights';
 
 export async function getLandingCards() {
   const [projects, { entries }] = await Promise.all([getOrderedProjects(), getHighlightIndex()]);
+  const projectItems = getProjectListItems(projects);
   const resolveImage = (rule: LandingImageRule) => {
     if (rule.kind === 'static') return { src: rule.src, alt: rule.alt };
     if (rule.kind === 'first-project') {
-      const project = projects.find(({ data }) => getProjectSection(data) === rule.section);
-      return project?.data.thumbnail ? { src: project.data.thumbnail, alt: `${project.data.title} 대표 이미지` } : undefined;
+      const project = projectItems.find(({ data }) => getProjectSection(data) === rule.section);
+      return project?.data.thumbnail ? { src: project.data.thumbnail, alt: `${project.series?.title ?? project.data.title} 대표 이미지` } : undefined;
     }
     const highlight = entries.find((entry) => entry.image);
     return highlight?.image ? { src: highlight.image, alt: highlight.imageAlt } : undefined;
